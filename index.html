@@ -8,6 +8,8 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+  <!-- ওয়ান-ক্লিক জিপ ডাউনলোডের জন্য JSZip লাইব্রেরি যুক্ত করা হয়েছে -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -146,9 +148,15 @@
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
-      <button id="clear-all-btn" onclick="App.clearAllCollection()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
-        🗑️ Clear All Collection
-      </button>
+      <div class="flex gap-2">
+        <!-- ওয়ান-ক্লিক জিপ ডাউনলোডের জন্য নতুন বাটন যুক্ত করা হয়েছে -->
+        <button id="download-zip-btn" onclick="App.downloadCollectionAsZip()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
+          📦 Download All (ZIP)
+        </button>
+        <button id="clear-all-btn" onclick="App.clearAllCollection()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
+          🗑️ Clear All Collection
+        </button>
+      </div>
     </div>
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     <div id="nft-empty" class="text-center text-gray-600 py-12">No NFTs minted yet. Go to Mint tab.</div>
@@ -566,6 +574,7 @@
     const empty = document.getElementById('nft-empty'); 
     const countDiv = document.getElementById('nft-count');
     const clearBtn = document.getElementById('clear-all-btn');
+    const downloadZipBtn = document.getElementById('download-zip-btn');
     if(!container) return;
     
     if(!nfts.length) { 
@@ -573,11 +582,13 @@
       empty.classList.remove('hidden'); 
       countDiv.innerHTML=''; 
       if(clearBtn) clearBtn.classList.add('hidden');
+      if(downloadZipBtn) downloadZipBtn.classList.add('hidden');
       return; 
     }
     
     empty.classList.add('hidden');
     if(clearBtn) clearBtn.classList.remove('hidden');
+    if(downloadZipBtn) downloadZipBtn.classList.remove('hidden');
     countDiv.innerHTML = `<div class="inline-flex items-center gap-2 bg-blue-100 px-4 py-1 rounded-full text-blue-800 text-sm font-bold">🎨 Total Minted: ${nfts.length}</div>`;
     
     container.innerHTML = nfts.map(nft => {
@@ -595,6 +606,56 @@
       const blob=new Blob([JSON.stringify(metadata,null,2)],{type:'application/json'}); 
       const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${nft.number}.json`; a.click(); URL.revokeObjectURL(a.href); showToast(`Saved ${nft.number}.json`); 
     } 
+  }
+
+  // ওয়ান-ক্লিক জিপ ডাউনলোড মাস্টার প্রসেসর ইন্জিন
+  async function downloadCollectionAsZip() {
+    if (!nfts.length) { showToast('❌ No NFTs in collection!'); return; }
+    
+    const btn = document.getElementById('download-zip-btn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Zipping...';
+    
+    try {
+      const zip = new JSZip();
+      showToast('📦 Creating ZIP archive architecture...');
+      
+      for (let nft of nfts) {
+        // প্রতিটি NFT এর আলাদা ফোল্ডার নাম ডিফাইন করা
+        const folderName = `Punk_${nft.number}`;
+        const nftFolder = zip.folder(folderName);
+        
+        // ১. JSON মেটাডেটা ফাইল জেনারেট এবং ফোল্ডারে পুশ
+        const metadata = { 
+          name: nft.name, 
+          description: nft.description, 
+          image: `ipfs://placeholder/${nft.number}.png`, 
+          attributes: nft.attributes 
+        };
+        nftFolder.file(`${nft.number}.json`, JSON.stringify(metadata, null, 2));
+        
+        // ২. Base64 ইমেজ ডেটা এক্সট্রাক্ট করে বাইনারি ফরম্যাটে ফোল্ডারে পুশ
+        const base64Data = nft.image.split(',')[1];
+        nftFolder.file(`${nft.number}.png`, base64Data, {base64: true});
+      }
+      
+      // জিপ ফাইল কম্পাইল ও ডাউনলোড ট্রিগার করা
+      const content = await zip.generateAsync({type: "blob"});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = `404_Punks_Collection_${Date.now()}.zip`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      
+      showToast('🎉 Collection downloaded in ZIP format successfully!');
+    } catch (err) {
+      console.error(err);
+      showToast('❌ ZIP generation failed');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
   }
   
   function deleteNFT(id) { if(confirm('Delete this NFT?')) { nfts = nfts.filter(n=>String(n.id)!==String(id)); saveUserNFTs(); renderCollection(); showToast('NFT removed'); } }
@@ -651,7 +712,8 @@
   const App = {
     switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
     toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
-    viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection
+    viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
+    downloadCollectionAsZip // App মডিউলে এক্সপোজ করা হয়েছে
   };
 
   window.onload = function() {
