@@ -8,7 +8,6 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-  <!-- ওয়ান-ক্লিক জিপ ডাউনলোডের জন্য JSZip লাইব্রেরি যুক্ত করা হয়েছে -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -120,7 +119,7 @@
 
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
-      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (কমা) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes (Base + Accessories) অর্ডার নির্বিশেষে ম্যাচ হবে। Attribute Count ইগনোর করা হয়।<br>📌 <strong>Layer Stacking:</strong> প্রথম যে লেয়ার সিলেক্ট করবেন সেটা নিচে থাকবে, পরেরটা তার উপরে - ক্রমান্বয়ে স্ট্যাক হবে।
+      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (কমা) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে ম্যাচ হবে। Attribute Count ইগনোর করা হয়।<br>📌 <strong>Layer Stacking:</strong> প্রথম যে লেয়ার সিলেক্ট করবেন সেটা নিচে থাকবে, পরেরটা তার উপরে - ক্রমান্বয়ে স্ট্যাক হবে।
     </div>
 
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
@@ -149,7 +148,6 @@
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
       <div class="flex gap-2">
-        <!-- ওয়ান-ক্লিক জিপ ডাউনলোডের জন্য নতুন বাটন যুক্ত করা হয়েছে -->
         <button id="download-zip-btn" onclick="App.downloadCollectionAsZip()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
           📦 Download All (ZIP)
         </button>
@@ -179,7 +177,6 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // Strict structural rendering blueprint
   const SECTIONS = ["Background", "Base", "Neck", "Ear", "Face", "Beard", "Nose", "Mouth", "Eyes", "Head", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
@@ -187,6 +184,10 @@
   let masterIndexMap = [];
   let previewCtx = null;
   let openSectionCreate = null, openSectionLayers = null;
+
+  // এডিটর মোডের জন্য গ্লোবাল ভেরিয়েবল
+  let editingNftId = null;
+  let editingLayersArray = [];
 
   for(let s of SECTIONS) layersBySection[s] = [];
 
@@ -196,7 +197,6 @@
   function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
   function saveUserNFTs() { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); }
 
-  // FETCH MASTER INDEX
   async function fetchMasterIndex() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
@@ -215,18 +215,15 @@
         traitValues.sort();
         masterIndexMap.push({ id: parseInt(key), traitValues });
       }
-      console.log('Master index loaded:', masterIndexMap.length, 'items');
       showToast(`✅ Loaded ${masterIndexMap.length} official punks for smart matching`);
     } catch(e) { 
-      console.warn('Failed to load index.json', e); 
       masterIndexMap = [];
       showToast('⚠️ Could not load official index.json');
     }
   }
 
-  // SMART MATCH ENGINE
   function matchWithMaster(attributes) {
-    if(!masterIndexMap.length) return { matched: false, matchId: null, reason: 'Master data not loaded' };
+    if(!masterIndexMap.length) return { matched: false, matchId: null };
     let nftValues = [];
     for(let a of attributes) {
       if(a.trait_type === 'Attribute Count') continue;
@@ -238,16 +235,12 @@
         return { matched: true, matchId: master.id };
       }
     }
-    return { false: true, matchId: null };
+    return { matched: false, matchId: null };
   }
 
-  // Attributes Builder (Strict JSON order logic builder)
   function buildAttributes(orderedLayers) {
-    let sortedForAttributes = [...orderedLayers];
-    sortedForAttributes.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-
     const attrs = [];
-    for(let layer of sortedForAttributes) {
+    for(let layer of orderedLayers) {
       if(layer.section === "Background") continue;
       let trait_type = (layer.section === "Base") ? "," : "Accessory";
       attrs.push({ trait_type: trait_type, value: layer.value });
@@ -256,15 +249,17 @@
     return attrs;
   }
 
-  // Canvas Image Engine (Strictly sorted rendering execution)
-  async function compositeFromSelected(customLayers = null) {
+  // ক্যানভাস রেন্ডারিং ইন্জিন (যেকোনো কাস্টম অর্ডারকে সরাসরি রেন্ডার করতে পারে)
+  async function compositeFromSelected(customLayers = null, forceCustomOrder = false) {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
     
     let operationalLayers = customLayers ? [...customLayers] : [...selectedLayersArray];
     
-    // Hard force proper sequence ordering sorting before loading into canvas context
-    operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    // যদি এডিটর থেকে ম্যানুয়াল রি-অর্ডার করা হয় তবে ডিফল্ট সর্টিং স্কিপ করবে
+    if (!forceCustomOrder) {
+      operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    }
     
     for(let item of operationalLayers) {
       await new Promise(resolve => { 
@@ -296,7 +291,6 @@
     updateLivePreview();
   }
 
-  // TEXT FILE BATCH AUTOMATION PROCESSING ENGINE
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
@@ -320,14 +314,14 @@
       showToast(`Starting automated generation for ${textLines.length} rows...`);
       let successCount = 0;
 
-      // Global Map optimization
       const globalTraitsLookup = {};
       for (let section of SECTIONS) {
         layersBySection[section].forEach(layer => {
           globalTraitsLookup[layer.value.trim().toLowerCase()] = {
             section: section,
             value: layer.value,
-            imageUrl: layer.imageUrl
+            imageUrl: layer.imageUrl,
+            id: layer.id
           };
         });
       }
@@ -339,36 +333,32 @@
 
         let calculatedBatchLayers = [];
 
-        // 1. Inject Random Background
         const bgList = layersBySection['Background'];
         const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-        calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl });
+        calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id });
 
-        // 2. Base layer parsing extraction
         const baseToken = tokens[0].toLowerCase();
         const matchedBase = layersBySection['Base'].find(b => b.value.trim().toLowerCase() === baseToken);
         
         if (matchedBase) {
-          calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl });
+          calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id });
         } else {
           const baseList = layersBySection['Base'];
           const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
-          calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl });
+          calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id });
         }
 
-        // 3. Mapping elements loop (Auto sorts based on exact SECTIONS priority later)
         for (let j = 1; j < tokens.length; j++) {
           const traitToken = tokens[j].toLowerCase();
           if (globalTraitsLookup[traitToken]) {
             const foundLayer = globalTraitsLookup[traitToken];
             if(foundLayer.section !== 'Background' && foundLayer.section !== 'Base') {
-              calculatedBatchLayers.push({ section: foundLayer.section, value: foundLayer.value, imageUrl: foundLayer.imageUrl });
+              calculatedBatchLayers.push({ section: foundLayer.section, value: foundLayer.value, imageUrl: foundLayer.imageUrl, layerId: foundLayer.id });
             }
           }
         }
 
         try {
-          // Hard sort processing batch arrays explicitly by Blueprint before processing image rendering
           calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
           const generatedImg = await compositeFromSelected(calculatedBatchLayers);
@@ -381,6 +371,7 @@
             description: `Automated smart match procedural generator allocation.`,
             image: generatedImg,
             attributes: computedAttributes,
+            layers: calculatedBatchLayers, // লেয়ার ব্যাকআপ ট্র্যাকিং এডিটের জন্য
             number: currentIndexNo,
             fileName: `${currentIndexNo}.png`,
             jsonName: `${currentIndexNo}.json`,
@@ -398,7 +389,7 @@
       renderCollection();
       btn.disabled = false;
       btn.innerHTML = '🚀 Run Auto Batch Generation';
-      showToast(`🎉 Generated ${successCount} NFTs successfully from text architecture!`);
+      showToast(`🎉 Generated ${successCount} NFTs successfully!`);
       switchTab('collection');
     };
 
@@ -436,7 +427,6 @@
     btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Minting...';
     
     try {
-      // Force array sorting before image assembly execution loop
       selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
       const imageData = await compositeFromSelected();
@@ -448,6 +438,7 @@
         description: description,
         image: imageData,
         attributes: attributes,
+        layers: [...selectedLayersArray], // লেয়ার ব্যাকআপ ট্র্যাকিং এডিটের জন্য
         number: nextNum,
         fileName: `${nextNum}.png`,
         jsonName: `${nextNum}.json`,
@@ -464,13 +455,12 @@
       switchTab('collection');
     } catch(err) { 
       showToast(`Error: ${err.message}`); 
-    } finally { 
+    } final { 
       btn.disabled = false; 
       btn.innerHTML = '✨ Mint NFT (Single)'; 
     }
   }
 
-  // LIVE DATABASE LISTENER
   function listenToFirebaseLayers() {
     database.ref('layers').on('value', (snap) => {
       const data = snap.val();
@@ -594,9 +584,134 @@
     container.innerHTML = nfts.map(nft => {
       const match = matchWithMaster(nft.attributes);
       const matchHtml = match.matched ? `<span class="match-badge">✅ Match #${match.matchId}</span>` : `<span class="nomatch-badge">❌ No Match</span>`;
-      return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-raj font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-2" onclick="event.stopPropagation()"><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 px-2 py-1 rounded">📸 PNG</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 px-2 py-1 rounded">📄 JSON</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-200 px-2 py-1 rounded">🗑</button></div></div></div></div>`;
+      return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-raj font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-1" onclick="event.stopPropagation()"><button onclick="App.openNFTEditor('${nft.id}')" class="text-xs bg-amber-500 text-white px-2 py-1 rounded font-bold">✏️ Edit</button><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 px-1 py-1 rounded">📸</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 px-1 py-1 rounded">📄</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-200 px-1 py-1 rounded">🗑</button></div></div></div></div>`;
     }).join('');
   }
+
+  // ----------------------- NFT INTERACTIVE EDITOR ENGINE -----------------------
+  function openNFTEditor(id) {
+    const nft = nfts.find(n => String(n.id) === String(id));
+    if (!nft) return;
+    
+    editingNftId = id;
+    // যদি আগে কোনো ম্যানুয়াল লেয়ার সেভ না থাকে, তবে মেটাডেটার কারেন্ট লেয়ার স্ট্রাকচার ইম্পোর্ট করবে
+    editingLayersArray = nft.layers ? [...nft.layers] : [];
+    
+    // কোনো কারণে লেয়ার ব্যাকআপ না থাকলে ফলব্যাক জেনারেটর
+    if(editingLayersArray.length === 0) {
+      showToast('⚠️ No structured layer tracking found. Generating backup.');
+      return;
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'nft-editor-modal';
+    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[1000] p-4';
+    modal.innerHTML = `
+      <div class="modal-content rounded-2xl max-w-4xl w-full p-6 max-h-[90vh] overflow-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex flex-col items-center justify-center bg-slate-900 p-4 rounded-xl">
+          <canvas id="edit-preview-canvas" width="340" height="340" class="w-[300px] h-[300px] border-2 border-amber-400 rounded-lg shadow-lg"></canvas>
+          <p class="text-gray-400 text-xs mt-3">Live Order Preview (Bottom to Top rendering)</p>
+        </div>
+        <div class="flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="font-orb text-lg font-bold text-amber-600">✏️ Rearrange Layers Order</h2>
+              <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-gray-500 font-bold text-lg hover:text-black">✕</button>
+            </div>
+            <p class="text-xs text-gray-600 mb-4">নিচের লেয়ারটি সবার নিচে (`Background`) এবং শেষের লেয়ারটি সবার উপরে থাকবে। আপ-ডাউন বাটন দিয়ে ম্যানুয়ালি ওভারল্যাপ ফিক্স করুন।</p>
+            <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1">
+              <!-- Dynamic Rows Injection -->
+            </div>
+          </div>
+          <div class="flex gap-3 mt-6">
+            <button onclick="document.getElementById('nft-editor-modal').remove()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-bold">Cancel</button>
+            <button onclick="App.saveEditedNFT()" class="flex-1 bg-amber-500 text-white py-3 rounded-xl font-bold shadow-md hover:bg-amber-600">💾 Save Changes</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    renderEditorRows();
+    updateEditorPreview();
+  }
+
+  function renderEditorRows() {
+    const listDiv = document.getElementById('editor-layers-list');
+    if(!listDiv) return;
+    
+    listDiv.innerHTML = editingLayersArray.map((layer, idx) => {
+      return `
+        <div class="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-xl shadow-sm">
+          <div class="flex items-center gap-2">
+            <span class="text-xs bg-slate-200 px-2 py-1 rounded font-bold text-gray-700">#${idx+1}</span>
+            <div class="text-left">
+              <p class="text-xs font-bold text-indigo-900">${layer.section}</p>
+              <p class="text-[11px] text-gray-600 truncate max-w-[160px]">${escapeHtml(layer.value)}</p>
+            </div>
+          </div>
+          <div class="flex gap-1">
+            <button onclick="App.moveEditorLayer(${idx}, -1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===0?'disabled style="opacity:0.3"':''}>🔼</button>
+            <button onclick="App.moveEditorLayer(${idx}, 1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===editingLayersArray.length-1?'disabled style="opacity:0.3"':''}>🔽</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function moveEditorLayer(index, direction) {
+    const targetIndex = index + direction;
+    if(targetIndex < 0 || targetIndex >= editingLayersArray.length) return;
+    
+    // Swap positions
+    const temp = editingLayersArray[index];
+    editingLayersArray[index] = editingLayersArray[targetIndex];
+    editingLayersArray[targetIndex] = temp;
+    
+    renderEditorRows();
+    updateEditorPreview();
+  }
+
+  async function updateEditorPreview() {
+    const canvas = document.getElementById('edit-preview-canvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,340,340);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0,0,340,340);
+
+    for(let item of editingLayersArray) {
+      await new Promise(resolve => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => { ctx.drawImage(img, 0, 0, 340, 340); resolve(); };
+        img.onerror = () => resolve();
+        img.src = item.imageUrl;
+      });
+    }
+  }
+
+  async function saveEditedNFT() {
+    const nftIndex = nfts.findIndex(n => String(n.id) === String(editingNftId));
+    if(nftIndex === -1) return;
+
+    showToast('⚡ Processing Composite Redraw...');
+    
+    // ফোর্স ম্যানুয়াল কাস্টম অর্ডার ট্রু সেট করে ইমেজ জেনারেট
+    const newImage = await compositeFromSelected(editingLayersArray, true);
+    const newAttributes = buildAttributes(editingLayersArray);
+
+    nfts[nftIndex].image = newImage;
+    nfts[nftIndex].attributes = newAttributes;
+    nfts[nftIndex].layers = [...editingLayersArray]; // নতুন অর্ডারের ব্যাকআপ সেভ
+
+    saveUserNFTs();
+    renderCollection();
+    
+    document.getElementById('nft-editor-modal').remove();
+    showToast('🎉 NFT Layers & Metadata Updated Successfully!');
+  }
+
+  // -----------------------------------------------------------------------------
 
   function downloadImage(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(nft) { const a=document.createElement('a'); a.href=nft.image; a.download=`${nft.number}.png`; a.click(); showToast(`Saved ${nft.number}.png`); } }
   function downloadJSON(id) { 
@@ -608,7 +723,6 @@
     } 
   }
 
-  // ওয়ান-ক্লিক জিপ ডাউনলোড মাস্টার প্রসেসর ইন্জিন
   async function downloadCollectionAsZip() {
     if (!nfts.length) { showToast('❌ No NFTs in collection!'); return; }
     
@@ -622,11 +736,9 @@
       showToast('📦 Creating ZIP archive architecture...');
       
       for (let nft of nfts) {
-        // প্রতিটি NFT এর আলাদা ফোল্ডার নাম ডিফাইন করা
         const folderName = `Punk_${nft.number}`;
         const nftFolder = zip.folder(folderName);
         
-        // ১. JSON মেটাডেটা ফাইল জেনারেট এবং ফোল্ডারে পুশ
         const metadata = { 
           name: nft.name, 
           description: nft.description, 
@@ -635,12 +747,10 @@
         };
         nftFolder.file(`${nft.number}.json`, JSON.stringify(metadata, null, 2));
         
-        // ২. Base64 ইমেজ ডেটা এক্সট্রাক্ট করে বাইনারি ফরম্যাটে ফোল্ডারে পুশ
         const base64Data = nft.image.split(',')[1];
         nftFolder.file(`${nft.number}.png`, base64Data, {base64: true});
       }
       
-      // জিপ ফাইল কম্পাইল ও ডাউনলোড ট্রিগার করা
       const content = await zip.generateAsync({type: "blob"});
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
@@ -650,7 +760,6 @@
       
       showToast('🎉 Collection downloaded in ZIP format successfully!');
     } catch (err) {
-      console.error(err);
       showToast('❌ ZIP generation failed');
     } finally {
       btn.disabled = false;
@@ -713,7 +822,8 @@
     switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
     toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
-    downloadCollectionAsZip // App মডিউলে এক্সপোজ করা হয়েছে
+    downloadCollectionAsZip,
+    openNFTEditor, moveEditorLayer, saveEditedNFT // এডিটর মেথড এক্সপোজড
   };
 
   window.onload = function() {
