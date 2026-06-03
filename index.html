@@ -90,12 +90,13 @@
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-[Rajdhani] font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
+  <!-- Layers Panel -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
       <h3 class="font-[Rajdhani] font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value (e.g., Blue Skin, Mohawk)" class="nft-input">
+        <input type="text" id="layer-value" placeholder="Value (e.g., Background 1, Base 1, Eyes 3)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background (UI)</option><option value="Base">Base</option><option value="Head">Head</option>
           <option value="Eyes">Eyes</option><option value="Mouth">Mouth</option><option value="Accessory">Accessory</option>
@@ -106,9 +107,9 @@
       </div>
     </div>
     <div id="sections-container" class="space-y-4"></div>
-    <div id="layers-empty" class="text-center text-gray-600 py-10 hidden">No global layers yet. Add the first layer!</div>
   </div>
 
+  <!-- Create Panel -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
       <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (কমা) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes (Base + Accessories) অর্ডার নির্বিশেষে ম্যাচ হবে। Attribute Count ইগনোর করা হয়।<br>📌 <strong>Layer Stacking:</strong> প্রথম যে লেয়ার সিলেক্ট করবেন সেটা নিচে থাকবে, পরেরটা তার উপরে - ক্রমান্বয়ে স্ট্যাক হবে।
@@ -116,7 +117,7 @@
 
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-[Rajdhani] font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার <strong>Background</strong> এবং <strong>Base</strong> লেয়ার থেকে অটোমেটিক র‍্যান্ডমলি সিলেক্ট হবে। বাকি লেয়ারগুলো ৫০% চান্সে মিক্স হবে এবং টেক্সট ফাইলের প্রতিটি লাইন এনকোড হবে Img-এ।</p>
+      <p class="text-xs text-gray-600 mb-3">আপনার আপলোড করা টেক্সট ফাইলের প্রতিটি লাইনে উল্লেখ করা লেয়ারের নামের সাথে ফায়ারবেসের লেয়ার ম্যাচ করে অটোমেটিক নির্দিষ্ট ক্রমানুসারে (Background নিচে, তারপর Base ইত্যাদি) NFT জেনারেট হবে।</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -140,6 +141,7 @@
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
+  <!-- Collection Panel -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div id="nft-count"></div>
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -170,6 +172,7 @@
   }
   const database = firebase.database();
 
+  // রেণ্ডারিং ক্রমানুসার (সবার নিচে Background থাকবে, তার উপর Base, এভাবে পর্যায়ক্রমে স্ট্যাক হবে)
   const SECTIONS = ["Background","Base","Head","Eyes","Mouth","Accessory","Nose","Neck","Face","Ear","Beard"];
   let layersBySection = {};
   let selectedLayersArray = [];  
@@ -247,7 +250,7 @@
       }
       showToast(`✅ Loaded ${masterIndexMap.length} official punks for smart matching`);
     } catch(e) { 
-      console.warn('Failed to load index.json smoothly. Continuing framework.', e); 
+      console.warn('Failed to load index.json smoothly.', e); 
       masterIndexMap = [];
     }
   }
@@ -315,13 +318,12 @@
     updateLivePreview();
   }
 
+  // ------------------------- ফিক্সড ব্যাচ টেক্সট ফাইল জেনারেটর -------------------------
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
     
     if(!fileInput || !fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
-    if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Background library inside Firebase is empty!'); return; }
-    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Base library inside Firebase is empty!'); return; }
 
     btn.disabled = true;
     btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Batch Rows...';
@@ -345,48 +347,70 @@
         let successCount = 0;
 
         for (let i = 0; i < textLines.length; i++) {
-          const lineText = textLines[i];
+          const lineText = textLines[i]; 
+          
+          // "NFT #1: " অংশটুকু ডাইনামিকালি আলাদা করা হচ্ছে
+          const parts = lineText.split(':');
+          const nftTitle = parts[0] ? parts[0].trim() : `NFT #${i+1}`;
+          const traitsPart = parts[1] ? parts[1].trim() : lineText;
+          
+          // "+" চিহ্ন দিয়ে ভাগ করে ট্রেইটের নামগুলো অ্যারেতে নেওয়া হচ্ছে
+          const requiredTraits = traitsPart.split('+').map(t => t.trim());
           let calculatedBatchLayers = [];
 
-          const bgList = layersBySection['Background'];
-          const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-          calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl });
+          for (let traitName of requiredTraits) {
+            let foundLayer = null;
+            let foundSection = null;
 
-          const baseList = layersBySection['Base'];
-          const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
-          calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl });
+            // ফায়ারবেসের স্টোরেজের সবগুলো সেকশন সার্চ করে নিখুঁত বানান মিলানো হচ্ছে
+            for (let section of SECTIONS) {
+              const layers = layersBySection[section] || [];
+              const match = layers.find(l => l.value.trim().toLowerCase() === traitName.toLowerCase());
+              if (match) {
+                foundLayer = match;
+                foundSection = section;
+                break;
+              }
+            }
 
-          const optionalCategories = ["Head","Eyes","Mouth","Accessory","Nose","Neck","Face","Ear","Beard"];
-          for (let cat of optionalCategories) {
-            const catTraits = layersBySection[cat] || [];
-            if(catTraits.length > 0 && Math.random() > 0.5) {
-              const chosenTrait = catTraits[Math.floor(Math.random() * catTraits.length)];
-              calculatedBatchLayers.push({ section: cat, value: chosenTrait.value, imageUrl: chosenTrait.imageUrl });
+            if (foundLayer) {
+              calculatedBatchLayers.push({ 
+                section: foundSection, 
+                value: foundLayer.value, 
+                imageUrl: foundLayer.imageUrl 
+              });
             }
           }
 
-          try {
-            const generatedImg = await compositeFromSelected(calculatedBatchLayers, lineText);
-            const computedAttributes = buildAttributes(calculatedBatchLayers);
-            computedAttributes.push({ trait_type: "Custom Text", value: lineText });
-            
-            const currentIndexNo = getNextNumber();
-            const batchNFTObject = {
-              id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
-              name: `404 Punks (${lineText})`,
-              description: `Automated smart match procedural generator allocation.`,
-              image: generatedImg,
-              attributes: computedAttributes,
-              number: currentIndexNo,
-              fileName: `${currentIndexNo}.png`,
-              jsonName: `${currentIndexNo}.json`,
-              createdAt: Date.now()
-            };
+          // ক্যানভাসে ড্র করার জন্য সেকশনের ইনডেক্স অনুযায়ী সাজানো (Background সবার নিচে থাকবে)
+          calculatedBatchLayers.sort((a, b) => {
+            return SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section);
+          });
 
-            nfts.push(batchNFTObject);
-            successCount++;
-          } catch(err) {
-            console.error("Compilation error on line processing:", err);
+          if(calculatedBatchLayers.length > 0) {
+            try {
+              const generatedImg = await compositeFromSelected(calculatedBatchLayers, lineText);
+              const computedAttributes = buildAttributes(calculatedBatchLayers);
+              computedAttributes.push({ trait_type: "Custom Text", value: lineText });
+              
+              const currentIndexNo = getNextNumber();
+              const batchNFTObject = {
+                id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
+                name: `404 Punks (${nftTitle})`,
+                description: `Automated smart match procedural generator allocation.`,
+                image: generatedImg,
+                attributes: computedAttributes,
+                number: currentIndexNo,
+                fileName: `${currentIndexNo}.png`,
+                jsonName: `${currentIndexNo}.json`,
+                createdAt: Date.now()
+              };
+
+              nfts.push(batchNFTObject);
+              successCount++;
+            } catch(err) {
+              console.error("Error drawing canvas layers:", err);
+            }
           }
         }
 
@@ -396,6 +420,7 @@
         App.switchTab('collection');
       } catch(outerErr) {
         showToast('❌ Execution collapsed during parsing.');
+        console.error(outerErr);
       } finally {
         btn.disabled = false;
         btn.innerHTML = '🚀 Run Auto Batch Generation';
