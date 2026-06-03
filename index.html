@@ -128,7 +128,11 @@
       </div>
     </div>
 
-    <div class="glass-card p-5 flex flex-col items-center rounded-2xl"><canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas><p class="text-gray-600 text-xs mt-2">Live preview (bottom → top order as per selection sequence)</p></div>
+    <div class="glass-card p-5 flex flex-col items-center justify-center rounded-2xl mx-auto max-w-md">
+      <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
+      <p class="text-gray-600 text-xs mt-2 text-center">Live preview (bottom → top order as per selection sequence)</p>
+    </div>
+    
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
     <div class="glass-card p-4 rounded-xl"><p class="font-[Rajdhani] font-bold text-blue-900 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
     <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input">
@@ -156,7 +160,14 @@
     messagingSenderId: "935797407482",
     appId: "1:935797407482:web:1b77f90478160ac69c1343"
   };
-  firebase.initializeApp(firebaseConfig);
+  
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+  } catch(e) {
+    console.error("Firebase initialization mismatch:", e);
+  }
   const database = firebase.database();
 
   const SECTIONS = ["Background","Base","Head","Eyes","Mouth","Accessory","Nose","Neck","Face","Ear","Beard"];
@@ -169,7 +180,6 @@
 
   for(let s of SECTIONS) layersBySection[s] = [];
 
-  // Global App Object binding for HTML inline clicks
   const App = {
     switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -217,7 +227,6 @@
   function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
   function saveUserNFTs() { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); }
 
-  // ---------- MASTER INDEX FETCH & PARSE ----------
   async function fetchMasterIndex() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
@@ -236,18 +245,15 @@
         traitValues.sort();
         masterIndexMap.push({ id: parseInt(key), traitValues });
       }
-      console.log('Master index loaded:', masterIndexMap.length, 'items');
       showToast(`✅ Loaded ${masterIndexMap.length} official punks for smart matching`);
     } catch(e) { 
-      console.warn('Failed to load index.json', e); 
+      console.warn('Failed to load index.json smoothly. Continuing framework.', e); 
       masterIndexMap = [];
-      showToast('⚠️ Could not load official index.json');
     }
   }
 
-  // SMART MATCH FUNCTION
   function matchWithMaster(attributes) {
-    if(!masterIndexMap.length) return { matched: false, matchId: null, reason: 'Master data not loaded' };
+    if(!masterIndexMap || !masterIndexMap.length) return { matched: false, matchId: null };
     let nftValues = [];
     for(let a of attributes) {
       if(a.trait_type === 'Attribute Count' || a.trait_type === 'Custom Text') continue;
@@ -262,7 +268,6 @@
     return { matched: false, matchId: null };
   }
 
-  // Build Attributes Parser
   function buildAttributes(orderedLayers) {
     const attrs = [];
     for(let layer of orderedLayers) {
@@ -274,7 +279,6 @@
     return attrs;
   }
 
-  // Composite Generator Image Data Engine
   async function compositeFromSelected(customLayers = null, appendedText = "") {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
@@ -290,21 +294,11 @@
         img.src = item.imageUrl; 
       });
     }
-
-    if(appendedText) {
-      ctx.fillStyle = "#FFFFFF";
-      ctx.font = "bold 24px sans-serif";
-      ctx.shadowColor = "black";
-      ctx.shadowBlur = 4;
-      ctx.fillText(appendedText, 30, 480);
-    }
-
     return canvas.toDataURL('image/png');
   }
 
   function getNextNumber() { return nfts.length + 1; }
 
-  // Toggle Selection Layers Mode
   function toggleLayerSelection(section, layerId, value, imageUrl, gender) {
     const existingIndex = selectedLayersArray.findIndex(l => l.section === section);
     if(existingIndex !== -1) {
@@ -321,90 +315,96 @@
     updateLivePreview();
   }
 
-  // AUTOMATIC BATCH GENERATION FROM TEXT FILE
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
     
-    if(!fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
-    
-    if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Background is mandatory but library is empty!'); return; }
-    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Base is mandatory but library is empty!'); return; }
+    if(!fileInput || !fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
+    if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Background library inside Firebase is empty!'); return; }
+    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Base library inside Firebase is empty!'); return; }
 
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Batch...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Batch Rows...';
 
     const file = fileInput.files[0];
     const reader = new FileReader();
 
     reader.onload = async function(e) {
-      const textContent = e.target.result;
-      const textLines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-      
-      if(textLines.length === 0) { showToast('❌ Text file is empty!'); btn.disabled = false; btn.innerHTML = '🚀 Run Auto Batch Generation'; return; }
-      
-      showToast(`Starting automated generation for ${textLines.length} variants...`);
-      let successCount = 0;
+      try {
+        const textContent = e.target.result;
+        const textLines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        
+        if(textLines.length === 0) { 
+          showToast('❌ Text file is empty!'); 
+          btn.disabled = false; 
+          btn.innerHTML = '🚀 Run Auto Batch Generation'; 
+          return; 
+        }
+        
+        showToast(`Starting automated generation for ${textLines.length} variants...`);
+        let successCount = 0;
 
-      for (let i = 0; i < textLines.length; i++) {
-        const lineText = textLines[i];
-        let calculatedBatchLayers = [];
+        for (let i = 0; i < textLines.length; i++) {
+          const lineText = textLines[i];
+          let calculatedBatchLayers = [];
 
-        const bgList = layersBySection['Background'];
-        const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-        calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl });
+          const bgList = layersBySection['Background'];
+          const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
+          calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl });
 
-        const baseList = layersBySection['Base'];
-        const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
-        calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl });
+          const baseList = layersBySection['Base'];
+          const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
+          calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl });
 
-        const optionalCategories = ["Head","Eyes","Mouth","Accessory","Nose","Neck","Face","Ear","Beard"];
-        for (let cat of optionalCategories) {
-          const catTraits = layersBySection[cat] || [];
-          if(catTraits.length > 0 && Math.random() > 0.5) {
-            const chosenTrait = catTraits[Math.floor(Math.random() * catTraits.length)];
-            calculatedBatchLayers.push({ section: cat, value: chosenTrait.value, imageUrl: chosenTrait.imageUrl });
+          const optionalCategories = ["Head","Eyes","Mouth","Accessory","Nose","Neck","Face","Ear","Beard"];
+          for (let cat of optionalCategories) {
+            const catTraits = layersBySection[cat] || [];
+            if(catTraits.length > 0 && Math.random() > 0.5) {
+              const chosenTrait = catTraits[Math.floor(Math.random() * catTraits.length)];
+              calculatedBatchLayers.push({ section: cat, value: chosenTrait.value, imageUrl: chosenTrait.imageUrl });
+            }
+          }
+
+          try {
+            const generatedImg = await compositeFromSelected(calculatedBatchLayers, lineText);
+            const computedAttributes = buildAttributes(calculatedBatchLayers);
+            computedAttributes.push({ trait_type: "Custom Text", value: lineText });
+            
+            const currentIndexNo = getNextNumber();
+            const batchNFTObject = {
+              id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
+              name: `404 Punks (${lineText})`,
+              description: `Automated smart match procedural generator allocation.`,
+              image: generatedImg,
+              attributes: computedAttributes,
+              number: currentIndexNo,
+              fileName: `${currentIndexNo}.png`,
+              jsonName: `${currentIndexNo}.json`,
+              createdAt: Date.now()
+            };
+
+            nfts.push(batchNFTObject);
+            successCount++;
+          } catch(err) {
+            console.error("Compilation error on line processing:", err);
           }
         }
 
-        try {
-          const generatedImg = await compositeFromSelected(calculatedBatchLayers, lineText);
-          const computedAttributes = buildAttributes(calculatedBatchLayers);
-          
-          computedAttributes.push({ trait_type: "Custom Text", value: lineText });
-          
-          const currentIndexNo = getNextNumber();
-          const batchNFTObject = {
-            id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
-            name: `404 Punks (${lineText})`,
-            description: `Automated smart match procedural generator allocation.`,
-            image: generatedImg,
-            attributes: computedAttributes,
-            number: currentIndexNo,
-            fileName: `${currentIndexNo}.png`,
-            jsonName: `${currentIndexNo}.json`,
-            createdAt: Date.now()
-          };
-
-          nfts.push(batchNFTObject);
-          successCount++;
-        } catch(err) {
-          console.error("Failed to sequence dynamic compilation variant row:", err);
-        }
+        saveUserNFTs();
+        renderCollection();
+        showToast(`🎉 Generated ${successCount} clean NFTs successfully!`);
+        App.switchTab('collection');
+      } catch(outerErr) {
+        showToast('❌ Execution collapsed during parsing.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🚀 Run Auto Batch Generation';
       }
-
-      saveUserNFTs();
-      renderCollection();
-      btn.disabled = false;
-      btn.innerHTML = '🚀 Run Auto Batch Generation';
-      showToast(`🎉 Generated ${successCount} NFTs successfully from text lines!`);
-      App.switchTab('collection');
     };
 
     reader.readAsText(file);
   }
 
-  // SINGLE MINT BUTTON
   async function mintSingleNFT() {
     if(selectedLayersArray.length === 0) { showToast('❌ Please select layers (Background & Base required)'); return; }
     
@@ -450,15 +450,19 @@
     }
   }
 
-  // ---------- FIREBASE LAYERS SYNC ----------
   function listenToFirebaseLayers() {
-    database.ref('layers').on('value', (snap) => {
-      const data = snap.val();
-      for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
-      renderAnatomy();
-      renderStructure();
-      document.getElementById('sync-status').innerHTML = '🌐 Firebase Sync ON';
-    });
+    try {
+      database.ref('layers').on('value', (snap) => {
+        const data = snap.val();
+        for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
+        renderAnatomy();
+        renderStructure();
+        document.getElementById('sync-status').innerHTML = '🌐 Firebase Sync ON';
+      });
+    } catch(e) {
+      console.error("Firebase read failure:", e);
+      document.getElementById('sync-status').innerHTML = '❌ Firebase Offline';
+    }
   }
 
   async function addLayerToFirebase(section, layer) { const updated = [...(layersBySection[section]||[]), layer]; await database.ref(`layers/${section}`).set(updated); }
@@ -612,7 +616,6 @@
     }
   }
 
-  // --- INITIALIZATION ---
   window.addEventListener('DOMContentLoaded', async () => {
     loadUserNFTs();
     listenToFirebaseLayers();
