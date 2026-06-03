@@ -185,7 +185,6 @@
   let previewCtx = null;
   let openSectionCreate = null, openSectionLayers = null;
 
-  // এডিটর মোডের জন্য গ্লোবাল ভেরিয়েবল
   let editingNftId = null;
   let editingLayersArray = [];
 
@@ -249,14 +248,12 @@
     return attrs;
   }
 
-  // ক্যানভাস রেন্ডারিং ইন্জিন (যেকোনো কাস্টম অর্ডারকে সরাসরি রেন্ডার করতে পারে)
   async function compositeFromSelected(customLayers = null, forceCustomOrder = false) {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
     
     let operationalLayers = customLayers ? [...customLayers] : [...selectedLayersArray];
     
-    // যদি এডিটর থেকে ম্যানুয়াল রি-অর্ডার করা হয় তবে ডিফল্ট সর্টিং স্কিপ করবে
     if (!forceCustomOrder) {
       operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     }
@@ -371,7 +368,7 @@
             description: `Automated smart match procedural generator allocation.`,
             image: generatedImg,
             attributes: computedAttributes,
-            layers: calculatedBatchLayers, // লেয়ার ব্যাকআপ ট্র্যাকিং এডিটের জন্য
+            layers: calculatedBatchLayers,
             number: currentIndexNo,
             fileName: `${currentIndexNo}.png`,
             jsonName: `${currentIndexNo}.json`,
@@ -438,7 +435,7 @@
         description: description,
         image: imageData,
         attributes: attributes,
-        layers: [...selectedLayersArray], // লেয়ার ব্যাকআপ ট্র্যাকিং এডিটের জন্য
+        layers: [...selectedLayersArray],
         number: nextNum,
         fileName: `${nextNum}.png`,
         jsonName: `${nextNum}.json`,
@@ -455,7 +452,7 @@
       switchTab('collection');
     } catch(err) { 
       showToast(`Error: ${err.message}`); 
-    } final { 
+    } finally { 
       btn.disabled = false; 
       btn.innerHTML = '✨ Mint NFT (Single)'; 
     }
@@ -588,18 +585,15 @@
     }).join('');
   }
 
-  // ----------------------- NFT INTERACTIVE EDITOR ENGINE -----------------------
   function openNFTEditor(id) {
     const nft = nfts.find(n => String(n.id) === String(id));
     if (!nft) return;
     
     editingNftId = id;
-    // যদি আগে কোনো ম্যানুয়াল লেয়ার সেভ না থাকে, তবে মেটাডেটার কারেন্ট লেয়ার স্ট্রাকচার ইম্পোর্ট করবে
     editingLayersArray = nft.layers ? [...nft.layers] : [];
     
-    // কোনো কারণে লেয়ার ব্যাকআপ না থাকলে ফলব্যাক জেনারেটর
     if(editingLayersArray.length === 0) {
-      showToast('⚠️ No structured layer tracking found. Generating backup.');
+      showToast('⚠️ No structured layer tracking found.');
       return;
     }
 
@@ -618,10 +612,8 @@
               <h2 class="font-orb text-lg font-bold text-amber-600">✏️ Rearrange Layers Order</h2>
               <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-gray-500 font-bold text-lg hover:text-black">✕</button>
             </div>
-            <p class="text-xs text-gray-600 mb-4">নিচের লেয়ারটি সবার নিচে (`Background`) এবং শেষের লেয়ারটি সবার উপরে থাকবে। আপ-ডাউন বাটন দিয়ে ম্যানুয়ালি ওভারল্যাপ ফিক্স করুন।</p>
-            <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1">
-              <!-- Dynamic Rows Injection -->
-            </div>
+            <p class="text-xs text-gray-600 mb-4">নিচের লেয়ারটি সবার নিচে এবং শেষের লেয়ারটি সবার উপরে থাকবে। আপ-ডাউন বাটন দিয়ে ম্যানুয়ালি ওভারল্যাপ ফিক্স করুন।</p>
+            <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1"></div>
           </div>
           <div class="flex gap-3 mt-6">
             <button onclick="document.getElementById('nft-editor-modal').remove()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-bold">Cancel</button>
@@ -662,7 +654,6 @@
     const targetIndex = index + direction;
     if(targetIndex < 0 || targetIndex >= editingLayersArray.length) return;
     
-    // Swap positions
     const temp = editingLayersArray[index];
     editingLayersArray[index] = editingLayersArray[targetIndex];
     editingLayersArray[targetIndex] = temp;
@@ -696,13 +687,12 @@
 
     showToast('⚡ Processing Composite Redraw...');
     
-    // ফোর্স ম্যানুয়াল কাস্টম অর্ডার ট্রু সেট করে ইমেজ জেনারেট
     const newImage = await compositeFromSelected(editingLayersArray, true);
     const newAttributes = buildAttributes(editingLayersArray);
 
     nfts[nftIndex].image = newImage;
     nfts[nftIndex].attributes = newAttributes;
-    nfts[nftIndex].layers = [...editingLayersArray]; // নতুন অর্ডারের ব্যাকআপ সেভ
+    nfts[nftIndex].layers = [...editingLayersArray];
 
     saveUserNFTs();
     renderCollection();
@@ -710,8 +700,6 @@
     document.getElementById('nft-editor-modal').remove();
     showToast('🎉 NFT Layers & Metadata Updated Successfully!');
   }
-
-  // -----------------------------------------------------------------------------
 
   function downloadImage(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(nft) { const a=document.createElement('a'); a.href=nft.image; a.download=`${nft.number}.png`; a.click(); showToast(`Saved ${nft.number}.png`); } }
   function downloadJSON(id) { 
@@ -807,11 +795,17 @@
 
   function switchTab(tabId) {
     ['layers', 'create', 'collection'].forEach(t => {
-      document.getElementById(`panel-${t}`).classList.add('hidden');
-      document.getElementById(`tab-${t}`).classList.remove('active');
+      const panel = document.getElementById(`panel-${t}`);
+      const tabBtn = document.getElementById(`tab-${t}`);
+      if(panel) panel.classList.add('hidden');
+      if(tabBtn) tabBtn.classList.remove('active');
     });
-    document.getElementById(`panel-${tabId}`).classList.remove('hidden');
-    document.getElementById(`tab-${tabId}`).classList.add('active');
+    
+    const targetPanel = document.getElementById(`panel-${tabId}`);
+    const targetTab = document.getElementById(`tab-${tabId}`);
+    if(targetPanel) targetPanel.classList.remove('hidden');
+    if(targetTab) targetTab.classList.add('active');
+    
     if(tabId === 'create') { updateLivePreview(); }
   }
 
@@ -823,7 +817,7 @@
     toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
     downloadCollectionAsZip,
-    openNFTEditor, moveEditorLayer, saveEditedNFT // এডিটর মেথড এক্সপোজড
+    openNFTEditor, moveEditorLayer, saveEditedNFT
   };
 
   window.onload = function() {
