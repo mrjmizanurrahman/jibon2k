@@ -1,0 +1,6 @@
+if(appendedText) {
+  ctx.fillStyle = "#FFFFFF";
+  ctx.font = "bold 24px sans-serif";
+  ...
+  ctx.fillText(appendedText, 30, 480);
+}
