@@ -76,7 +76,7 @@
   <header class="flex justify-between items-center mb-6 bg-white/60 backdrop-blur-md rounded-2xl p-4 shadow-md border border-blue-200">
     <div class="flex items-center gap-3">
       <div class="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
-      <h1 class="font-[Orbitron] text-2xl font-black bg-gradient-to-r from-blue-800 to-indigo-700 bg-clip-text text-transparent">404 PUNKS</h1>
+      <h1 class="font-orb text-2xl font-black bg-gradient-to-r from-blue-800 to-indigo-700 bg-clip-text text-transparent">404 PUNKS</h1>
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
@@ -85,39 +85,38 @@
   </header>
 
   <div class="flex gap-3 mb-6 flex-wrap">
-    <button onclick="App.switchTab('layers')" id="tab-layers" class="tab-btn px-5 py-2 bg-white/60 font-[Rajdhani] font-bold flex items-center gap-2 active"><i data-lucide="layers" style="width:16px"></i> Global Layers</button>
-    <button onclick="App.switchTab('create')" id="tab-create" class="tab-btn px-5 py-2 bg-white/60 font-[Rajdhani] font-bold flex items-center gap-2"><i data-lucide="sparkles" style="width:16px"></i> Mint NFT</button>
-    <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-[Rajdhani] font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
+    <button onclick="App.switchTab('layers')" id="tab-layers" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="layers" style="width:16px"></i> Global Layers</button>
+    <button onclick="App.switchTab('create')" id="tab-create" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="sparkles" style="width:16px"></i> Mint NFT</button>
+    <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
-  <!-- Layers Panel -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
-      <h3 class="font-[Rajdhani] font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
+      <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value (e.g., Background 1, Base 1, Eyes 3)" class="nft-input">
+        <input type="text" id="layer-value" placeholder="Value (e.g., Blue Skin, Mohawk)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background (UI)</option><option value="Base">Base</option><option value="Head">Head</option>
           <option value="Eyes">Eyes</option><option value="Mouth">Mouth</option><option value="Accessory">Accessory</option>
           <option value="Nose">Nose</option><option value="Neck">Neck</option><option value="Face">Face</option><option value="Ear">Ear</option><option value="Beard">Beard</option>
         </select>
-        <div class="flex gap-3 px-2 items-center"><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="male" checked> ♂ Male</label><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="female"> ♀ Female</label></div>
+        <div class="flex gap-3"><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="male" checked> ♂ Male</label><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="female"> ♀ Female</label></div>
         <button onclick="App.addLayer()" class="btn-primary text-white py-2 rounded-xl font-bold">➕ Sync to Firebase</button>
       </div>
     </div>
     <div id="sections-container" class="space-y-4"></div>
+    <div id="layers-empty" class="text-center text-gray-600 py-10 hidden">No global layers yet. Add the first layer!</div>
   </div>
 
-  <!-- Create Panel -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
       <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (কমা) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes (Base + Accessories) অর্ডার নির্বিশেষে ম্যাচ হবে। Attribute Count ইগনোর করা হয়।<br>📌 <strong>Layer Stacking:</strong> প্রথম যে লেয়ার সিলেক্ট করবেন সেটা নিচে থাকবে, পরেরটা তার উপরে - ক্রমান্বয়ে স্ট্যাক হবে।
     </div>
 
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
-      <h3 class="font-[Rajdhani] font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার আপলোড করা টেক্সট ফাইলের প্রতিটি লাইনে উল্লেখ করা লেয়ারের নামের সাথে ফায়ারবেসের লেয়ার ম্যাচ করে অটোমেটিক নির্দিষ্ট ক্রমানুসারে (Background নিচে, তারপর Base ইত্যাদি) NFT জেনারেট হবে।</p>
+      <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
+      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো আপনার গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -129,19 +128,14 @@
       </div>
     </div>
 
-    <div class="glass-card p-5 flex flex-col items-center justify-center rounded-2xl mx-auto max-w-md">
-      <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
-      <p class="text-gray-600 text-xs mt-2 text-center">Live preview (bottom → top order as per selection sequence)</p>
-    </div>
-    
+    <div class="glass-card p-5 flex flex-col items-center rounded-2xl"><canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas><p class="text-gray-600 text-xs mt-2">Live preview (bottom → top order as per selection sequence)</p></div>
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
-    <div class="glass-card p-4 rounded-xl"><p class="font-[Rajdhani] font-bold text-blue-900 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
+    <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-blue-900 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
     <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input">
     <textarea id="nft-description" rows="2" placeholder="Description" class="nft-input">Limited glitch artifact from the 404 dimension.</textarea>
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
-  <!-- Collection Panel -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div id="nft-count"></div>
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -162,17 +156,9 @@
     messagingSenderId: "935797407482",
     appId: "1:935797407482:web:1b77f90478160ac69c1343"
   };
-  
-  try {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-  } catch(e) {
-    console.error("Firebase initialization mismatch:", e);
-  }
+  firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // রেণ্ডারিং ক্রমানুসার (সবার নিচে Background থাকবে, তার উপর Base, এভাবে পর্যায়ক্রমে স্ট্যাক হবে)
   const SECTIONS = ["Background","Base","Head","Eyes","Mouth","Accessory","Nose","Neck","Face","Ear","Beard"];
   let layersBySection = {};
   let selectedLayersArray = [];  
@@ -183,53 +169,13 @@
 
   for(let s of SECTIONS) layersBySection[s] = [];
 
-  const App = {
-    switchTab(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-' + tabId).classList.add('active');
-      
-      document.getElementById('panel-layers').classList.add('hidden');
-      document.getElementById('panel-create').classList.add('hidden');
-      document.getElementById('panel-collection').classList.add('hidden');
-      
-      document.getElementById('panel-' + tabId).classList.remove('hidden');
-      if(tabId === 'create') updateLivePreview();
-    },
-    toggleSectionLayers(section) {
-      openSectionLayers = (openSectionLayers === section) ? null : section;
-      renderAnatomy();
-    },
-    toggleCreateSection(section) {
-      openSectionCreate = (openSectionCreate === section) ? null : section;
-      renderStructure();
-    },
-    toggleLayerSelection(section, layerId, value, imageUrl, gender) {
-      toggleLayerSelection(section, layerId, value, imageUrl, gender);
-    },
-    async addLayer() {
-      await addLayer();
-    },
-    async deleteLayer(section, id) {
-      await deleteLayer(section, id);
-    },
-    async startBatchTextGeneration() {
-      await startBatchTextGeneration();
-    },
-    async mintSingleNFT() {
-      await mintSingleNFT();
-    },
-    downloadImage(id) { downloadImage(id); },
-    downloadJSON(id) { downloadJSON(id); },
-    deleteNFT(id) { deleteNFT(id); },
-    viewMetadata(id) { viewMetadata(id); }
-  };
-
   function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 3000); }
   function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
   function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
   function saveUserNFTs() { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); }
 
+  // ---------- MASTER INDEX FETCH & PARSE ----------
   async function fetchMasterIndex() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
@@ -242,24 +188,27 @@
         let traitValues = [];
         for(let attr of item.attributes) {
           if(attr.trait_type === 'Attribute Count') continue;
-          if(attr.trait_type === 'Type') { traitValues.push(attr.value); }
+          if(attr.trait_type === 'Type' || attr.trait_type === ',') { traitValues.push(attr.value); }
           else if(attr.trait_type && attr.trait_type.toLowerCase().includes('accessory')) { traitValues.push(attr.value); }
         }
         traitValues.sort();
         masterIndexMap.push({ id: parseInt(key), traitValues });
       }
+      console.log('Master index loaded:', masterIndexMap.length, 'items');
       showToast(`✅ Loaded ${masterIndexMap.length} official punks for smart matching`);
     } catch(e) { 
-      console.warn('Failed to load index.json smoothly.', e); 
+      console.warn('Failed to load index.json', e); 
       masterIndexMap = [];
+      showToast('⚠️ Could not load official index.json');
     }
   }
 
+  // SMART MATCH FUNCTION
   function matchWithMaster(attributes) {
-    if(!masterIndexMap || !masterIndexMap.length) return { matched: false, matchId: null };
+    if(!masterIndexMap.length) return { matched: false, matchId: null, reason: 'Master data not loaded' };
     let nftValues = [];
     for(let a of attributes) {
-      if(a.trait_type === 'Attribute Count' || a.trait_type === 'Custom Text') continue;
+      if(a.trait_type === 'Attribute Count') continue;
       nftValues.push(a.value);
     }
     nftValues.sort();
@@ -271,6 +220,7 @@
     return { matched: false, matchId: null };
   }
 
+  // Build Attributes Parser
   function buildAttributes(orderedLayers) {
     const attrs = [];
     for(let layer of orderedLayers) {
@@ -282,7 +232,8 @@
     return attrs;
   }
 
-  async function compositeFromSelected(customLayers = null, appendedText = "") {
+  // Composite Generator Image Data Engine
+  async function compositeFromSelected(customLayers = null) {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
     
@@ -297,11 +248,13 @@
         img.src = item.imageUrl; 
       });
     }
+
     return canvas.toDataURL('image/png');
   }
 
   function getNextNumber() { return nfts.length + 1; }
 
+  // Toggle Selection Layers Mode
   function toggleLayerSelection(section, layerId, value, imageUrl, gender) {
     const existingIndex = selectedLayersArray.findIndex(l => l.section === section);
     if(existingIndex !== -1) {
@@ -313,123 +266,131 @@
     } else {
       selectedLayersArray.push({ section, layerId, value, imageUrl, gender });
     }
-    renderStructure();
+    renderCreateSections();
     updateOrderPreview();
     updateLivePreview();
   }
 
-  // ------------------------- ফিক্সড ব্যাচ টেক্সট ফাইল জেনারেটর -------------------------
+  // AUTOMATIC BATCH GENERATION FROM TEXT FILE (UPDATED)
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
     
-    if(!fileInput || !fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
+    if(!fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
+    
+    if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Background library is empty!'); return; }
+    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Base library is empty!'); return; }
 
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Batch Rows...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Batch...';
 
     const file = fileInput.files[0];
     const reader = new FileReader();
 
     reader.onload = async function(e) {
-      try {
-        const textContent = e.target.result;
-        const textLines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        
-        if(textLines.length === 0) { 
-          showToast('❌ Text file is empty!'); 
-          btn.disabled = false; 
-          btn.innerHTML = '🚀 Run Auto Batch Generation'; 
-          return; 
-        }
-        
-        showToast(`Starting automated generation for ${textLines.length} variants...`);
-        let successCount = 0;
+      const textContent = e.target.result;
+      const textLines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      
+      if(textLines.length === 0) { showToast('❌ Text file is empty!'); btn.disabled = false; btn.innerHTML = '🚀 Run Auto Batch Generation'; return; }
+      
+      showToast(`Starting automated generation for ${textLines.length} variants...`);
+      let successCount = 0;
 
-        for (let i = 0; i < textLines.length; i++) {
-          const lineText = textLines[i]; 
-          
-          // "NFT #1: " অংশটুকু ডাইনামিকালি আলাদা করা হচ্ছে
-          const parts = lineText.split(':');
-          const nftTitle = parts[0] ? parts[0].trim() : `NFT #${i+1}`;
-          const traitsPart = parts[1] ? parts[1].trim() : lineText;
-          
-          // "+" চিহ্ন দিয়ে ভাগ করে ট্রেইটের নামগুলো অ্যারেতে নেওয়া হচ্ছে
-          const requiredTraits = traitsPart.split('+').map(t => t.trim());
-          let calculatedBatchLayers = [];
-
-          for (let traitName of requiredTraits) {
-            let foundLayer = null;
-            let foundSection = null;
-
-            // ফায়ারবেসের স্টোরেজের সবগুলো সেকশন সার্চ করে নিখুঁত বানান মিলানো হচ্ছে
-            for (let section of SECTIONS) {
-              const layers = layersBySection[section] || [];
-              const match = layers.find(l => l.value.trim().toLowerCase() === traitName.toLowerCase());
-              if (match) {
-                foundLayer = match;
-                foundSection = section;
-                break;
-              }
-            }
-
-            if (foundLayer) {
-              calculatedBatchLayers.push({ 
-                section: foundSection, 
-                value: foundLayer.value, 
-                imageUrl: foundLayer.imageUrl 
-              });
-            }
-          }
-
-          // ক্যানভাসে ড্র করার জন্য সেকশনের ইনডেক্স অনুযায়ী সাজানো (Background সবার নিচে থাকবে)
-          calculatedBatchLayers.sort((a, b) => {
-            return SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section);
-          });
-
-          if(calculatedBatchLayers.length > 0) {
-            try {
-              const generatedImg = await compositeFromSelected(calculatedBatchLayers, lineText);
-              const computedAttributes = buildAttributes(calculatedBatchLayers);
-              computedAttributes.push({ trait_type: "Custom Text", value: lineText });
-              
-              const currentIndexNo = getNextNumber();
-              const batchNFTObject = {
-                id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
-                name: `404 Punks (${nftTitle})`,
-                description: `Automated smart match procedural generator allocation.`,
-                image: generatedImg,
-                attributes: computedAttributes,
-                number: currentIndexNo,
-                fileName: `${currentIndexNo}.png`,
-                jsonName: `${currentIndexNo}.json`,
-                createdAt: Date.now()
-              };
-
-              nfts.push(batchNFTObject);
-              successCount++;
-            } catch(err) {
-              console.error("Error drawing canvas layers:", err);
-            }
-          }
-        }
-
-        saveUserNFTs();
-        renderCollection();
-        showToast(`🎉 Generated ${successCount} clean NFTs successfully!`);
-        App.switchTab('collection');
-      } catch(outerErr) {
-        showToast('❌ Execution collapsed during parsing.');
-        console.error(outerErr);
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '🚀 Run Auto Batch Generation';
+      // Create an easy lookup system for all traits across libraries
+      const globalTraitsLookup = {};
+      for (let section of SECTIONS) {
+        layersBySection[section].forEach(layer => {
+          globalTraitsLookup[layer.value.trim().toLowerCase()] = {
+            section: section,
+            value: layer.value,
+            imageUrl: layer.imageUrl
+          };
+        });
       }
+
+      for (let i = 0; i < textLines.length; i++) {
+        const lineText = textLines[i];
+        // Split line tokens by comma
+        const tokens = lineText.split(',').map(t => t.trim()).filter(t => t.length > 0);
+        if(tokens.length === 0) continue;
+
+        let calculatedBatchLayers = [];
+
+        // 1. Inject Random Background
+        const bgList = layersBySection['Background'];
+        const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
+        calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl });
+
+        // 2. Identify and Inject Base Layer (First item on the line)
+        const baseToken = tokens[0].toLowerCase();
+        const matchedBase = layersBySection['Base'].find(b => b.value.trim().toLowerCase() === baseToken);
+        
+        if (matchedBase) {
+          calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl });
+        } else {
+          // Fallback if the token text doesn't explicitly match a database item
+          const baseList = layersBySection['Base'];
+          const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
+          calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl });
+        }
+
+        // 3. Match remaining tokens to accessories/layers library
+        for (let j = 1; j < tokens.length; j++) {
+          const traitToken = tokens[j].toLowerCase();
+          if (globalTraitsLookup[traitToken]) {
+            const foundLayer = globalTraitsLookup[traitToken];
+            // Skip redundant additions of Background or Base categories
+            if(foundLayer.section !== 'Background' && foundLayer.section !== 'Base') {
+              calculatedBatchLayers.push({ section: foundLayer.section, value: foundLayer.value, imageUrl: foundLayer.imageUrl });
+            }
+          }
+        }
+
+        try {
+          // Generate composite engine graphic
+          const generatedImg = await compositeFromSelected(calculatedBatchLayers);
+          const computedAttributes = buildAttributes(calculatedBatchLayers);
+          
+          const currentIndexNo = getNextNumber();
+          const batchNFTObject = {
+            id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
+            name: `404 Punk #${currentIndexNo}`,
+            description: `Automated smart match procedural generator allocation.`,
+            image: generatedImg,
+            attributes: computedAttributes,
+            number: currentIndexNo,
+            fileName: `${currentIndexNo}.png`,
+            jsonName: `${currentIndexNo}.json`,
+            createdAt: Date.now()
+          };
+
+          nfts.push(batchNFTObject);
+          successCount++;
+        } catch(err) {
+          console.error("Failed to compile variant line row:", err);
+        }
+      }
+
+      saveUserNFTs();
+      renderCollection();
+      btn.disabled = false;
+      btn.innerHTML = '🚀 Run Auto Batch Generation';
+      showToast(`🎉 Generated ${successCount} NFTs successfully from text architecture!`);
+      switchTab('collection');
     };
 
     reader.readAsText(file);
   }
 
+  function clearAllSelections() {
+    selectedLayersArray = [];
+    renderCreateSections();
+    updateOrderPreview();
+    updateLivePreview();
+    showToast('All layers cleared');
+  }
+
+  // SINGLE MINT BUTTON
   async function mintSingleNFT() {
     if(selectedLayersArray.length === 0) { showToast('❌ Please select layers (Background & Base required)'); return; }
     
@@ -449,7 +410,7 @@
       const nextNum = getNextNumber();
       const newNFT = {
         id: Date.now() + '_' + Math.random().toString(36).substr(2,6),
-        name: nftName,
+        name: `${nftName} #${nextNum}`,
         description: description,
         image: imageData,
         attributes: attributes,
@@ -462,11 +423,11 @@
       saveUserNFTs();
       
       selectedLayersArray = [];
-      renderStructure();
+      renderCreateSections();
       renderCollection();
       if(previewCtx) { previewCtx.clearRect(0,0,240,240); previewCtx.fillStyle = '#0f172a'; previewCtx.fillRect(0,0,240,240); }
       showToast(`✅ Minted #${nextNum} saved`);
-      App.switchTab('collection');
+      switchTab('collection');
     } catch(err) { 
       showToast(`Error: ${err.message}`); 
     } finally { 
@@ -475,38 +436,35 @@
     }
   }
 
+  // ---------- FIREBASE LAYERS SYNC ----------
   function listenToFirebaseLayers() {
-    try {
-      database.ref('layers').on('value', (snap) => {
-        const data = snap.val();
-        for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
-        renderAnatomy();
-        renderStructure();
-        document.getElementById('sync-status').innerHTML = '🌐 Firebase Sync ON';
-      });
-    } catch(e) {
-      console.error("Firebase read failure:", e);
-      document.getElementById('sync-status').innerHTML = '❌ Firebase Offline';
-    }
+    database.ref('layers').on('value', (snap) => {
+      const data = snap.val();
+      for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
+      renderSectionsLayers();
+      renderCreateSections();
+      document.getElementById('sync-status').innerHTML = '🌐 Firebase Sync ON';
+    });
   }
 
   async function addLayerToFirebase(section, layer) { const updated = [...(layersBySection[section]||[]), layer]; await database.ref(`layers/${section}`).set(updated); }
+  
   async function deleteLayerFromFirebase(section, layerId) { 
     const filtered = (layersBySection[section]||[]).filter(l=>String(l.id)!==String(layerId)); 
     await database.ref(`layers/${section}`).set(filtered); 
     selectedLayersArray = selectedLayersArray.filter(l => l.layerId != layerId);
-    renderStructure(); 
+    renderCreateSections(); 
     updateLivePreview(); 
   }
 
-  function renderAnatomy() {
+  function renderSectionsLayers() {
     const container = document.getElementById('sections-container');
     if(!container) return;
     let html = '';
     for(let section of SECTIONS) {
       const layers = layersBySection[section] || [];
       const isOpen = openSectionLayers === section;
-      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleSectionLayers('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-[Rajdhani] font-bold text-blue-900">${section} (${layers.length})</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
+      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleSectionLayers('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-raj font-bold text-blue-900">${section} (${layers.length})</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
       if(isOpen) {
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
@@ -520,7 +478,7 @@
     lucide.createIcons();
   }
 
-  function renderStructure() {
+  function renderCreateSections() {
     const container = document.getElementById('create-sections-container');
     if(!container) return;
     let html = '';
@@ -529,7 +487,7 @@
       if(!layers.length) continue;
       const isOpen = openSectionCreate === section;
       const selectedLayer = selectedLayersArray.find(l => l.section === section);
-      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleCreateSection('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-[Rajdhani] font-bold text-blue-900">${section} ${selectedLayer ? '✓' : ''}</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
+      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleCreateSection('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-raj font-bold text-blue-900">${section} ${selectedLayer ? '✓' : ''}</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
       if(isOpen) {
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
@@ -583,7 +541,7 @@
     container.innerHTML = nfts.map(nft => {
       const match = matchWithMaster(nft.attributes);
       const matchHtml = match.matched ? `<span class="match-badge">✅ Match #${match.matchId}</span>` : `<span class="nomatch-badge">❌ No Match</span>`;
-      return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-[Rajdhani] font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-2" onclick="event.stopPropagation()"><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 px-2 py-1 rounded">📸 PNG</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 px-2 py-1 rounded">📄 JSON</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-200 px-2 py-1 rounded">🗑</button></div></div></div></div>`;
+      return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-raj font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-2" onclick="event.stopPropagation()"><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 px-2 py-1 rounded">📸 PNG</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 px-2 py-1 rounded">📄 JSON</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-200 px-2 py-1 rounded">🗑</button></div></div></div></div>`;
     }).join('');
   }
 
@@ -606,6 +564,7 @@
       showToast(`Saved ${nft.number}.json`); 
     } 
   }
+  
   function deleteNFT(id) { if(confirm('Delete this NFT?')) { nfts = nfts.filter(n=>String(n.id)!==String(id)); saveUserNFTs(); renderCollection(); showToast('NFT removed'); } }
   
   function viewMetadata(id) { 
@@ -615,7 +574,7 @@
     const matchLine = match.matched ? `<p class="text-green-700 text-sm mt-2 font-bold">✅ Smart Match Found: Official Punk #${match.matchId}</p><p class="text-green-600 text-xs">(Attributes matched regardless of order)</p>` : `<p class="text-red-700 text-sm mt-2 font-bold">❌ No match in official collection</p><p class="text-red-500 text-xs">No Punk found with these traits</p>`; 
     const modal=document.createElement('div'); 
     modal.className='fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-[999]'; 
-    modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto"><div class="flex justify-between"><h2 class="font-[Orbitron] text-xl text-blue-900">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-gray-600">✕</button></div><img src="${nft.image}" class="w-full rounded-xl my-3 border-2 border-blue-300"><div class="space-y-2"><p class="text-gray-700 text-sm">${escapeHtml(nft.description)}</p><div class="font-[Rajdhani] text-sm font-bold mt-2">Attributes (for matching):</div>${nft.attributes.map(a=>`<div class="attribute-badge"><span class="font-medium">${a.trait_type === "," ? "','" : a.trait_type}</span><span>${escapeHtml(a.value)}</span></div>`).join('')}${matchLine}<div class="flex gap-3 mt-4"><button onclick="App.downloadImage('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-blue-600 text-white py-2 rounded-xl">Save PNG (${nft.number}.png)</button><button onclick="App.downloadJSON('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl">Save JSON (${nft.number}.json)</button></div></div></div>`; 
+    modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto"><div class="flex justify-between"><h2 class="font-orb text-xl text-blue-900">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-gray-600">✕</button></div><img src="${nft.image}" class="w-full rounded-xl my-3 border-2 border-blue-300"><div class="space-y-2"><p class="text-gray-700 text-sm">${escapeHtml(nft.description)}</p><div class="font-raj text-sm font-bold mt-2">Attributes:</div>${nft.attributes.map(a=>`<div class="attribute-badge"><span class="font-medium">${a.trait_type === "," ? "','" : a.trait_type}</span><span>${escapeHtml(a.value)}</span></div>`).join('')}${matchLine}<div class="flex gap-3 mt-4"><button onclick="App.downloadImage('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-blue-600 text-white py-2 rounded-xl">Save PNG (${nft.number}.png)</button><button onclick="App.downloadJSON('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl">Save JSON (${nft.number}.json)</button></div></div></div>`; 
     document.body.appendChild(modal); 
     modal.onclick=e=>{if(e.target===modal)modal.remove();};
   }
@@ -634,19 +593,40 @@
     img.src=finalUrl; 
   }
   
-  async function deleteLayer(section, id) {
-    if(confirm('Permanently delete from global library?')) {
-      await deleteLayerFromFirebase(section, id);
-      showToast('Layer removed from Firebase');
-    }
+  function deleteLayer(section, id) { 
+    if(confirm('Permanently delete this layer from Firebase?')) { 
+      deleteLayerFromFirebase(section, id).then(() => showToast('Layer removed')); 
+    } 
   }
 
-  window.addEventListener('DOMContentLoaded', async () => {
+  function switchTab(tabId) {
+    ['layers', 'create', 'collection'].forEach(t => {
+      document.getElementById(`panel-${t}`).classList.add('hidden');
+      document.getElementById(`tab-${t}`).classList.remove('active');
+    });
+    document.getElementById(`panel-${tabId}`).classList.remove('hidden');
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+    if(tabId === 'create') { updateLivePreview(); }
+  }
+
+  function toggleSectionLayers(section) { openSectionLayers = (openSectionLayers === section) ? null : section; renderSectionsLayers(); }
+  function toggleCreateSection(section) { openSectionCreate = (openSectionCreate === section) ? null : section; renderCreateSections(); }
+
+  // Global namespace interface setup mapping
+  const App = {
+    switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
+    toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
+    viewMetadata, downloadImage, downloadJSON, deleteNFT
+  };
+
+  window.onload = function() {
     loadUserNFTs();
     listenToFirebaseLayers();
+    fetchMasterIndex();
     renderCollection();
-    await fetchMasterIndex();
-  });
+    switchTab('layers');
+    lucide.createIcons();
+  };
 </script>
 </body>
 </html>
