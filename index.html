@@ -96,9 +96,17 @@
         <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
         <input type="text" id="layer-value" placeholder="Value (e.g., Blue Skin, Mohawk)" class="nft-input">
         <select id="layer-section" class="nft-input">
-          <option value="Background">Background (UI)</option><option value="Base">Base</option><option value="Head">Head</option>
-          <option value="Eyes">Eyes</option><option value="Mouth">Mouth</option><option value="Accessory">Accessory</option>
-          <option value="Nose">Nose</option><option value="Neck">Neck</option><option value="Face">Face</option><option value="Ear">Ear</option><option value="Beard">Beard</option>
+          <option value="Background">Background (UI)</option>
+          <option value="Base">Base</option>
+          <option value="Neck">Neck</option>
+          <option value="Ear">Ear</option>
+          <option value="Face">Face</option>
+          <option value="Beard">Beard</option>
+          <option value="Nose">Nose</option>
+          <option value="Mouth">Mouth</option>
+          <option value="Eyes">Eyes</option>
+          <option value="Head">Head (Hat/Hair)</option>
+          <option value="Accessory">Accessory</option>
         </select>
         <div class="flex gap-3"><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="male" checked> ♂ Male</label><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="female"> ♀ Female</label></div>
         <button onclick="App.addLayer()" class="btn-primary text-white py-2 rounded-xl font-bold">➕ Sync to Firebase</button>
@@ -163,7 +171,8 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  const SECTIONS = ["Background","Base","Head","Eyes","Mouth","Accessory","Nose","Neck","Face","Ear","Beard"];
+  // Updated layer stack order: Background at the absolute bottom, Head and Accessory at the absolute top
+  const SECTIONS = ["Background", "Base", "Neck", "Ear", "Face", "Beard", "Nose", "Mouth", "Eyes", "Head", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -241,7 +250,10 @@
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
     
-    const operationalLayers = customLayers || selectedLayersArray;
+    let operationalLayers = customLayers || [...selectedLayersArray];
+    
+    // Sort operational layers strictly by SECTIONS array rule order to ensure proper stack rendering
+    operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     
     for(let item of operationalLayers) {
       await new Promise(resolve => { 
@@ -333,7 +345,7 @@
           calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl });
         }
 
-        // 3. Mapping accessory elements loop
+        // 3. Mapping elements loop
         for (let j = 1; j < tokens.length; j++) {
           const traitToken = tokens[j].toLowerCase();
           if (globalTraitsLookup[traitToken]) {
@@ -514,7 +526,11 @@
     const div = document.getElementById('order-preview-list'); 
     if(!div) return; 
     if(selectedLayersArray.length === 0) { div.innerHTML = '<span class="text-gray-500">No layers selected</span>'; return; }
-    div.innerHTML = selectedLayersArray.map((l, idx) => `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)}</span>`).join(''); 
+    
+    let sortedPreview = [...selectedLayersArray];
+    sortedPreview.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    
+    div.innerHTML = sortedPreview.map((l, idx) => `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)}</span>`).join(''); 
   }
   
   async function updateLivePreview() { 
@@ -522,7 +538,11 @@
     previewCtx.clearRect(0,0,240,240); 
     previewCtx.fillStyle = '#0f172a'; 
     previewCtx.fillRect(0,0,240,240); 
-    for(let item of selectedLayersArray) { 
+    
+    let sortedLayers = [...selectedLayersArray];
+    sortedLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    
+    for(let item of sortedLayers) { 
       await new Promise(resolve => { 
         const img = new Image(); 
         img.crossOrigin = "Anonymous"; 
@@ -584,13 +604,23 @@
   async function addLayer() { 
     const url=document.getElementById('github-url').value.trim(); 
     const val=document.getElementById('layer-value').value.trim(); 
-    const section=document.getElementById('layer-section').value; 
-    const gender=document.querySelector('input[name="layer-gender"]:checked').value; 
-    if(!url||!val){showToast('URL & Value required');return;} 
-    let finalUrl=url; 
-    if(url.includes('github.com')&&!url.includes('raw.githubusercontent.com')) finalUrl=url.replace('github.com','raw.githubusercontent.com').replace('/blob/','/'); 
-    const img=new Image(); 
-    img.onload=async()=>{const newLayer={id:Date.now()+'_'+Math.random().toString(36).substr(2,6),value:val,imageUrl:finalUrl,gender}; await addLayerToFirebase(section,newLayer); document.getElementById('github-url').value='';document.getElementById('layer-value').value='';showToast(`✅ "${val}" added`);}; 
+    const sec=document.getElementById('layer-section').value; 
+    const gen=document.querySelector('input[name="layer-gender"]:checked').value; 
+    
+    if(!url || !val) { showToast('❌ Fill all fields'); return; } 
+    let finalUrl = url; 
+    if(url.includes('github.com') && !url.includes('raw.githubusercontent.com')) { 
+      finalUrl = url.replace('github.com','raw.githubusercontent.com').replace('/blob/','/'); 
+    } 
+    const img = new Image(); 
+    img.crossOrigin = "Anonymous"; 
+    img.onload = async () => { 
+      const layerObj = { id: Date.now(), value: val, imageUrl: finalUrl, gender: gen, section: sec }; 
+      await addLayerToFirebase(sec, layerObj); 
+      document.getElementById('github-url').value=''; 
+      document.getElementById('layer-value').value=''; 
+      showToast(`✅ "${val}" added`); 
+    }; 
     img.onerror=()=>showToast('Invalid image URL'); 
     img.src=finalUrl; 
   }
@@ -623,7 +653,7 @@
     renderCollection();
     switchTab('layers');
     lucide.createIcons();
-  };
+  }
 </script>
 </body>
 </html>
