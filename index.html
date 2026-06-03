@@ -96,7 +96,7 @@
         <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
         <input type="text" id="layer-value" placeholder="Value (e.g., Blue Skin, Mohawk)" class="nft-input">
         <select id="layer-section" class="nft-input">
-          <option value="Background">Background (UI)</option>
+          <option value="Background">Background</option>
           <option value="Base">Base</option>
           <option value="Neck">Neck</option>
           <option value="Ear">Ear</option>
@@ -135,7 +135,7 @@
       </div>
     </div>
 
-    <div class="glass-card p-5 flex flex-col items-center rounded-2xl"><canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas><p class="text-gray-600 text-xs mt-2">Live preview (bottom → top order as per selection sequence)</p></div>
+    <div class="glass-card p-5 flex flex-col items-center rounded-2xl"><canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas><p class="text-gray-600 text-xs mt-2">Live preview (strictly structured bottom to top)</p></div>
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
     <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-blue-900 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
     <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input">
@@ -171,7 +171,7 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // Updated layer stack order: Background at the absolute bottom, Head and Accessory at the absolute top
+  // Strict structural rendering blueprint
   const SECTIONS = ["Background", "Base", "Neck", "Ear", "Face", "Beard", "Nose", "Mouth", "Eyes", "Head", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
@@ -233,10 +233,13 @@
     return { false: true, matchId: null };
   }
 
-  // Attributes Builder
+  // Attributes Builder (Strict JSON order logic builder)
   function buildAttributes(orderedLayers) {
+    let sortedForAttributes = [...orderedLayers];
+    sortedForAttributes.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+
     const attrs = [];
-    for(let layer of orderedLayers) {
+    for(let layer of sortedForAttributes) {
       if(layer.section === "Background") continue;
       let trait_type = (layer.section === "Base") ? "," : "Accessory";
       attrs.push({ trait_type: trait_type, value: layer.value });
@@ -245,14 +248,14 @@
     return attrs;
   }
 
-  // Canvas Image Engine
+  // Canvas Image Engine (Strictly sorted rendering execution)
   async function compositeFromSelected(customLayers = null) {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
     
-    let operationalLayers = customLayers || [...selectedLayersArray];
+    let operationalLayers = customLayers ? [...customLayers] : [...selectedLayersArray];
     
-    // Sort operational layers strictly by SECTIONS array rule order to ensure proper stack rendering
+    // Hard force proper sequence ordering sorting before loading into canvas context
     operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     
     for(let item of operationalLayers) {
@@ -309,7 +312,7 @@
       showToast(`Starting automated generation for ${textLines.length} rows...`);
       let successCount = 0;
 
-      // Quick Lookup Map optimization
+      // Global Map optimization
       const globalTraitsLookup = {};
       for (let section of SECTIONS) {
         layersBySection[section].forEach(layer => {
@@ -345,7 +348,7 @@
           calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl });
         }
 
-        // 3. Mapping elements loop
+        // 3. Mapping elements loop (Auto sorts based on exact SECTIONS priority later)
         for (let j = 1; j < tokens.length; j++) {
           const traitToken = tokens[j].toLowerCase();
           if (globalTraitsLookup[traitToken]) {
@@ -357,6 +360,9 @@
         }
 
         try {
+          // Hard sort processing batch arrays explicitly by Blueprint before processing image rendering
+          calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+
           const generatedImg = await compositeFromSelected(calculatedBatchLayers);
           const computedAttributes = buildAttributes(calculatedBatchLayers);
           
@@ -399,7 +405,6 @@
     showToast('All selections cleared');
   }
 
-  // ONE CLICK CLEAR ALL COLLECTION FUNCTION
   function clearAllCollection() {
     if(!nfts.length) { showToast('❌ Collection is already empty!'); return; }
     if(confirm(`⚠️ Are you sure you want to delete ALL (${nfts.length}) NFTs from your collection? This cannot be undone!`)) {
@@ -423,6 +428,9 @@
     btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Minting...';
     
     try {
+      // Force array sorting before image assembly execution loop
+      selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+
       const imageData = await compositeFromSelected();
       const attributes = buildAttributes(selectedLayersArray);
       const nextNum = getNextNumber();
