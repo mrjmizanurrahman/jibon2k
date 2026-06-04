@@ -90,12 +90,13 @@
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
+  <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
       <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Smile)" class="nft-input">
+        <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Smile, Big Beard)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
           <option value="Neck">Neck</option>
@@ -115,14 +116,16 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
+  <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
-      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে ম্যাচ হবে। <br>📌 <strong>Layer Stacking Order:</strong> Background → Neck → Base → Ear → Face → Eyes → Nose → Mouth → Beard → Accessory.
+      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে অফিশিয়াল ইনডেক্সের সাথে রিয়েল-টাইমে ম্যাচ হবে।
     </div>
 
+    <!-- AUTO BATCH GENERATOR -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
+      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো (যেমন: Beard, Eyes, Accessory) গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -134,7 +137,11 @@
       </div>
     </div>
 
-    <div class="glass-card p-5 flex flex-col items-center rounded-2xl"><canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas><p class="text-gray-600 text-xs mt-2">Live preview (strictly structured bottom to top)</p></div>
+    <!-- LIVE MANUAL GENERATOR PREVIEW -->
+    <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
+      <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
+      <p class="text-gray-600 text-xs mt-2">Live Canvas Preview (Strict Bottom-to-Top Structure)</p>
+    </div>
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
     <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-blue-900 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
     <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input">
@@ -142,6 +149,7 @@
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
+  <!-- PANEL 3: MY COLLECTION -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
@@ -175,7 +183,7 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // FIXED LAYER ORDER (From Bottom to Top for correct hair/beard rendering)
+  // STRICT LAYER ORDER (Bottom to Top for Correct Hair/Beard/Accessory Overlap)
   const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
@@ -195,6 +203,7 @@
   function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
   function saveUserNFTs() { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); }
 
+  // OFFICIAL CRYPTOPUNKS INDEX SNAPSHOT FOR LIVE SMART MATCH
   async function fetchMasterIndex() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
@@ -233,9 +242,10 @@
         return { matched: true, matchId: master.id };
       }
     }
-    return { false: true, matchId: null };
+    return { matched: false, matchId: null };
   }
 
+  // RE-STRUCTURED ATTRIBUTE GENERATOR
   function buildAttributes(orderedLayers) {
     const attrs = [];
     for(let layer of orderedLayers) {
@@ -247,6 +257,7 @@
     return attrs;
   }
 
+  // CANVASES DRAW ENGINE
   async function compositeFromSelected(customLayers = null, forceCustomOrder = false) {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
@@ -287,6 +298,7 @@
     updateLivePreview();
   }
 
+  // FIXED AUTOMATIC TEXT BATCH GENERATOR (BEARD & ACCESSORIES SAFE MATCH)
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
@@ -310,31 +322,37 @@
       showToast(`Starting automated generation for ${textLines.length} rows...`);
       let successCount = 0;
 
+      // Create Look-up maps with clean spacing and matching cases
       const globalTraitsLookup = {};
       for (let section of SECTIONS) {
-        layersBySection[section].forEach(layer => {
-          globalTraitsLookup[layer.value.trim().toLowerCase()] = {
-            section: section,
-            value: layer.value,
-            imageUrl: layer.imageUrl,
-            id: layer.id
-          };
-        });
+        if (layersBySection[section]) {
+          layersBySection[section].forEach(layer => {
+            const cleanName = layer.value.replace(/\s+/g, ' ').trim().toLowerCase();
+            globalTraitsLookup[cleanName] = {
+              section: section,
+              value: layer.value,
+              imageUrl: layer.imageUrl,
+              id: layer.id
+            };
+          });
+        }
       }
 
       for (let i = 0; i < textLines.length; i++) {
         const lineText = textLines[i];
-        const tokens = lineText.split(',').map(t => t.trim()).filter(t => t.length > 0);
+        const tokens = lineText.split(',').map(t => t.replace(/\s+/g, ' ').trim()).filter(t => t.length > 0);
         if(tokens.length === 0) continue;
 
         let calculatedBatchLayers = [];
 
+        // 1. Assign Random Background
         const bgList = layersBySection['Background'];
         const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
         calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id });
 
+        // 2. Assign Base Body Layer
         const baseToken = tokens[0].toLowerCase();
-        const matchedBase = layersBySection['Base'].find(b => b.value.trim().toLowerCase() === baseToken);
+        const matchedBase = layersBySection['Base'].find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === baseToken);
         
         if (matchedBase) {
           calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id });
@@ -344,20 +362,27 @@
           calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id });
         }
 
+        // 3. Smart Scan for Accessories, Beards, Eyes, and Mouths
         for (let j = 1; j < tokens.length; j++) {
           const traitToken = tokens[j].toLowerCase();
           if (globalTraitsLookup[traitToken]) {
             const foundLayer = globalTraitsLookup[traitToken];
             if(foundLayer.section !== 'Background' && foundLayer.section !== 'Base') {
-              calculatedBatchLayers.push({ section: foundLayer.section, value: foundLayer.value, imageUrl: foundLayer.imageUrl, layerId: foundLayer.id });
+              calculatedBatchLayers.push({ 
+                section: foundLayer.section, 
+                value: foundLayer.value, 
+                imageUrl: foundLayer.imageUrl, 
+                layerId: foundLayer.id 
+              });
             }
           }
         }
 
         try {
+          // Absolute layer alignment sort
           calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
-          const generatedImg = await compositeFromSelected(calculatedBatchLayers);
+          const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
           const computedAttributes = buildAttributes(calculatedBatchLayers);
           
           const currentIndexNo = getNextNumber();
@@ -584,6 +609,7 @@
     }).join('');
   }
 
+  // ADVANCED MANUAL LAYER REARRANGE ENGINE
   function openNFTEditor(id) {
     const nft = nfts.find(n => String(n.id) === String(id));
     if (!nft) return;
