@@ -90,7 +90,6 @@
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
-  <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
       <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
@@ -124,13 +123,11 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
-  <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
       <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে অফিশিয়াল ইনডেক্সের সাথে রিয়েল-টাইমে ম্যাচ হবে।
     </div>
 
-    <!-- AUTO BATCH GENERATOR -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
       <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো (যেমন: Head, Beard, Eyes) গলোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
@@ -145,7 +142,6 @@
       </div>
     </div>
 
-    <!-- LIVE MANUAL GENERATOR PREVIEW -->
     <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
       <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
       <p class="text-gray-600 text-xs mt-2">Live Canvas Preview (Strict Bottom-to-Top Structure)</p>
@@ -157,7 +153,6 @@
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
-  <!-- PANEL 3: MY COLLECTION -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
@@ -436,11 +431,8 @@
     }
   }
 
-  // NEW FUNCTION: ONE-CLICK DELETE FOR MATCHED NFTs ONLY
   function deleteMatchedNFTs() {
     if (!nfts.length) { showToast('❌ Collection is empty!'); return; }
-    
-    // Filter out the items that trigger a match
     const matchedItems = nfts.filter(nft => matchWithMaster(nft.attributes).matched);
     
     if (matchedItems.length === 0) {
@@ -514,14 +506,6 @@
   }
 
   async function addLayerToFirebase(section, layer) { const updated = [...(layersBySection[section]||[]), layer]; await database.ref(`layers/${section}`).set(updated); }
-  
-  async function deleteLayerFromFirebase(section, layerId) { 
-    const filtered = (layersBySection[section]||[]).filter(l=>String(l.id)!==String(layerId)); 
-    await database.ref(`layers/${section}`).set(filtered); 
-    selectedLayersArray = selectedLayersArray.filter(l => l.layerId != layerId);
-    renderCreateSections(); 
-    updateLivePreview(); 
-  }
 
   function renderSectionsLayers() {
     const container = document.getElementById('sections-container');
@@ -535,7 +519,7 @@
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
           const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
-          html += `<div class="layer-item p-2"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)} ${genSymbol}</p><button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-600 text-[10px] w-full mt-1 bg-red-100 rounded py-1">Delete</button></div>`;
+          html += `<div class="layer-item p-2"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100"><p class="text-xs font-bold text-center mt-1 truncate">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
         });
         html += `</div>`;
       }
@@ -858,8 +842,6 @@
     img.onerror=()=>showToast('Invalid image URL'); 
     img.src=finalUrl; 
   }
-  
-  function deleteLayer(section, id) { if(confirm('Delete layer?')) { deleteLayerFromFirebase(section, id).then(() => showToast('Layer removed')); } }
 
   function switchTab(tabId) {
     ['layers', 'create', 'collection'].forEach(t => {
@@ -881,7 +863,7 @@
   function toggleCreateSection(section) { openSectionCreate = (openSectionCreate === section) ? null : section; renderCreateSections(); }
 
   const App = {
-    switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
+    switchTab, toggleSectionLayers, toggleCreateSection, addLayer,
     toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
     downloadCollectionAsZip, deleteMatchedNFTs,
