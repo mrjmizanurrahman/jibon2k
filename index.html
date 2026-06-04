@@ -98,13 +98,13 @@
         <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Smile)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
-          <option value="Base">Base</option>
-          <option value="Nose">Nose</option>
-          <option value="Face">Face</option>
           <option value="Neck">Neck</option>
-          <option value="Mouth">Mouth</option>
-          <option value="Eyes">Eyes</option>
+          <option value="Base">Base</option>
           <option value="Ear">Ear</option>
+          <option value="Face">Face</option>
+          <option value="Eyes">Eyes</option>
+          <option value="Nose">Nose</option>
+          <option value="Mouth">Mouth</option>
           <option value="Beard">Beard</option>
           <option value="Accessory">Accessory</option>
         </select>
@@ -117,12 +117,12 @@
 
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
-      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (কমা) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে ম্যাচ হবে। <br>📌 <strong>Layer Stacking Order:</strong> Background → Base → Nose → Face → Neck → Mouth → Eyes → Ear → Beard → Accessory.
+      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে ম্যাচ হবে। <br>📌 <strong>Layer Stacking Order:</strong> Background → Neck → Base → Ear → Face → Eyes → Nose → Mouth → Beard → Accessory.
     </div>
 
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো আপনার গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
+      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -175,8 +175,8 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // Updated Layer Order as per your prompt: Bottom to Top
-  const SECTIONS = ["Background", "Base", "Nose", "Face", "Neck", "Mouth", "Eyes", "Ear", "Beard", "Accessory"];
+  // FIXED LAYER ORDER (From Bottom to Top for correct hair/beard rendering)
+  const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -817,7 +817,7 @@
     const targetPanel = document.getElementById(`panel-${tabId}`);
     const targetTab = document.getElementById(`tab-${tabId}`);
     if(targetPanel) targetPanel.classList.remove('hidden');
-    if(targetTab) targetTab.add('active');
+    if(targetTab) targetTab.classList.add('active');
     
     if(tabId === 'create') { updateLivePreview(); }
   }
