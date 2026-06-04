@@ -90,7 +90,6 @@
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
-  <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
       <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
@@ -99,16 +98,16 @@
         <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Wild Hair, Hoodie, Big Beard)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
-          <option value="Base">Base</option>
-          <option value="Mouth">Mouth</option>
-          <option value="Nose">Nose</option>
-          <option value="Face">Face</option>
-          <option value="Beard">Beard</option>
           <option value="Neck">Neck</option>
-          <option value="Head">Head (Hair/Hat/Cap)</option>
-          <option value="Eyes">Eyes</option>
-          <option value="Accessory">Accessory</option>
+          <option value="Base">Base</option>
           <option value="Ear">Ear</option>
+          <option value="Face">Face</option>
+          <option value="Eyes">Eyes</option>
+          <option value="Nose">Nose</option>
+          <option value="Mouth">Mouth</option>
+          <option value="Beard">Beard</option>
+          <option value="Head">Head (Hair/Hat/Cap)</option>
+          <option value="Accessory">Accessory</option>
         </select>
         <div class="flex gap-4 p-2 bg-gray-50 rounded-xl border border-gray-200">
           <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
@@ -124,17 +123,16 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
-  <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
       <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে অফিশিয়াল ইনডেক্সের সাথে রিয়েল-টাইমে ম্যাচ হবে।
     </div>
 
-    <!-- AUTO BATCH GENERATOR -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো গলোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো (যেমন: Head, Beard, Eyes) গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
           <input type="file" id="batch-text-file" accept=".txt" class="nft-input bg-white">
@@ -143,9 +141,22 @@
           🚀 Run Auto Batch Generation
         </button>
       </div>
+
+      <div id="batch-progress-container" class="hidden mt-4 p-4 bg-white rounded-xl border border-indigo-200">
+        <div class="flex justify-between text-xs font-bold text-indigo-950 mb-1">
+          <span id="progress-text-count">Processing: 0 / 0</span>
+          <span id="progress-percentage">0%</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-indigo-100">
+          <div id="progress-bar-fill" class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full transition-all duration-150" style="width: 0%"></div>
+        </div>
+        <div class="flex justify-between items-center mt-2 text-[11px] font-semibold text-slate-600">
+          <span id="progress-time-elapsed">Elapsed: 0s</span>
+          <span id="progress-time-remaining" class="text-indigo-700 font-bold">Estimated Time Remaining: Calculating...</span>
+        </div>
+      </div>
     </div>
 
-    <!-- LIVE MANUAL GENERATOR PREVIEW -->
     <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
       <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
       <p class="text-gray-600 text-xs mt-2">Live Canvas Preview (Strict Bottom-to-Top Structure)</p>
@@ -157,14 +168,10 @@
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
-  <!-- PANEL 3: MY COLLECTION -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
       <div class="flex gap-2">
-        <button id="delete-matched-btn" onclick="App.deleteMatchedNFTs()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
-          💥 Delete Matched NFTs
-        </button>
         <button id="download-zip-btn" onclick="App.downloadCollectionAsZip()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
           📦 Download All (ZIP)
         </button>
@@ -181,7 +188,7 @@
 </div>
 
 <script>
-  // ----------------------------- FIREBASE CONFIG -------------------------
+  // ----------------------------- UPDATED FIREBASE CONFIG -------------------------
   const firebaseConfig = {
     apiKey: "AIzaSyDdhpduaTwzPGPSN83oeS1JX0ElRF6QKik",
     authDomain: "bdpunks.firebaseapp.com",
@@ -194,9 +201,8 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // UPDATED LAYER SERIALIZATION (Strict Order Hierarchy)
-  const SECTIONS = ["Background", "Base", "Mouth", "Nose", "Face", "Beard", "Neck", "Head", "Eyes", "Accessory", "Ear"];
-  
+  // STRICT LAYER ORDER (Head properly structured between Beard and Accessory)
+  const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Head", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -215,6 +221,7 @@
   function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
   function saveUserNFTs() { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); }
 
+  // OFFICIAL CRYPTOPUNKS INDEX SNAPSHOT FOR LIVE SMART MATCH
   async function fetchMasterIndex() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
@@ -307,10 +314,26 @@
     updateLivePreview();
   }
 
+  function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) return 'Calculating...';
+    if (seconds < 60) return `${Math.ceil(seconds)}s`;
+    const m = Math.floor(seconds / 60);
+    const s = Math.ceil(seconds % 60);
+    return `${m}m ${s}s`;
+  }
+
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
     
+    // Progress Container elements
+    const progressContainer = document.getElementById('batch-progress-container');
+    const textCountEl = document.getElementById('progress-text-count');
+    const percentEl = document.getElementById('progress-percentage');
+    const fillBarEl = document.getElementById('progress-bar-fill');
+    const elapsedEl = document.getElementById('progress-time-elapsed');
+    const remainingEl = document.getElementById('progress-time-remaining');
+
     if(!fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
     if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Background library is empty!'); return; }
     if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Base library is empty!'); return; }
@@ -324,10 +347,19 @@
     reader.onload = async function(e) {
       const textContent = e.target.result;
       const textLines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const totalLines = textLines.length;
       
-      if(textLines.length === 0) { showToast('❌ Text file is empty!'); btn.disabled = false; btn.innerHTML = '🚀 Run Auto Batch Generation'; return; }
+      if(totalLines === 0) { showToast('❌ Text file is empty!'); btn.disabled = false; btn.innerHTML = '🚀 Run Auto Batch Generation'; return; }
       
-      showToast(`Starting automated generation for ${textLines.length} rows...`);
+      // Reset & Display Progress Container
+      progressContainer.classList.remove('hidden');
+      textCountEl.textContent = `Processing: 0 / ${totalLines}`;
+      percentEl.textContent = `0%`;
+      fillBarEl.style.width = `0%`;
+      elapsedEl.textContent = `Elapsed: 0s`;
+      remainingEl.textContent = `Estimated Time Remaining: Calculating...`;
+
+      showToast(`Starting automated generation for ${totalLines} rows...`);
       let successCount = 0;
 
       const globalTraitsLookup = {};
@@ -345,75 +377,107 @@
         }
       }
 
-      for (let i = 0; i < textLines.length; i++) {
+      const startTime = Date.now();
+      let timerInterval = setInterval(() => {
+        const elapsedSec = (Date.now() - startTime) / 1000;
+        elapsedEl.textContent = `Elapsed: ${Math.floor(elapsedSec)}s`;
+      }, 1000);
+
+      for (let i = 0; i < totalLines; i++) {
         const lineText = textLines[i];
         const tokens = lineText.split(',').map(t => t.replace(/\s+/g, ' ').trim()).filter(t => t.length > 0);
-        if(tokens.length === 0) continue;
-
-        let calculatedBatchLayers = [];
-
-        const bgList = layersBySection['Background'];
-        const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-        calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id });
-
-        const baseToken = tokens[0].toLowerCase();
-        const matchedBase = layersBySection['Base'].find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === baseToken);
         
-        if (matchedBase) {
-          calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id });
-        } else {
-          const baseList = layersBySection['Base'];
-          const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
-          calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id });
-        }
+        if(tokens.length > 0) {
+          let calculatedBatchLayers = [];
 
-        for (let j = 1; j < tokens.length; j++) {
-          const traitToken = tokens[j].toLowerCase();
-          if (globalTraitsLookup[traitToken]) {
-            const foundLayer = globalTraitsLookup[traitToken];
-            if(foundLayer.section !== 'Background' && foundLayer.section !== 'Base') {
-              calculatedBatchLayers.push({ 
-                section: foundLayer.section, 
-                value: foundLayer.value, 
-                imageUrl: foundLayer.imageUrl, 
-                layerId: foundLayer.id 
-              });
+          const bgList = layersBySection['Background'];
+          const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
+          calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id });
+
+          const baseToken = tokens[0].toLowerCase();
+          const matchedBase = layersBySection['Base'].find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === baseToken);
+          
+          if (matchedBase) {
+            calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id });
+          } else {
+            const baseList = layersBySection['Base'];
+            const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
+            calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id });
+          }
+
+          for (let j = 1; j < tokens.length; j++) {
+            const traitToken = tokens[j].toLowerCase();
+            if (globalTraitsLookup[traitToken]) {
+              const foundLayer = globalTraitsLookup[traitToken];
+              if(foundLayer.section !== 'Background' && foundLayer.section !== 'Base') {
+                calculatedBatchLayers.push({ 
+                  section: foundLayer.section, 
+                  value: foundLayer.value, 
+                  imageUrl: foundLayer.imageUrl, 
+                  layerId: foundLayer.id 
+                });
+              }
             }
+          }
+
+          try {
+            calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+
+            const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
+            const computedAttributes = buildAttributes(calculatedBatchLayers);
+            
+            const currentIndexNo = getNextNumber();
+            const batchNFTObject = {
+              id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
+              name: `404 Punk #${currentIndexNo}`,
+              description: `Automated smart match procedural generator allocation.`,
+              image: generatedImg,
+              attributes: computedAttributes,
+              layers: calculatedBatchLayers,
+              number: currentIndexNo,
+              fileName: `${currentIndexNo}.png`,
+              jsonName: `${currentIndexNo}.json`,
+              createdAt: Date.now()
+            };
+
+            nfts.push(batchNFTObject);
+            successCount++;
+          } catch(err) {
+            console.error("Failed to compile variant line row:", err);
           }
         }
 
-        try {
-          calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+        // Live Tracker UI Calculations
+        const processedCount = i + 1;
+        const pct = Math.round((processedCount / totalLines) * 100);
+        
+        textCountEl.textContent = `Processing: ${processedCount} / ${totalLines}`;
+        percentEl.textContent = `${pct}%`;
+        fillBarEl.style.width = `${pct}%`;
 
-          const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
-          const computedAttributes = buildAttributes(calculatedBatchLayers);
-          
-          const currentIndexNo = getNextNumber();
-          const batchNFTObject = {
-            id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
-            name: `404 Punk #${currentIndexNo}`,
-            description: `Automated smart match procedural generator allocation.`,
-            image: generatedImg,
-            attributes: computedAttributes,
-            layers: calculatedBatchLayers,
-            number: currentIndexNo,
-            fileName: `${currentIndexNo}.png`,
-            jsonName: `${currentIndexNo}.json`,
-            createdAt: Date.now()
-          };
+        // Real-time ETA Logic
+        const currentElapsedMs = Date.now() - startTime;
+        const avgTimePerLineMs = currentElapsedMs / processedCount;
+        const remainingLines = totalLines - processedCount;
+        const remainingTimeSec = (remainingLines * avgTimePerLineMs) / 1000;
 
-          nfts.push(batchNFTObject);
-          successCount++;
-        } catch(err) {
-          console.error("Failed to compile variant line row:", err);
-        }
+        remainingEl.textContent = `Estimated Time Remaining: ${formatTime(remainingTimeSec)}`;
+
+        // Thread block optimization trick for smoother UI animation rendering
+        await new Promise(r => setTimeout(r, 15));
       }
 
+      // Cleanup
+      clearInterval(timerInterval);
       saveUserNFTs();
       renderCollection();
+      
       btn.disabled = false;
       btn.innerHTML = '🚀 Run Auto Batch Generation';
       showToast(`🎉 Generated ${successCount} NFTs successfully!`);
+      
+      // Hide Progress bar with a tiny delay
+      setTimeout(() => { progressContainer.classList.add('hidden'); }, 3000);
       switchTab('collection');
     };
 
@@ -435,23 +499,6 @@
       saveUserNFTs();
       renderCollection();
       showToast('🗑️ Entire collection cleared successfully!');
-    }
-  }
-
-  function deleteMatchedNFTs() {
-    if (!nfts.length) { showToast('❌ Collection is empty!'); return; }
-    const matchedItems = nfts.filter(nft => matchWithMaster(nft.attributes).matched);
-    
-    if (matchedItems.length === 0) {
-      showToast('ℹ️ No matched NFTs found to delete!');
-      return;
-    }
-    
-    if (confirm(`⚠️ Are you sure you want to delete all ${matchedItems.length} MATCHED NFTs?`)) {
-      nfts = nfts.filter(nft => !matchWithMaster(nft.attributes).matched);
-      saveUserNFTs();
-      renderCollection();
-      showToast(`💥 Removed ${matchedItems.length} matched NFTs successfully!`);
     }
   }
 
@@ -513,6 +560,14 @@
   }
 
   async function addLayerToFirebase(section, layer) { const updated = [...(layersBySection[section]||[]), layer]; await database.ref(`layers/${section}`).set(updated); }
+  
+  async function deleteLayerFromFirebase(section, layerId) { 
+    const filtered = (layersBySection[section]||[]).filter(l=>String(l.id)!==String(layerId)); 
+    await database.ref(`layers/${section}`).set(filtered); 
+    selectedLayersArray = selectedLayersArray.filter(l => l.layerId != layerId);
+    renderCreateSections(); 
+    updateLivePreview(); 
+  }
 
   function renderSectionsLayers() {
     const container = document.getElementById('sections-container');
@@ -526,7 +581,7 @@
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
           const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
-          html += `<div class="layer-item p-2"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100"><p class="text-xs font-bold text-center mt-1 truncate">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
+          html += `<div class="layer-item p-2"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)} ${genSymbol}</p><button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-600 text-[10px] w-full mt-1 bg-red-100 rounded py-1">Delete</button></div>`;
         });
         html += `</div>`;
       }
@@ -602,7 +657,6 @@
     const empty = document.getElementById('nft-empty'); 
     const countDiv = document.getElementById('nft-count');
     const clearBtn = document.getElementById('clear-all-btn');
-    const deleteMatchedBtn = document.getElementById('delete-matched-btn');
     const downloadZipBtn = document.getElementById('download-zip-btn');
     if(!container) return;
     
@@ -611,14 +665,12 @@
       empty.classList.remove('hidden'); 
       countDiv.innerHTML=''; 
       if(clearBtn) clearBtn.classList.add('hidden');
-      if(deleteMatchedBtn) deleteMatchedBtn.classList.add('hidden');
       if(downloadZipBtn) downloadZipBtn.classList.add('hidden');
       return; 
     }
     
     empty.classList.add('hidden');
     if(clearBtn) clearBtn.classList.remove('hidden');
-    if(deleteMatchedBtn) deleteMatchedBtn.classList.remove('hidden');
     if(downloadZipBtn) downloadZipBtn.classList.remove('hidden');
     countDiv.innerHTML = `<div class="inline-flex items-center gap-2 bg-blue-100 px-4 py-1 rounded-full text-blue-800 text-sm font-bold">🎨 Total Minted: ${nfts.length}</div>`;
     
@@ -849,6 +901,8 @@
     img.onerror=()=>showToast('Invalid image URL'); 
     img.src=finalUrl; 
   }
+  
+  function deleteLayer(section, id) { if(confirm('Delete layer?')) { deleteLayerFromFirebase(section, id).then(() => showToast('Layer removed')); } }
 
   function switchTab(tabId) {
     ['layers', 'create', 'collection'].forEach(t => {
@@ -870,12 +924,12 @@
   function toggleCreateSection(section) { openSectionCreate = (openSectionCreate === section) ? null : section; renderCreateSections(); }
 
   const App = {
-    switchTab, toggleSectionLayers, toggleCreateSection, addLayer,
+    switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
     toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
-    downloadCollectionAsZip, deleteMatchedNFTs,
+    downloadCollectionAsZip,
     openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT
-  }
+  };
 
   window.onload = function() {
     loadUserNFTs();
