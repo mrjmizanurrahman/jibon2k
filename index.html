@@ -99,6 +99,7 @@
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
           <option value="Base">Base</option>
+          <option value="Clothing">Clothing</option>
           <option value="Neck">Neck</option>
           <option value="Ear">Ear</option>
           <option value="Face">Face</option>
@@ -106,6 +107,7 @@
           <option value="Nose">Nose</option>
           <option value="Mouth">Mouth</option>
           <option value="Eyes">Eyes</option>
+          <option value="Glass">Glass</option>
           <option value="Head">Head (Hat/Hair)</option>
           <option value="Accessory">Accessory</option>
         </select>
@@ -177,8 +179,8 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // Custom ordered blueprint configuration structure request
-  const SECTIONS = ["Background", "Base", "Head", "Eyes", "Ear", "Nose", "Mouth", "Accessory", "Neck", "Face", "Beard"];
+  // Custom ordered blueprint configuration structure request with Clothing and Glass
+  const SECTIONS = ["Background", "Base", "Clothing", "Head", "Eyes", "Glass", "Ear", "Nose", "Mouth", "Accessory", "Neck", "Face", "Beard"];
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -357,7 +359,6 @@
         }
 
         try {
-          // Absolute explicit sort using targeted array indexes structure criteria
           calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
           const generatedImg = await compositeFromSelected(calculatedBatchLayers);
@@ -703,7 +704,6 @@
 
     showToast('⚡ Processing Composite Redraw...');
     
-    // Pass forceCustomOrder as true to keep the precise array alignment made inside popup
     const newImage = await compositeFromSelected(editingLayersArray, true);
     const newAttributes = buildAttributes(editingLayersArray);
 
