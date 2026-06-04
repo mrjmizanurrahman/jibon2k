@@ -80,7 +80,7 @@
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Smart Match v3.1</span>
+      <span class="text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Smart Match v3.2</span>
     </div>
   </header>
 
@@ -110,7 +110,14 @@
           <option value="Head">Head (Hair/Hat/Cap)</option>
           <option value="Accessory">Accessory</option>
         </select>
-        <div class="flex gap-3"><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="male" checked> ♂ Male</label><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="female"> ♀ Female</label></div>
+        <div class="flex gap-4 p-2 bg-gray-50 rounded-xl border border-gray-200">
+          <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
+            <input type="radio" name="layer-gender" value="male" checked class="w-4 h-4 text-blue-600"> ♂ Male
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
+            <input type="radio" name="layer-gender" value="female" class="w-4 h-4 text-pink-600"> ♀ Female
+          </label>
+        </div>
         <button onclick="App.addLayer()" class="btn-primary text-white py-2 rounded-xl font-bold">➕ Sync to Firebase</button>
       </div>
     </div>
@@ -171,20 +178,20 @@
 </div>
 
 <script>
-  // ----------------------------- FIREBASE CONFIG -------------------------
+  // ----------------------------- UPDATED FIREBASE CONFIG -------------------------
   const firebaseConfig = {
-    apiKey: "AIzaSyAOy69Mp1LDbiWE4594ssJvhihKAP89punks-db.firebaseapp.com",
-    authDomain: "punks-db.firebaseapp.com",
-    databaseURL: "https://punks-db-default-rtdb.firebaseio.com",
-    projectId: "punks-db",
-    storageBucket: "punks-db.firebasestorage.app",
-    messagingSenderId: "935797407482",
-    appId: "1:935797407482:web:1b77f90478160ac69c1343"
+    apiKey: "AIzaSyDdhpduaTwzPGPSN83oeS1JX0ElRF6QKik",
+    authDomain: "bdpunks.firebaseapp.com",
+    databaseURL: "https://bdpunks-default-rtdb.firebaseio.com",
+    projectId: "bdpunks",
+    storageBucket: "bdpunks.firebasestorage.app",
+    messagingSenderId: "699146288467",
+    appId: "1:699146288467:web:1bfdbcbb5b8d3047db75a6"
   };
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // STRICT LAYER ORDER (Head Layer Added properly between Beard and Accessory)
+  // STRICT LAYER ORDER (Head properly structured between Beard and Accessory)
   const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Head", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
@@ -506,7 +513,8 @@
       if(isOpen) {
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
-          html += `<div class="layer-item p-2"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)}</p><button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-600 text-[10px] w-full mt-1 bg-red-100 rounded py-1">Delete</button></div>`;
+          const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
+          html += `<div class="layer-item p-2"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)} ${genSymbol}</p><button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-600 text-[10px] w-full mt-1 bg-red-100 rounded py-1">Delete</button></div>`;
         });
         html += `</div>`;
       }
@@ -530,7 +538,8 @@
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
           const isSel = selectedLayer && selectedLayer.layerId === layer.id;
-          html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-2 cursor-pointer ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}<p class="text-xs text-center mt-1 font-medium">${escapeHtml(layer.value)}</p></div>`;
+          const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
+          html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-2 cursor-pointer ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}<p class="text-xs text-center mt-1 font-medium">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
         });
         html += `</div>`;
       }
@@ -550,7 +559,10 @@
     let sortedPreview = [...selectedLayersArray];
     sortedPreview.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     
-    div.innerHTML = sortedPreview.map((l, idx) => `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)}</span>`).join(''); 
+    div.innerHTML = sortedPreview.map((l, idx) => {
+      const genSymbol = l.gender === 'female' ? '<span class="text-pink-600 font-bold">♀</span>' : '<span class="text-blue-600 font-bold">♂</span>';
+      return `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)} (${genSymbol})</span>`;
+    }).join(''); 
   }
   
   async function updateLivePreview() { 
@@ -650,12 +662,13 @@
     
     listDiv.innerHTML = editingLayersArray.map((layer, idx) => {
       const isProtected = (layer.section === 'Background' || layer.section === 'Base');
+      const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold">♀</span>' : '<span class="text-blue-600 font-bold">♂</span>';
       return `
         <div class="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-xl shadow-sm">
           <div class="flex items-center gap-2">
             <span class="text-xs bg-slate-200 px-2 py-1 rounded font-bold text-gray-700">#${idx+1}</span>
             <div class="text-left">
-              <p class="text-xs font-bold text-indigo-900">${layer.section}</p>
+              <p class="text-xs font-bold text-indigo-900">${layer.section} (${genSymbol})</p>
               <p class="text-[11px] text-gray-600 truncate max-w-[130px]">${escapeHtml(layer.value)}</p>
             </div>
           </div>
