@@ -80,7 +80,7 @@
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Smart Match v3</span>
+      <span class="text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Smart Match v3.1</span>
     </div>
   </header>
 
@@ -96,7 +96,7 @@
       <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Smile, Big Beard)" class="nft-input">
+        <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Wild Hair, Hoodie, Big Beard)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
           <option value="Neck">Neck</option>
@@ -107,6 +107,7 @@
           <option value="Nose">Nose</option>
           <option value="Mouth">Mouth</option>
           <option value="Beard">Beard</option>
+          <option value="Head">Head (Hair/Hat/Cap)</option>
           <option value="Accessory">Accessory</option>
         </select>
         <div class="flex gap-3"><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="male" checked> ♂ Male</label><label class="flex items-center gap-1"><input type="radio" name="layer-gender" value="female"> ♀ Female</label></div>
@@ -125,7 +126,7 @@
     <!-- AUTO BATCH GENERATOR -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো (যেমন: Beard, Eyes, Accessory) গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
+      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো (যেমন: Head, Beard, Eyes) গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -183,8 +184,8 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // STRICT LAYER ORDER (Bottom to Top for Correct Hair/Beard/Accessory Overlap)
-  const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Accessory"];
+  // STRICT LAYER ORDER (Head Layer Added properly between Beard and Accessory)
+  const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Head", "Accessory"];
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -245,7 +246,6 @@
     return { matched: false, matchId: null };
   }
 
-  // RE-STRUCTURED ATTRIBUTE GENERATOR
   function buildAttributes(orderedLayers) {
     const attrs = [];
     for(let layer of orderedLayers) {
@@ -257,7 +257,6 @@
     return attrs;
   }
 
-  // CANVASES DRAW ENGINE
   async function compositeFromSelected(customLayers = null, forceCustomOrder = false) {
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
@@ -298,7 +297,6 @@
     updateLivePreview();
   }
 
-  // FIXED AUTOMATIC TEXT BATCH GENERATOR (BEARD & ACCESSORIES SAFE MATCH)
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
@@ -322,7 +320,6 @@
       showToast(`Starting automated generation for ${textLines.length} rows...`);
       let successCount = 0;
 
-      // Create Look-up maps with clean spacing and matching cases
       const globalTraitsLookup = {};
       for (let section of SECTIONS) {
         if (layersBySection[section]) {
@@ -345,12 +342,10 @@
 
         let calculatedBatchLayers = [];
 
-        // 1. Assign Random Background
         const bgList = layersBySection['Background'];
         const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
         calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id });
 
-        // 2. Assign Base Body Layer
         const baseToken = tokens[0].toLowerCase();
         const matchedBase = layersBySection['Base'].find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === baseToken);
         
@@ -362,7 +357,6 @@
           calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id });
         }
 
-        // 3. Smart Scan for Accessories, Beards, Eyes, and Mouths
         for (let j = 1; j < tokens.length; j++) {
           const traitToken = tokens[j].toLowerCase();
           if (globalTraitsLookup[traitToken]) {
@@ -379,7 +373,6 @@
         }
 
         try {
-          // Absolute layer alignment sort
           calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
           const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
@@ -609,7 +602,6 @@
     }).join('');
   }
 
-  // ADVANCED MANUAL LAYER REARRANGE ENGINE
   function openNFTEditor(id) {
     const nft = nfts.find(n => String(n.id) === String(id));
     if (!nft) return;
@@ -824,7 +816,7 @@
       await addLayerToFirebase(sec, layerObj); 
       document.getElementById('github-url').value=''; 
       document.getElementById('layer-value').value=''; 
-      showToast(`✅ "${val}" added`); 
+      showToast(`✅ "${val}" added to ${sec}`); 
     }; 
     img.onerror=()=>showToast('Invalid image URL'); 
     img.src=finalUrl; 
