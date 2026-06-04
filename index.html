@@ -177,7 +177,8 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  const SECTIONS = ["Background", "Base", "Neck", "Ear", "Face", "Beard", "Nose", "Mouth", "Eyes", "Head", "Accessory"];
+  // Custom ordered blueprint configuration structure request
+  const SECTIONS = ["Background", "Base", "Head", "Eyes", "Ear", "Nose", "Mouth", "Accessory", "Neck", "Face", "Beard"];
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -234,7 +235,7 @@
         return { matched: true, matchId: master.id };
       }
     }
-    return { matched: false, matchId: null };
+    return { false: true, matchId: null };
   }
 
   function buildAttributes(orderedLayers) {
@@ -356,6 +357,7 @@
         }
 
         try {
+          // Absolute explicit sort using targeted array indexes structure criteria
           calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
           const generatedImg = await compositeFromSelected(calculatedBatchLayers);
@@ -604,15 +606,15 @@
       <div class="modal-content rounded-2xl max-w-4xl w-full p-6 max-h-[90vh] overflow-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="flex flex-col items-center justify-center bg-slate-900 p-4 rounded-xl">
           <canvas id="edit-preview-canvas" width="340" height="340" class="w-[300px] h-[300px] border-2 border-amber-400 rounded-lg shadow-lg"></canvas>
-          <p class="text-gray-400 text-xs mt-3">Live Order Preview (Bottom to Top rendering)</p>
+          <p class="text-gray-400 text-xs mt-3">Live Order Preview (Custom Canvas Layer Assembly)</p>
         </div>
         <div class="flex flex-col justify-between">
           <div>
             <div class="flex justify-between items-center mb-4">
-              <h2 class="font-orb text-lg font-bold text-amber-600">✏️ Rearrange Layers Order</h2>
+              <h2 class="font-orb text-lg font-bold text-amber-600">✏️ Rearrange & Edit Layers</h2>
               <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-gray-500 font-bold text-lg hover:text-black">✕</button>
             </div>
-            <p class="text-xs text-gray-600 mb-4">নিচের লেয়ারটি সবার নিচে এবং শেষের লেয়ারটি সবার উপরে থাকবে। আপ-ডাউন বাটন দিয়ে ম্যানুয়ালি ওভারল্যাপ ফিক্স করুন।</p>
+            <p class="text-xs text-gray-600 mb-4">নিচের লেয়ারটি সবার নিচে এবং শেষের লেয়ারটি সবার উপরে থাকবে। আপ-ডাউন বাটন দিয়ে ম্যানুয়ালি ওভারল্যাপ ফিক্স করুন এবং প্রয়োজনহীন কন্টেন্ট ডিলিট করুন (Background ও Base বাদে)।</p>
             <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1"></div>
           </div>
           <div class="flex gap-3 mt-6">
@@ -632,18 +634,20 @@
     if(!listDiv) return;
     
     listDiv.innerHTML = editingLayersArray.map((layer, idx) => {
+      const isProtected = (layer.section === 'Background' || layer.section === 'Base');
       return `
         <div class="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-xl shadow-sm">
           <div class="flex items-center gap-2">
             <span class="text-xs bg-slate-200 px-2 py-1 rounded font-bold text-gray-700">#${idx+1}</span>
             <div class="text-left">
               <p class="text-xs font-bold text-indigo-900">${layer.section}</p>
-              <p class="text-[11px] text-gray-600 truncate max-w-[160px]">${escapeHtml(layer.value)}</p>
+              <p class="text-[11px] text-gray-600 truncate max-w-[130px]">${escapeHtml(layer.value)}</p>
             </div>
           </div>
-          <div class="flex gap-1">
-            <button onclick="App.moveEditorLayer(${idx}, -1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===0?'disabled style="opacity:0.3"':''}>🔼</button>
-            <button onclick="App.moveEditorLayer(${idx}, 1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===editingLayersArray.length-1?'disabled style="opacity:0.3"':''}>🔽</button>
+          <div class="flex gap-1 items-center">
+            <button onclick="App.moveEditorLayer(${idx}, -1)" class="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===0?'disabled style="opacity:0.3"':''}>🔼</button>
+            <button onclick="App.moveEditorLayer(${idx}, 1)" class="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===editingLayersArray.length-1?'disabled style="opacity:0.3"':''}>🔽</button>
+            <button onclick="App.removeEditorLayer(${idx})" class="p-1.5 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg text-xs font-bold" ${isProtected?'disabled style="opacity:0.2; cursor:not-allowed;" title="Cannot delete Background or Base"':''}>🗑️</button>
           </div>
         </div>
       `;
@@ -660,6 +664,18 @@
     
     renderEditorRows();
     updateEditorPreview();
+  }
+
+  function removeEditorLayer(index) {
+    const layer = editingLayersArray[index];
+    if (layer.section === 'Background' || layer.section === 'Base') {
+      showToast("❌ Background and Base layers cannot be deleted!");
+      return;
+    }
+    editingLayersArray.splice(index, 1);
+    renderEditorRows();
+    updateEditorPreview();
+    showToast("🗑️ Layer removed from layout stack.");
   }
 
   async function updateEditorPreview() {
@@ -687,6 +703,7 @@
 
     showToast('⚡ Processing Composite Redraw...');
     
+    // Pass forceCustomOrder as true to keep the precise array alignment made inside popup
     const newImage = await compositeFromSelected(editingLayersArray, true);
     const newAttributes = buildAttributes(editingLayersArray);
 
@@ -817,7 +834,7 @@
     toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
     downloadCollectionAsZip,
-    openNFTEditor, moveEditorLayer, saveEditedNFT
+    openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT
   };
 
   window.onload = function() {
