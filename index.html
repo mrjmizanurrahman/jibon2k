@@ -90,6 +90,7 @@
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
+  <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
       <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
@@ -98,16 +99,16 @@
         <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Wild Hair, Hoodie, Big Beard)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
-          <option value="Neck">Neck</option>
           <option value="Base">Base</option>
-          <option value="Ear">Ear</option>
-          <option value="Face">Face</option>
-          <option value="Eyes">Eyes</option>
-          <option value="Nose">Nose</option>
           <option value="Mouth">Mouth</option>
+          <option value="Nose">Nose</option>
+          <option value="Face">Face</option>
           <option value="Beard">Beard</option>
+          <option value="Neck">Neck</option>
           <option value="Head">Head (Hair/Hat/Cap)</option>
+          <option value="Eyes">Eyes</option>
           <option value="Accessory">Accessory</option>
+          <option value="Ear">Ear</option>
         </select>
         <div class="flex gap-4 p-2 bg-gray-50 rounded-xl border border-gray-200">
           <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
@@ -123,14 +124,16 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
+  <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
       <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে অফিশিয়াল ইনডেক্সের সাথে রিয়েল-টাইমে ম্যাচ হবে।
     </div>
 
+    <!-- AUTO BATCH GENERATOR -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো (যেমন: Head, Beard, Eyes) গলোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
+      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো গলোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -142,6 +145,7 @@
       </div>
     </div>
 
+    <!-- LIVE MANUAL GENERATOR PREVIEW -->
     <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
       <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
       <p class="text-gray-600 text-xs mt-2">Live Canvas Preview (Strict Bottom-to-Top Structure)</p>
@@ -153,6 +157,7 @@
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
+  <!-- PANEL 3: MY COLLECTION -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
@@ -189,7 +194,9 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Head", "Accessory"];
+  // UPDATED LAYER SERIALIZATION (Strict Order Hierarchy)
+  const SECTIONS = ["Background", "Base", "Mouth", "Nose", "Face", "Beard", "Neck", "Head", "Eyes", "Accessory", "Ear"];
+  
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
