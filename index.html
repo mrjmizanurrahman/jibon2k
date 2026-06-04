@@ -90,6 +90,7 @@
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
+  <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
       <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
@@ -98,16 +99,16 @@
         <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Wild Hair, Hoodie, Big Beard)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
-          <option value="Neck">Neck</option>
           <option value="Base">Base</option>
-          <option value="Ear">Ear</option>
-          <option value="Face">Face</option>
-          <option value="Eyes">Eyes</option>
-          <option value="Nose">Nose</option>
           <option value="Mouth">Mouth</option>
+          <option value="Nose">Nose</option>
+          <option value="Face">Face</option>
           <option value="Beard">Beard</option>
+          <option value="Neck">Neck</option>
           <option value="Head">Head (Hair/Hat/Cap)</option>
+          <option value="Eyes">Eyes</option>
           <option value="Accessory">Accessory</option>
+          <option value="Ear">Ear</option>
         </select>
         <div class="flex gap-4 p-2 bg-gray-50 rounded-xl border border-gray-200">
           <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
@@ -123,15 +124,15 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
+  <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
       <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে অফিশিয়াল ইনডেক্সের সাথে রিয়েল-টাইমে ম্যাচ হবে।
     </div>
 
+    <!-- AUTO BATCH GENERATOR -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="file-text"></i> Automatic NFT Generator (From Text File)</h3>
-      <p class="text-xs text-gray-600 mb-3">আপনার টেক্সট ফাইলের প্রতিটি লাইনে প্রথম উপাদানটি <strong>Base</strong> লেয়ার হিসেবে কাউন্ট হবে এবং কমার পরের উপাদানগুলো (যেমন: Head, Beard, Eyes) গ্লোবাল লাইব্রেরির লেয়ারের নামের সাথে রিয়েল-টাইমে ম্যাচ হবে। <strong>Background</strong> অটোমেটিক র‍্যান্ডমলি সেট হবে।</p>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -142,6 +143,7 @@
         </button>
       </div>
 
+      <!-- PROGRESS TRACKER SYSTEM -->
       <div id="batch-progress-container" class="hidden mt-4 p-4 bg-white rounded-xl border border-indigo-200">
         <div class="flex justify-between text-xs font-bold text-indigo-950 mb-1">
           <span id="progress-text-count">Processing: 0 / 0</span>
@@ -157,9 +159,9 @@
       </div>
     </div>
 
+    <!-- LIVE MANUAL GENERATOR PREVIEW -->
     <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
       <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
-      <p class="text-gray-600 text-xs mt-2">Live Canvas Preview (Strict Bottom-to-Top Structure)</p>
     </div>
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
     <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-blue-900 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
@@ -168,10 +170,14 @@
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
+  <!-- PANEL 3: MY COLLECTION -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 flex-wrap">
+        <button id="clear-matched-btn" onclick="App.clearMatchedCollection()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
+          🗑️ Clear Matched Only
+        </button>
         <button id="download-zip-btn" onclick="App.downloadCollectionAsZip()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
           📦 Download All (ZIP)
         </button>
@@ -188,7 +194,7 @@
 </div>
 
 <script>
-  // ----------------------------- UPDATED FIREBASE CONFIG -------------------------
+  // ----------------------------- FIREBASE CONFIG -------------------------
   const firebaseConfig = {
     apiKey: "AIzaSyDdhpduaTwzPGPSN83oeS1JX0ElRF6QKik",
     authDomain: "bdpunks.firebaseapp.com",
@@ -201,8 +207,8 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // STRICT LAYER ORDER (Head properly structured between Beard and Accessory)
-  const SECTIONS = ["Background", "Neck", "Base", "Ear", "Face", "Eyes", "Nose", "Mouth", "Beard", "Head", "Accessory"];
+  // STABLE NEW ORDER PREFERENCE ACCORDING TO YOUR MENTIONED REQUIREMENTS
+  const SECTIONS = ["Background", "Base", "Mouth", "Nose", "Face", "Beard", "Neck", "Head", "Eyes", "Accessory", "Ear"];
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -221,7 +227,6 @@
   function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
   function saveUserNFTs() { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); }
 
-  // OFFICIAL CRYPTOPUNKS INDEX SNAPSHOT FOR LIVE SMART MATCH
   async function fetchMasterIndex() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
@@ -241,6 +246,7 @@
         masterIndexMap.push({ id: parseInt(key), traitValues });
       }
       showToast(`✅ Loaded ${masterIndexMap.length} official punks for smart matching`);
+      renderCollection();
     } catch(e) { 
       masterIndexMap = [];
       showToast('⚠️ Could not load official index.json');
@@ -326,7 +332,6 @@
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
     
-    // Progress Container elements
     const progressContainer = document.getElementById('batch-progress-container');
     const textCountEl = document.getElementById('progress-text-count');
     const percentEl = document.getElementById('progress-percentage');
@@ -351,7 +356,6 @@
       
       if(totalLines === 0) { showToast('❌ Text file is empty!'); btn.disabled = false; btn.innerHTML = '🚀 Run Auto Batch Generation'; return; }
       
-      // Reset & Display Progress Container
       progressContainer.classList.remove('hidden');
       textCountEl.textContent = `Processing: 0 / ${totalLines}`;
       percentEl.textContent = `0%`;
@@ -421,6 +425,7 @@
           }
 
           try {
+            // Sort standard order internally
             calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
             const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
@@ -447,7 +452,6 @@
           }
         }
 
-        // Live Tracker UI Calculations
         const processedCount = i + 1;
         const pct = Math.round((processedCount / totalLines) * 100);
         
@@ -455,19 +459,15 @@
         percentEl.textContent = `${pct}%`;
         fillBarEl.style.width = `${pct}%`;
 
-        // Real-time ETA Logic
         const currentElapsedMs = Date.now() - startTime;
         const avgTimePerLineMs = currentElapsedMs / processedCount;
         const remainingLines = totalLines - processedCount;
         const remainingTimeSec = (remainingLines * avgTimePerLineMs) / 1000;
 
         remainingEl.textContent = `Estimated Time Remaining: ${formatTime(remainingTimeSec)}`;
-
-        // Thread block optimization trick for smoother UI animation rendering
-        await new Promise(r => setTimeout(r, 15));
+        await new Promise(r => setTimeout(r, 10));
       }
 
-      // Cleanup
       clearInterval(timerInterval);
       saveUserNFTs();
       renderCollection();
@@ -476,7 +476,6 @@
       btn.innerHTML = '🚀 Run Auto Batch Generation';
       showToast(`🎉 Generated ${successCount} NFTs successfully!`);
       
-      // Hide Progress bar with a tiny delay
       setTimeout(() => { progressContainer.classList.add('hidden'); }, 3000);
       switchTab('collection');
     };
@@ -494,12 +493,34 @@
 
   function clearAllCollection() {
     if(!nfts.length) { showToast('❌ Collection is already empty!'); return; }
-    if(confirm(`⚠️ Are you sure you want to delete ALL (${nfts.length}) NFTs from your collection? This cannot be undone!`)) {
+    if(confirm(`⚠️ Are you sure you want to delete ALL (${nfts.length}) NFTs from your collection?`)) {
       nfts = [];
       saveUserNFTs();
       renderCollection();
       showToast('🗑️ Entire collection cleared successfully!');
     }
+  }
+
+  // ONE-CLICK SYSTEM TO WIPE ONLY MATCHED ITEMS
+  function clearMatchedCollection() {
+    if(!nfts.length) { showToast('❌ No items inside collection data.'); return; }
+    
+    // Identify who matches
+    const beforeCount = nfts.length;
+    nfts = nfts.filter(nft => {
+      const matchResult = matchWithMaster(nft.attributes);
+      return !matchResult.matched; // Keep only if NOT matched
+    });
+    
+    const removedCount = beforeCount - nfts.length;
+    if (removedCount === 0) {
+      showToast('🔍 No Matched NFTs found to clear!');
+      return;
+    }
+
+    saveUserNFTs();
+    renderCollection();
+    showToast(`🗑️ Successfully removed ${removedCount} Matched NFTs in 1-Click!`);
   }
 
   async function mintSingleNFT() {
@@ -657,6 +678,7 @@
     const empty = document.getElementById('nft-empty'); 
     const countDiv = document.getElementById('nft-count');
     const clearBtn = document.getElementById('clear-all-btn');
+    const clearMatchedBtn = document.getElementById('clear-matched-btn');
     const downloadZipBtn = document.getElementById('download-zip-btn');
     if(!container) return;
     
@@ -665,28 +687,45 @@
       empty.classList.remove('hidden'); 
       countDiv.innerHTML=''; 
       if(clearBtn) clearBtn.classList.add('hidden');
+      if(clearMatchedBtn) clearMatchedBtn.classList.add('hidden');
       if(downloadZipBtn) downloadZipBtn.classList.add('hidden');
       return; 
     }
     
     empty.classList.add('hidden');
     if(clearBtn) clearBtn.classList.remove('hidden');
+    if(clearMatchedBtn) clearMatchedBtn.classList.remove('hidden');
     if(downloadZipBtn) downloadZipBtn.classList.remove('hidden');
-    countDiv.innerHTML = `<div class="inline-flex items-center gap-2 bg-blue-100 px-4 py-1 rounded-full text-blue-800 text-sm font-bold">🎨 Total Minted: ${nfts.length}</div>`;
-    
-    container.innerHTML = nfts.map(nft => {
+
+    let totalMatchedCount = 0;
+    const finalCardsHtml = nfts.map(nft => {
       const match = matchWithMaster(nft.attributes);
+      if (match.matched) totalMatchedCount++;
       const matchHtml = match.matched ? `<span class="match-badge">✅ Match #${match.matchId}</span>` : `<span class="nomatch-badge">❌ No Match</span>`;
       return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-raj font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-1" onclick="event.stopPropagation()"><button onclick="App.openNFTEditor('${nft.id}')" class="text-xs bg-amber-500 text-white px-2 py-1 rounded font-bold">✏️ Edit</button><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 px-1 py-1 rounded">📸</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 px-1 py-1 rounded">📄</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-200 px-1 py-1 rounded">🗑</button></div></div></div></div>`;
     }).join('');
+
+    countDiv.innerHTML = `
+      <div class="flex gap-2">
+        <span class="inline-flex items-center gap-2 bg-blue-100 px-4 py-1 rounded-full text-blue-800 text-sm font-bold">🎨 Total Minted: ${nfts.length}</span>
+        <span class="inline-flex items-center gap-2 bg-green-100 px-4 py-1 rounded-full text-green-800 text-sm font-bold">🎯 Matched Count: ${totalMatchedCount}</span>
+      </div>
+    `;
+    
+    container.innerHTML = finalCardsHtml;
   }
 
+  // EDITED PANE REARRANGEMENTS & IMPLEMENTATION OF CUSTOM MENTIONED SEQUENCE ORDER
   function openNFTEditor(id) {
     const nft = nfts.find(n => String(n.id) === String(id));
     if (!nft) return;
     
     editingNftId = id;
-    editingLayersArray = nft.layers ? [...nft.layers] : [];
+    
+    // Sort custom layers explicitly dynamically based on targeted specified array sequence before populating rows
+    let baseLayers = nft.layers ? [...nft.layers] : [];
+    baseLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    editingLayersArray = baseLayers;
     
     if(editingLayersArray.length === 0) {
       showToast('⚠️ No structured layer tracking found.');
@@ -700,7 +739,7 @@
       <div class="modal-content rounded-2xl max-w-4xl w-full p-6 max-h-[90vh] overflow-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="flex flex-col items-center justify-center bg-slate-900 p-4 rounded-xl">
           <canvas id="edit-preview-canvas" width="340" height="340" class="w-[300px] h-[300px] border-2 border-amber-400 rounded-lg shadow-lg"></canvas>
-          <p class="text-gray-400 text-xs mt-3">Live Order Preview (Custom Canvas Layer Assembly)</p>
+          <p class="text-gray-400 text-xs mt-3">Live Order Preview (Strict Sequence Render System)</p>
         </div>
         <div class="flex flex-col justify-between">
           <div>
@@ -708,7 +747,7 @@
               <h2 class="font-orb text-lg font-bold text-amber-600">✏️ Rearrange & Edit Layers</h2>
               <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-gray-500 font-bold text-lg hover:text-black">✕</button>
             </div>
-            <p class="text-xs text-gray-600 mb-4">নিচের লেয়ারটি সবার নিচে এবং শেষের লেয়ারটি সবার উপরে থাকবে। আপ-ডাউন বাটন দিয়ে ম্যানুয়ালি ওভারল্যাপ ফিক্স করুন এবং প্রয়োজনহীন কন্টেন্ট ডিলিট করুন (Background ও Base বাদে)।</p>
+            <p class="text-xs text-gray-600 mb-4">লেয়ার সিকোয়েন্স রেন্ডার অর্ডার: <br><strong>Background → Base → Mouth → Nose → Face → Beard → Neck → Head → Eyes → Accessory → Ear</strong></p>
             <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1"></div>
           </div>
           <div class="flex gap-3 mt-6">
@@ -742,7 +781,7 @@
           <div class="flex gap-1 items-center">
             <button onclick="App.moveEditorLayer(${idx}, -1)" class="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===0?'disabled style="opacity:0.3"':''}>🔼</button>
             <button onclick="App.moveEditorLayer(${idx}, 1)" class="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===editingLayersArray.length-1?'disabled style="opacity:0.3"':''}>🔽</button>
-            <button onclick="App.removeEditorLayer(${idx})" class="p-1.5 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg text-xs font-bold" ${isProtected?'disabled style="opacity:0.2; cursor:not-allowed;" title="Cannot delete Background or Base"':''}>🗑️</button>
+            <button onclick="App.removeEditorLayer(${idx})" class="p-1.5 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg text-xs font-bold" ${isProtected?'disabled style="opacity:0.2; cursor:not-allowed;"':''}>🗑️</button>
           </div>
         </div>
       `;
@@ -770,7 +809,7 @@
     editingLayersArray.splice(index, 1);
     renderEditorRows();
     updateEditorPreview();
-    showToast("🗑️ Layer removed from layout stack.");
+    showToast("🗑️ Layer removed.");
   }
 
   async function updateEditorPreview() {
@@ -798,6 +837,7 @@
 
     showToast('⚡ Processing Composite Redraw...');
     
+    // Save exactly using order sorted inside dynamic modal structure configuration
     const newImage = await compositeFromSelected(editingLayersArray, true);
     const newAttributes = buildAttributes(editingLayersArray);
 
@@ -809,7 +849,7 @@
     renderCollection();
     
     document.getElementById('nft-editor-modal').remove();
-    showToast('🎉 NFT Layers & Metadata Updated Successfully!');
+    showToast('🎉 NFT Layers Updated successfully!');
   }
 
   function downloadImage(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(nft) { const a=document.createElement('a'); a.href=nft.image; a.download=`${nft.number}.png`; a.click(); showToast(`Saved ${nft.number}.png`); } }
@@ -824,7 +864,6 @@
 
   async function downloadCollectionAsZip() {
     if (!nfts.length) { showToast('❌ No NFTs in collection!'); return; }
-    
     const btn = document.getElementById('download-zip-btn');
     const originalText = btn.innerHTML;
     btn.disabled = true;
@@ -832,35 +871,24 @@
     
     try {
       const zip = new JSZip();
-      showToast('📦 Creating ZIP archive architecture...');
-      
       for (let nft of nfts) {
         const folderName = `Punk_${nft.number}`;
         const nftFolder = zip.folder(folderName);
-        
-        const metadata = { 
-          name: nft.name, 
-          description: nft.description, 
-          image: `ipfs://placeholder/${nft.number}.png`, 
-          attributes: nft.attributes 
-        };
+        const metadata = { name: nft.name, description: nft.description, image: `ipfs://placeholder/${nft.number}.png`, attributes: nft.attributes };
         nftFolder.file(`${nft.number}.json`, JSON.stringify(metadata, null, 2));
-        
         const base64Data = nft.image.split(',')[1];
         nftFolder.file(`${nft.number}.png`, base64Data, {base64: true});
       }
-      
       const content = await zip.generateAsync({type: "blob"});
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
       link.download = `404_Punks_Collection_${Date.now()}.zip`;
       link.click();
       URL.revokeObjectURL(link.href);
-      
-      showToast('🎉 Collection downloaded in ZIP format successfully!');
+      showToast('🎉 Collection downloaded successfully!');
     } catch (err) {
       showToast('❌ ZIP generation failed');
-    } finally {
+    } {
       btn.disabled = false;
       btn.innerHTML = originalText;
     }
@@ -927,7 +955,7 @@
     switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
     toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
-    downloadCollectionAsZip,
+    downloadCollectionAsZip, clearMatchedCollection,
     openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT
   };
 
