@@ -80,7 +80,7 @@
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-bold">Gender Dual System v4.0</span>
+      <span class="text-xs px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-bold">Gender Dual System v4.1</span>
     </div>
   </header>
 
@@ -97,7 +97,7 @@
       <h3 class="font-raj font-bold text-blue-900 mb-3 text-lg">➕ Add Layer to Global Library with Gender Tag</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input type="text" id="github-url" placeholder="GitHub RAW Image URL (PNG)" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value Name (e.g., Wild Hair, Hoodie, Big Beard)" class="nft-input">
+        <input type="text" id="layer-value" placeholder="Value Name (e.g., Male 1, Male 2, Female 1, Wild Hair)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
           <option value="Base">Base (Gender Skin/Type)</option>
@@ -138,7 +138,7 @@
   <!-- PANEL 2: MINT ENGINE -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700 bg-blue-50/50">
-      💡 <strong>Gender Symbol System:</strong> টেক্সট ফাইল জেনারেশনের সময় লাইনের ভেতর <code>♂</code> বা <code>♀</code> সিম্বল থাকলে সিস্টেম স্বয়ংক্রিয়ভাবে জেন্ডার ডিটেক্ট করে সঠিক লাইব্রেরি থেকে ইমেজ কমপজিট করবে।
+      💡 <strong>Smart Multi-Skin Engine:</strong> টেক্সট ফাইলে <code>Male 1</code>, <code>Male 2</code>, <code>Female 3</code> বা যেকোনো সুনির্দিষ্ট নাম থাকলে সিস্টেম নিখুঁত উপায়ে সঠিক বেস ইমেজ এবং ট্রেইটস পজিশন ডিটেক্ট করবে।
     </div>
 
     <!-- AUTO BATCH GENERATOR -->
@@ -196,7 +196,7 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       <input type="text" id="nft-name" placeholder="NFT Name Prefix" value="404 Punks" class="nft-input">
-      <input type="text" id="nft-description" placeholder="Description" value="Glitch artifact from the 404 gender dimension." class="nft-input">
+      <input type="text" id="nft-description" placeholder="Description" value="Glitch artifact from the 404 dimension." class="nft-input">
     </div>
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint Manual NFT (Single)</button>
   </div>
@@ -246,11 +246,8 @@
   let previewCtx = null;
   let openSectionCreate = null, openSectionLayers = null;
   
-  let libraryGenderFilter = 'all'; // all, male, female
-  let creatorGenderMode = 'male';  // male, female
-
-  let editingNftId = null;
-  let editingLayersArray = [];
+  let libraryGenderFilter = 'all'; 
+  let creatorGenderMode = 'male';  
 
   for(let s of SECTIONS) layersBySection[s] = [];
 
@@ -360,7 +357,7 @@
     return `${m}m ${s}s`;
   }
 
-  // --- FIXED INTELLECTUAL DYNAMIC BATCH GENERATOR ---
+  // --- SMART SKIN-TONE BATCH GENERATOR (FIXED) ---
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
@@ -375,7 +372,7 @@
     if(!fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
     
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Dual Gender Batch...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Multi-Skin Batch...';
 
     const file = fileInput.files[0];
     const reader = new FileReader();
@@ -388,7 +385,6 @@
       if(totalLines === 0) { showToast('❌ Text file is empty!'); btn.disabled = false; btn.innerHTML = '🚀 Run Auto Generation'; return; }
       
       progressContainer.classList.remove('hidden');
-      
       let successCount = 0;
       const startTime = Date.now();
       
@@ -397,7 +393,7 @@
         elapsedEl.textContent = `Elapsed: ${Math.floor(elapsedSec)}s`;
       }, 1000);
 
-      // Advanced Trait Mapping Dictionary
+      // Create Fast Global Trait Map
       const globalTraitsLookup = {};
       for (let section of SECTIONS) {
         if (layersBySection[section]) {
@@ -420,65 +416,70 @@
       for (let i = 0; i < totalLines; i++) {
         const lineText = textLines[i];
         
-        // ১. জেন্ডার ডিটেকশন অ্যালগরিদম
+        // 1. Line-Based Gender Detection
         let lineGender = 'male'; 
         if (lineText.includes('♀') || lineText.toLowerCase().includes('female')) {
           lineGender = 'female';
         }
 
-        // টোকেনাইজেশন এবং ক্লিনিং (যেমন: "Background" স্কিপ করার প্রিপারেশন)
+        // Clean tokens from string line
         const tokens = lineText.split(',').map(t => t.replace(/♂|♀/g, '').replace(/\s+/g, ' ').trim()).filter(t => t.length > 0);
         
         if(tokens.length > 0) {
           let calculatedBatchLayers = [];
 
-          // ২. ব্যাকগ্রাউন্ড র্যান্ডমলি সিলেক্ট করে পুশ করা
+          // 2. Insert Random Background Layer
           const bgList = layersBySection['Background'] || [];
           if(bgList.length > 0) {
             const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
             calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
           }
 
-          // ৩. পারফেক্ট বেস ক্যারেক্টার (Alien, Ape, Zombie, Male Skin) ডিটেকশন ফিক্স
-          let startIdx = 0;
-          let baseToken = tokens[0].toLowerCase();
+          // 3. Advanced Base/Skin Tone Identification (Male 1, Male 2, Alien, Zombie)
+          let baseFound = false;
+          let matchedBaseLayer = null;
+          let baseTokenIndex = -1;
 
-          // যদি প্রথম টোকেন "background" হয়, তবে দ্বিতীয় টোকেনটি আসল বেস ক্যারেক্টার
-          if (baseToken === "background" && tokens.length > 1) {
-            startIdx = 1;
-            baseToken = tokens[1].toLowerCase();
-          }
-
-          // যদি লাইনে স্পষ্ট করে "Skin Tone" উল্লেখ থাকে (যেমন: "Male, Skin Tone 2 - Medium")
-          let searchBaseToken = baseToken;
-          for (let k = startIdx; k < tokens.length; k++) {
-            if (tokens[k].toLowerCase().includes("skin tone")) {
-              searchBaseToken = tokens[k].toLowerCase(); // Skin Tone টোকেনটিকে বেস বানাবো
-              if (k === startIdx + 1) {
-                startIdx = k; // লুকআপ লুপ থেকে একে স্কিপ করার জন্য ইনডেক্স শিফট
-              }
+          // Scan tokens to match exactly with any available Base in library
+          const allBasesInLibrary = layersBySection['Base'] || [];
+          
+          for(let tIdx = 0; tIdx < tokens.length; tIdx++) {
+            const currentTokenClean = tokens[tIdx].toLowerCase();
+            
+            // Exact full text match or partial match on Base traits (e.g. "male 1")
+            let match = allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === currentTokenClean && b.gender === lineGender) ||
+                        allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === currentTokenClean) ||
+                        allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase().includes(currentTokenClean) && b.gender === lineGender);
+            
+            if(match) {
+              matchedBaseLayer = match;
+              baseTokenIndex = tIdx;
+              baseFound = true;
               break;
             }
           }
 
-          const allBases = layersBySection['Base'] || [];
-          // প্রথমে নির্দিষ্ট জেন্ডার অনুযায়ী বেস খুঁজি, না মিললে যেকোনো জেন্ডার ব্যাকআপ
-          let matchedBase = allBases.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === searchBaseToken && b.gender === lineGender) ||
-                            allBases.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === searchBaseToken) ||
-                            allBases.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase().includes(baseToken) && b.gender === lineGender);
-
-          if (!matchedBase && allBases.length > 0) {
-            // যদি কিছুই না ম্যাচ করে, তবে লাইনের জেন্ডার অনুযায়ী প্রথম বেস অথবা ডিরেক্ট ফলব্যাক
-            const genderBases = allBases.filter(b => b.gender === lineGender);
-            matchedBase = genderBases.length > 0 ? genderBases[0] : allBases[0];
-          }
-          
-          if(matchedBase) {
-            calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id, gender: matchedBase.gender });
+          // Fallback if no base name specified in token row
+          if(!baseFound && allBasesInLibrary.length > 0) {
+            const genderFilteredBases = allBasesInLibrary.filter(b => b.gender === lineGender);
+            matchedBaseLayer = genderFilteredBases.length > 0 ? genderFilteredBases[0] : allBasesInLibrary[0];
           }
 
-          // ৪. বাকি সব ট্রেইটস (Mouth, Head, Eyes) প্রসেস করা
-          for (let j = startIdx + 1; j < tokens.length; j++) {
+          if(matchedBaseLayer) {
+            calculatedBatchLayers.push({ 
+              section: 'Base', 
+              value: matchedBaseLayer.value, 
+              imageUrl: matchedBaseLayer.imageUrl, 
+              layerId: matchedBaseLayer.id, 
+              gender: matchedBaseLayer.gender 
+            });
+          }
+
+          // 4. Map remaining Accessory/Traits tokens
+          for (let j = 0; j < tokens.length; j++) {
+            // Skip the token that was already used as Base Skin
+            if (j === baseTokenIndex) continue; 
+            
             const traitToken = tokens[j].toLowerCase();
             if (globalTraitsLookup[traitToken]) {
               let foundLayer = globalTraitsLookup[traitToken][lineGender] || globalTraitsLookup[traitToken]['male'] || globalTraitsLookup[traitToken]['female'];
@@ -496,7 +497,7 @@
           }
 
           try {
-            // সেকশনের রুলস অনুযায়ী লেয়ার সর্টিং (যাতে ব্যাকগ্রাউন্ড নিচে আর চোখ-টুপি উপরে থাকে)
+            // Enforce proper z-index composite sorting
             calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
             const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
@@ -506,7 +507,7 @@
             const batchNFTObject = {
               id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
               name: `Artifact #${currentIndexNo}`,
-              description: `Smart match procedurally generated ${lineGender} punk unit.`,
+              description: `Smart multi-skin generated ${lineGender} punk.`,
               image: generatedImg,
               attributes: computedAttributes,
               layers: calculatedBatchLayers,
@@ -519,11 +520,11 @@
             nfts.push(batchNFTObject);
             successCount++;
           } catch(err) {
-            console.error("Row error:", err);
+            console.error("Batch image process fail:", err);
           }
         }
 
-        // ৫. প্রগ্রেসবার আপডেট ও ট্র্যাকিং ক্যালকুলেশন
+        // 5. Track Progression Calculations UI
         const processedCount = i + 1;
         const pct = Math.round((processedCount / totalLines) * 100);
         textCountEl.textContent = `Processing: ${processedCount} / ${totalLines} (${lineGender.toUpperCase()})`;
@@ -544,7 +545,7 @@
       
       btn.disabled = false;
       btn.innerHTML = '🚀 Run Intelligent Auto Generation';
-      showToast(`🎉 Generated ${successCount} NFTs successfully!`);
+      showToast(`🎉 Generated ${successCount} Multi-Skin NFTs successfully!`);
       setTimeout(() => { progressContainer.classList.add('hidden'); }, 3000);
       switchTab('collection');
     };
@@ -666,12 +667,7 @@
     let html = '';
     for(let section of SECTIONS) {
       let layers = layersBySection[section] || [];
-      
-      // Apply Filter
-      if(libraryGenderFilter !== 'all') {
-        layers = layers.filter(l => l.gender === libraryGenderFilter);
-      }
-
+      if(libraryGenderFilter !== 'all') { layers = layers.filter(l => l.gender === libraryGenderFilter); }
       const isOpen = openSectionLayers === section;
       html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleSectionLayers('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-raj font-bold text-blue-900">${section} (${layers.length})</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
       if(isOpen) {
@@ -694,12 +690,7 @@
     let html = '';
     for(let section of SECTIONS) {
       let layers = layersBySection[section] || [];
-      
-      // Filter out creator mode gender (Background stays global)
-      if(section !== "Background") {
-        layers = layers.filter(l => l.gender === creatorGenderMode);
-      }
-
+      if(section !== "Background") { layers = layers.filter(l => l.gender === creatorGenderMode); }
       if(!layers.length) continue;
       const isOpen = openSectionCreate === section;
       const selectedLayer = selectedLayersArray.find(l => l.section === section);
@@ -715,20 +706,16 @@
       }
       html += `</div>`;
     }
-    container.innerHTML = html || '<div class="text-center p-6 text-gray-500">No layers matched for this gender selection.</div>';
+    container.innerHTML = html || '<div class="text-center p-6 text-gray-500">No layers matched.</div>';
     lucide.createIcons();
     updateOrderPreview();
   }
 
   function updateOrderPreview() { 
-    const div = document.getElementById('order-preview-list'); 
-    if(!div) return; 
+    const div = document.getElementById('order-preview-list'); if(!div) return; 
     if(selectedLayersArray.length === 0) { div.innerHTML = '<span class="text-gray-500">No layers selected</span>'; return; }
     let sortedPreview = [...selectedLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    div.innerHTML = sortedPreview.map((l, idx) => {
-      const genSymbol = l.gender === 'female' ? '<span class="text-pink-600 font-bold">♀</span>' : '<span class="text-blue-600 font-bold">♂</span>';
-      return `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)} (${genSymbol})</span>`;
-    }).join(''); 
+    div.innerHTML = sortedPreview.map((l, idx) => `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)}</span>`).join(''); 
   }
   
   async function updateLivePreview() { 
@@ -745,28 +732,18 @@
   }
 
   function renderCollection() {
-    const container = document.getElementById('nft-list'); 
-    const empty = document.getElementById('nft-empty'); 
-    const countDiv = document.getElementById('nft-count');
-    if(!container) return;
-    
-    if(!nfts.length) { container.innerHTML=''; empty.classList.remove('hidden'); countDiv.innerHTML=''; return; }
+    const container = document.getElementById('nft-list'); const empty = document.getElementById('nft-empty'); const countDiv = document.getElementById('nft-count');
+    if(!container) return; if(!nfts.length) { container.innerHTML=''; empty.classList.remove('hidden'); countDiv.innerHTML=''; return; }
     empty.classList.add('hidden');
 
     let totalMatchedCount = 0;
     container.innerHTML = nfts.map(nft => {
-      const match = matchWithMaster(nft.attributes);
-      if (match.matched) totalMatchedCount++;
+      const match = matchWithMaster(nft.attributes); if (match.matched) totalMatchedCount++;
       const matchHtml = match.matched ? `<span class="match-badge">✅ Match #${match.matchId}</span>` : `<span class="nomatch-badge">❌ No Match</span>`;
       return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-raj font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-1" onclick="event.stopPropagation()"><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 p-1 rounded">📸</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 p-1 rounded">📄</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-100 text-red-600 p-1 rounded">🗑</button></div></div></div></div>`;
     }).join('');
 
-    countDiv.innerHTML = `
-      <div class="flex gap-2">
-        <span class="bg-blue-100 px-3 py-1 rounded-full text-blue-800 text-xs font-bold">Total: ${nfts.length}</span>
-        <span class="bg-green-100 px-3 py-1 rounded-full text-green-800 text-xs font-bold">Matched: ${totalMatchedCount}</span>
-      </div>
-    `;
+    countDiv.innerHTML = `<div class="flex gap-2"><span class="bg-blue-100 px-3 py-1 rounded-full text-blue-800 text-xs font-bold">Total: ${nfts.length}</span><span class="bg-green-100 px-3 py-1 rounded-full text-green-800 text-xs font-bold">Matched: ${totalMatchedCount}</span></div>`;
   }
 
   function downloadImage(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(nft) { const a=document.createElement('a'); a.href=nft.image; a.download=`${nft.number}.png`; a.click(); } }
@@ -780,8 +757,7 @@
   }
 
   async function downloadCollectionAsZip() {
-    if (!nfts.length) return;
-    const btn = event.target; const oText = btn.innerHTML; btn.innerHTML = 'Zipping...';
+    if (!nfts.length) return; const btn = event.target; const oText = btn.innerHTML; btn.innerHTML = 'Zipping...';
     try {
       const zip = new JSZip();
       for (let nft of nfts) {
@@ -793,8 +769,7 @@
       const content = await zip.generateAsync({type: "blob"});
       const link = document.createElement('a'); link.href = URL.createObjectURL(content); link.download = `Collection_${Date.now()}.zip`; link.click();
       showToast('🎉 Saved Zip Successfully!');
-    } catch (err) { showToast('ZIP failed'); }
-    btn.innerHTML = oText;
+    } catch (err) { showToast('ZIP failed'); } btn.innerHTML = oText;
   }
   
   function deleteNFT(id) { if(confirm('Delete?')) { nfts = nfts.filter(n=>String(n.id)!==String(id)); saveUserNFTs(); renderCollection(); } }
@@ -809,49 +784,31 @@
   }
 
   async function addLayer() { 
-    const url=document.getElementById('github-url').value.trim(); 
-    const val=document.getElementById('layer-value').value.trim(); 
-    const sec=document.getElementById('layer-section').value; 
-    const gen=document.querySelector('input[name="layer-gender"]:checked').value; 
-    
+    const url=document.getElementById('github-url').value.trim(); const val=document.getElementById('layer-value').value.trim(); const sec=document.getElementById('layer-section').value; const gen=document.querySelector('input[name="layer-gender"]:checked').value; 
     if(!url || !val) { showToast('❌ Fill all fields'); return; } 
     let finalUrl = url.includes('github.com') && !url.includes('raw.githubusercontent.com') ? url.replace('github.com','raw.githubusercontent.com').replace('/blob/','/') : url; 
-    
     const img = new Image(); img.crossOrigin = "Anonymous"; 
     img.onload = async () => { 
       await addLayerToFirebase(sec, { id: Date.now(), value: val, imageUrl: finalUrl, gender: gen, section: sec }); 
-      document.getElementById('github-url').value=''; document.getElementById('layer-value').value=''; 
-      showToast(`✅ Added ${val} (${gen.toUpperCase()})`); 
-    }; 
-    img.onerror=()=>showToast('Invalid image'); img.src=finalUrl; 
+      document.getElementById('github-url').value=''; document.getElementById('layer-value').value=''; showToast(`✅ Added ${val}`); 
+    }; img.onerror=()=>showToast('Invalid image'); img.src=finalUrl; 
   }
   
   function deleteLayer(section, id) { if(confirm('Delete layer?')) { deleteLayerFromFirebase(section, id); } }
 
   function switchTab(tabId) {
-    ['layers', 'create', 'collection'].forEach(t => {
-      document.getElementById(`panel-${t}`).classList.add('hidden');
-      document.getElementById(`tab-${t}`).classList.remove('active');
-    });
-    document.getElementById(`panel-${tabId}`).classList.remove('hidden');
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-    if(tabId === 'create') updateLivePreview();
+    ['layers', 'create', 'collection'].forEach(t => { document.getElementById(`panel-${t}`).classList.add('hidden'); document.getElementById(`tab-${t}`).classList.remove('active'); });
+    document.getElementById(`panel-${tabId}`).classList.remove('hidden'); document.getElementById(`tab-${tabId}`).classList.add('active'); if(tabId === 'create') updateLivePreview();
   }
 
   function toggleSectionLayers(section) { openSectionLayers = (openSectionLayers === section) ? null : section; renderSectionsLayers(); }
   function toggleCreateSection(section) { openSectionCreate = (openSectionCreate === section) ? null : section; renderCreateSections(); }
 
   const App = {
-    switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
-    toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections,
-    viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
-    downloadCollectionAsZip, clearMatchedCollection, setLibraryFilter, setCreatorGender
+    switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer, toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections, viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection, downloadCollectionAsZip, clearMatchedCollection, setLibraryFilter, setCreatorGender
   };
 
-  window.onload = function() {
-    loadUserNFTs(); listenToFirebaseLayers(); fetchMasterIndex(); renderCollection();
-    switchTab('layers'); lucide.createIcons();
-  }
+  window.onload = function() { loadUserNFTs(); listenToFirebaseLayers(); fetchMasterIndex(); renderCollection(); switchTab('layers'); lucide.createIcons(); }
 </script>
 </body>
 </html>
