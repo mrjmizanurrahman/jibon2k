@@ -30,7 +30,6 @@
       border-radius: 16px;
       border: 1px solid #93c5fd;
       transition: all 0.2s;
-      cursor: pointer;
     }
     .layer-item.selected {
       border-color: #3b82f6;
@@ -66,6 +65,8 @@
     .hidden { display: none; }
     .nft-input { background: white; border: 1px solid #cbd5e1; border-radius: 16px; padding: 12px 16px; width: 100%; outline: none; transition: 0.2s; }
     .nft-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px #93c5fd; }
+    .qty-input { width: 100%; text-align: center; border: 1px solid #93c5fd; border-radius: 8px; padding: 4px; font-size: 12px; font-weight: bold; margin-top: 4px; outline: none; }
+    .qty-input:focus { border-color: #2563eb; background-color: #eff6ff; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
   </style>
@@ -90,6 +91,7 @@
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
   </div>
 
+  <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
       <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
@@ -123,11 +125,13 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
+  <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
       <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> Punk #935 structural bypass and strict compatibility rules applied.
     </div>
 
+    <!-- AUTO GENERATOR WITH LAYER SEQUENCE COUNT -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="shuffle"></i> Smart Auto Generator</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
@@ -140,6 +144,7 @@
         </button>
       </div>
 
+      <!-- PROGRESS TRACKER SYSTEM -->
       <div id="batch-progress-container" class="hidden mt-4 p-4 bg-white rounded-xl border border-indigo-200">
         <div class="flex justify-between text-xs font-bold text-indigo-950 mb-1">
           <span id="progress-text-count">Processing: 0 / 0</span>
@@ -155,6 +160,7 @@
       </div>
     </div>
 
+    <!-- LIVE MANUAL GENERATOR PREVIEW -->
     <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
       <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
     </div>
@@ -165,6 +171,7 @@
     <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
+  <!-- PANEL 3: MY COLLECTION -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
       <div id="nft-count"></div>
@@ -181,8 +188,10 @@
       </div>
     </div>
     
+    <!-- NFT GRID LIST -->
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     
+    <!-- BUFFER LOAD MORE CONTAINER -->
     <div id="load-more-container" class="text-center py-4 hidden">
       <button onclick="App.loadMorePunks()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition duration-200">
         🔄 Load More Punks
@@ -223,6 +232,9 @@
   // Pagination Configuration Variables
   let currentRenderedCount = 0;
   const ITEMS_PER_PAGE = 30;
+
+  // Track layer limits/quantities globally
+  let layerQuantities = {};
 
   for(let s of SECTIONS) layersBySection[s] = [];
 
@@ -284,17 +296,11 @@
 
   function buildAttributes(orderedLayers) {
     const attrs = [];
-    let isPunk935Context = false;
-
     for(let layer of orderedLayers) {
-      if(layer.value && (layer.value.includes('935') || layer.value.includes('Special-935'))) {
-        isPunk935Context = true;
-      }
       if(layer.section === "Background") continue;
       let trait_type = (layer.section === "Base") ? "," : "Accessory";
       attrs.push({ trait_type: trait_type, value: layer.value });
     }
-    
     attrs.push({ trait_type: "Attribute Count", value: attrs.length.toString() });
     return attrs;
   }
@@ -320,7 +326,6 @@
       });
     }
     
-    // RAM OPTIMIZATION: Convert directly to Blob object string instead of raw Base64 data Uri string
     return new Promise(resolve => {
       canvas.toBlob((blob) => {
         resolve(URL.createObjectURL(blob));
@@ -330,7 +335,6 @@
 
   function getNextNumber() { return nfts.length + 1; }
 
-  // Fixed multi-selection handling logic for layers structure configuration
   function toggleLayerSelection(section, layerId, value, imageUrl, gender) {
     const existingIndex = selectedLayersArray.findIndex(l => l.section === section && l.layerId === layerId);
     if(existingIndex !== -1) {
@@ -343,6 +347,11 @@
     updateLivePreview();
   }
 
+  // Handle Typed Quantities
+  function updateLayerQuantity(layerId, value) {
+    layerQuantities[layerId] = parseInt(value) || 0;
+  }
+
   function formatTime(seconds) {
     if (isNaN(seconds) || seconds < 0) return 'Calculating...';
     if (seconds < 60) return `${Math.ceil(seconds)}s`;
@@ -351,7 +360,7 @@
     return `${m}m ${s}s`;
   }
 
-  // ULTRA HIGH PERFORMANCE SMART GENERATION METHOD (16GB RAM PROOF)
+  // ADVANCED AUTO GENERATOR INTEGRATING TYPED QUANTITY LIMITS
   async function startSmartAutoGeneration() {
     const countInput = document.getElementById('auto-generation-count');
     const totalCount = parseInt(countInput.value) || 0;
@@ -381,6 +390,9 @@
     let successCount = 0;
     const startTime = Date.now();
 
+    // Track how many times each layer is used inside this execution loop
+    let layerUsedTracker = {};
+
     let timerInterval = setInterval(() => {
       const elapsedSec = (Date.now() - startTime) / 1000;
       elapsedEl.textContent = `Elapsed: ${Math.floor(elapsedSec)}s`;
@@ -389,23 +401,40 @@
     for (let i = 0; i < totalCount; i++) {
       let calculatedBatchLayers = [];
 
+      // 1. Pick Background
       const bgList = layersBySection['Background'];
       const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
       calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
 
+      // 2. Pick Base
       const baseList = layersBySection['Base'];
       const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
       const targetGender = randomBase.gender || 'male'; 
       calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id, gender: targetGender });
 
+      // 3. Process remaining structural layers with explicit Quantity Checks
       for (let j = 2; j < SECTIONS.length; j++) {
         const currentSecName = SECTIONS[j];
         const sectionPool = layersBySection[currentSecName] || [];
-        const matchingGenderPool = sectionPool.filter(item => !item.gender || item.gender === targetGender);
+        
+        // Filter pool based on gender and specified quantity rules
+        const validPool = sectionPool.filter(item => {
+          // Check gender compatibility
+          if (item.gender && item.gender !== targetGender) return false;
+          
+          // Check user typed manual limit bounds
+          const maxAllowed = layerQuantities[item.id];
+          if (maxAllowed !== undefined && maxAllowed !== "" && maxAllowed > 0) {
+            const currentUsedCount = layerUsedTracker[item.id] || 0;
+            if (currentUsedCount >= maxAllowed) return false; // Skip if limit reached
+          }
+          return true;
+        });
 
-        if (matchingGenderPool.length > 0) {
+        if (validPool.length > 0) {
+          // Random probability factor to keep organic look
           if (Math.random() > 0.4) {
-            const chosenLayer = matchingGenderPool[Math.floor(Math.random() * matchingGenderPool.length)];
+            const chosenLayer = validPool[Math.floor(Math.random() * validPool.length)];
             calculatedBatchLayers.push({
               section: currentSecName,
               value: chosenLayer.value,
@@ -413,6 +442,9 @@
               layerId: chosenLayer.id,
               gender: chosenLayer.gender
             });
+
+            // Increment usage tracker
+            layerUsedTracker[chosenLayer.id] = (layerUsedTracker[chosenLayer.id] || 0) + 1;
           }
         }
       }
@@ -460,7 +492,6 @@
 
       remainingEl.textContent = `Estimated Time Remaining: ${formatTime(remainingTimeSec)}`;
       
-      // GC Allocation breathing room setup
       if(i % 50 === 0) {
         await new Promise(r => setTimeout(r, 30));
       }
@@ -610,6 +641,7 @@
     lucide.createIcons();
   }
 
+  // UPDATED METHOD: RENDERS INTERACTIVE QUANTITY TYPE BOX UNDER EACH TRAIT
   function renderCreateSections() {
     const container = document.getElementById('create-sections-container');
     if(!container) return;
@@ -627,7 +659,20 @@
         layers.forEach(layer => {
           const isSel = selectedLayersArray.some(l => l.section === section && l.layerId === layer.id);
           const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
-          html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-2 cursor-pointer ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}<p class="text-xs text-center mt-1 font-medium">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
+          const savedQty = layerQuantities[layer.id] || '';
+          
+          html += `
+            <div class="layer-item p-2 ${isSel?'selected':''}">
+              <div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="cursor-pointer">
+                <img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">
+                ${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}
+                <p class="text-xs text-center mt-1 font-medium truncate">${escapeHtml(layer.value)} ${genSymbol}</p>
+              </div>
+              <div class="mt-2 pt-1 border-t border-dashed border-gray-300">
+                <label class="block text-[10px] font-bold text-gray-500 text-center">Set Max Qty:</label>
+                <input type="number" min="0" placeholder="Infinity" value="${savedQty}" oninput="App.updateLayerQuantity('${layer.id}', this.value)" class="qty-input" placeholder="Qty">
+              </div>
+            </div>`;
         });
         html += `</div>`;
       }
@@ -679,7 +724,6 @@
     } 
   }
 
-  // OPTIMIZED PAGINATION RE-RENDER CORE ENGINE
   function renderCollection() {
     const container = document.getElementById('nft-list'); 
     const empty = document.getElementById('nft-empty'); 
@@ -707,7 +751,6 @@
     if(clearMatchedBtn) clearMatchedBtn.classList.remove('hidden');
     if(downloadZipBtn) downloadZipBtn.classList.remove('hidden');
 
-    // Calculate overall stats dynamically
     let totalMatchedCount = 0;
     nfts.forEach(nft => {
       const match = matchWithMaster(nft.attributes);
@@ -721,7 +764,6 @@
       </div>
     `;
 
-    // Reset pagination window view bound if empty/initial state
     if (currentRenderedCount === 0) {
       container.innerHTML = '';
       currentRenderedCount = Math.min(nfts.length, ITEMS_PER_PAGE);
@@ -737,7 +779,6 @@
 
     container.innerHTML = finalCardsHtml;
 
-    // Buffer Pagination Controller Trigger evaluation
     if (currentRenderedCount < nfts.length) {
       loadMoreContainer.classList.remove('hidden');
     } else {
@@ -745,7 +786,6 @@
     }
   }
 
-  // BUFFER SYSTEM INTERFACE CALL
   function loadMorePunks() {
     currentRenderedCount = Math.min(nfts.length, currentRenderedCount + ITEMS_PER_PAGE);
     renderCollection();
@@ -887,7 +927,6 @@
     showToast('🎉 NFT Layers Updated successfully!');
   }
 
-  // Fixed fetch download mapping to handle internal structural blob paths perfectly
   async function downloadImage(id) { 
     const nft = nfts.find(n=>String(n.id)===String(id)); 
     if(nft) { 
@@ -1015,7 +1054,8 @@
     toggleLayerSelection, startSmartAutoGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
     downloadCollectionAsZip, clearMatchedCollection,
-    openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT, loadMorePunks
+    openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT, loadMorePunks,
+    updateLayerQuantity
   };
 
   window.onload = function() {
