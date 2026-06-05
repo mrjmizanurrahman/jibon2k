@@ -351,7 +351,7 @@
 
     reader.onload = async function(e) {
       const textContent = e.target.result;
-      const textLines = textContent.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const textLines = textContent.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
       const totalLines = textLines.length;
       
       if(totalLines === 0) { showToast('❌ Text file is empty!'); btn.disabled = false; btn.innerHTML = '🚀 Run Auto Batch Generation'; return; }
@@ -375,7 +375,8 @@
               section: section,
               value: layer.value,
               imageUrl: layer.imageUrl,
-              id: layer.id
+              id: layer.id,
+              gender: layer.gender || 'male'
             };
           });
         }
@@ -396,17 +397,17 @@
 
           const bgList = layersBySection['Background'];
           const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-          calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id });
+          calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender || 'male' });
 
           const baseToken = tokens[0].toLowerCase();
           const matchedBase = layersBySection['Base'].find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === baseToken);
           
           if (matchedBase) {
-            calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id });
+            calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id, gender: matchedBase.gender || 'male' });
           } else {
             const baseList = layersBySection['Base'];
             const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
-            calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id });
+            calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id, gender: randomBase.gender || 'male' });
           }
 
           for (let j = 1; j < tokens.length; j++) {
@@ -418,14 +419,14 @@
                   section: foundLayer.section, 
                   value: foundLayer.value, 
                   imageUrl: foundLayer.imageUrl, 
-                  layerId: foundLayer.id 
+                  layerId: foundLayer.id,
+                  gender: foundLayer.gender
                 });
               }
             }
           }
 
           try {
-            // Sort standard order internally
             calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
             const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
@@ -465,7 +466,7 @@
         const remainingTimeSec = (remainingLines * avgTimePerLineMs) / 1000;
 
         remainingEl.textContent = `Estimated Time Remaining: ${formatTime(remainingTimeSec)}`;
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise(r => setTimeout(r, 15));
       }
 
       clearInterval(timerInterval);
@@ -501,15 +502,13 @@
     }
   }
 
-  // ONE-CLICK SYSTEM TO WIPE ONLY MATCHED ITEMS
   function clearMatchedCollection() {
     if(!nfts.length) { showToast('❌ No items inside collection data.'); return; }
     
-    // Identify who matches
     const beforeCount = nfts.length;
     nfts = nfts.filter(nft => {
       const matchResult = matchWithMaster(nft.attributes);
-      return !matchResult.matched; // Keep only if NOT matched
+      return !matchResult.matched;
     });
     
     const removedCount = beforeCount - nfts.length;
@@ -715,14 +714,12 @@
     container.innerHTML = finalCardsHtml;
   }
 
-  // EDITED PANE REARRANGEMENTS & IMPLEMENTATION OF CUSTOM MENTIONED SEQUENCE ORDER
   function openNFTEditor(id) {
     const nft = nfts.find(n => String(n.id) === String(id));
     if (!nft) return;
     
     editingNftId = id;
     
-    // Sort custom layers explicitly dynamically based on targeted specified array sequence before populating rows
     let baseLayers = nft.layers ? [...nft.layers] : [];
     baseLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     editingLayersArray = baseLayers;
@@ -837,7 +834,6 @@
 
     showToast('⚡ Processing Composite Redraw...');
     
-    // Save exactly using order sorted inside dynamic modal structure configuration
     const newImage = await compositeFromSelected(editingLayersArray, true);
     const newAttributes = buildAttributes(editingLayersArray);
 
@@ -888,7 +884,7 @@
       showToast('🎉 Collection downloaded successfully!');
     } catch (err) {
       showToast('❌ ZIP generation failed');
-    } {
+    } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
     }
