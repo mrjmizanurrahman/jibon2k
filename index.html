@@ -360,7 +360,7 @@
     return `${m}m ${s}s`;
   }
 
-  // --- INTELLECTUAL GENDER SYMBOL DETECTION BATCH GENERATOR ---
+  // --- FIXED INTELLECTUAL DYNAMIC BATCH GENERATOR ---
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
@@ -397,7 +397,7 @@
         elapsedEl.textContent = `Elapsed: ${Math.floor(elapsedSec)}s`;
       }, 1000);
 
-      // Advanced Master lookup index map based on Clean Name + Gender Tag
+      // Advanced Trait Mapping Dictionary
       const globalTraitsLookup = {};
       for (let section of SECTIONS) {
         if (layersBySection[section]) {
@@ -420,43 +420,67 @@
       for (let i = 0; i < totalLines; i++) {
         const lineText = textLines[i];
         
-        // Auto Gender Detection Algorithm inside raw line
+        // ১. জেন্ডার ডিটেকশন অ্যালগরিদম
         let lineGender = 'male'; 
         if (lineText.includes('♀') || lineText.toLowerCase().includes('female')) {
           lineGender = 'female';
         }
 
+        // টোকেনাইজেশন এবং ক্লিনিং (যেমন: "Background" স্কিপ করার প্রিপারেশন)
         const tokens = lineText.split(',').map(t => t.replace(/♂|♀/g, '').replace(/\s+/g, ' ').trim()).filter(t => t.length > 0);
         
         if(tokens.length > 0) {
           let calculatedBatchLayers = [];
 
-          // 1. Pick Background
+          // ২. ব্যাকগ্রাউন্ড র্যান্ডমলি সিলেক্ট করে পুশ করা
           const bgList = layersBySection['Background'] || [];
           if(bgList.length > 0) {
             const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
             calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
           }
 
-          // 2. Pick Gender Matched Base Layer
-          const baseToken = tokens[0].toLowerCase();
-          const genderSpecificBases = (layersBySection['Base'] || []).filter(b => b.gender === lineGender);
-          
-          let matchedBase = genderSpecificBases.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === baseToken);
-          if (!matchedBase && (layersBySection['Base'] || []).length > 0) {
-            // fallback to any base matched or random from line specific gender
-            matchedBase = genderSpecificBases.length > 0 ? genderSpecificBases[0] : layersBySection['Base'][0];
+          // ৩. পারফেক্ট বেস ক্যারেক্টার (Alien, Ape, Zombie, Male Skin) ডিটেকশন ফিক্স
+          let startIdx = 0;
+          let baseToken = tokens[0].toLowerCase();
+
+          // যদি প্রথম টোকেন "background" হয়, তবে দ্বিতীয় টোকেনটি আসল বেস ক্যারেক্টার
+          if (baseToken === "background" && tokens.length > 1) {
+            startIdx = 1;
+            baseToken = tokens[1].toLowerCase();
+          }
+
+          // যদি লাইনে স্পষ্ট করে "Skin Tone" উল্লেখ থাকে (যেমন: "Male, Skin Tone 2 - Medium")
+          let searchBaseToken = baseToken;
+          for (let k = startIdx; k < tokens.length; k++) {
+            if (tokens[k].toLowerCase().includes("skin tone")) {
+              searchBaseToken = tokens[k].toLowerCase(); // Skin Tone টোকেনটিকে বেস বানাবো
+              if (k === startIdx + 1) {
+                startIdx = k; // লুকআপ লুপ থেকে একে স্কিপ করার জন্য ইনডেক্স শিফট
+              }
+              break;
+            }
+          }
+
+          const allBases = layersBySection['Base'] || [];
+          // প্রথমে নির্দিষ্ট জেন্ডার অনুযায়ী বেস খুঁজি, না মিললে যেকোনো জেন্ডার ব্যাকআপ
+          let matchedBase = allBases.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === searchBaseToken && b.gender === lineGender) ||
+                            allBases.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === searchBaseToken) ||
+                            allBases.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase().includes(baseToken) && b.gender === lineGender);
+
+          if (!matchedBase && allBases.length > 0) {
+            // যদি কিছুই না ম্যাচ করে, তবে লাইনের জেন্ডার অনুযায়ী প্রথম বেস অথবা ডিরেক্ট ফলব্যাক
+            const genderBases = allBases.filter(b => b.gender === lineGender);
+            matchedBase = genderBases.length > 0 ? genderBases[0] : allBases[0];
           }
           
           if(matchedBase) {
             calculatedBatchLayers.push({ section: 'Base', value: matchedBase.value, imageUrl: matchedBase.imageUrl, layerId: matchedBase.id, gender: matchedBase.gender });
           }
 
-          // 3. Process remaining tokens with gender constraints
-          for (let j = 1; j < tokens.length; j++) {
+          // ৪. বাকি সব ট্রেইটস (Mouth, Head, Eyes) প্রসেস করা
+          for (let j = startIdx + 1; j < tokens.length; j++) {
             const traitToken = tokens[j].toLowerCase();
             if (globalTraitsLookup[traitToken]) {
-              // Priority given to matched line gender, fallback to whatever gender available
               let foundLayer = globalTraitsLookup[traitToken][lineGender] || globalTraitsLookup[traitToken]['male'] || globalTraitsLookup[traitToken]['female'];
               
               if(foundLayer && foundLayer.section !== 'Background' && foundLayer.section !== 'Base') {
@@ -472,6 +496,7 @@
           }
 
           try {
+            // সেকশনের রুলস অনুযায়ী লেয়ার সর্টিং (যাতে ব্যাকগ্রাউন্ড নিচে আর চোখ-টুপি উপরে থাকে)
             calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
             const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
@@ -480,7 +505,7 @@
             const currentIndexNo = getNextNumber();
             const batchNFTObject = {
               id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
-              name: `${tokens[0].includes('Skin Tone') ? '404 Punk' : 'Artifact'} #${currentIndexNo}`,
+              name: `Artifact #${currentIndexNo}`,
               description: `Smart match procedurally generated ${lineGender} punk unit.`,
               image: generatedImg,
               attributes: computedAttributes,
@@ -498,7 +523,7 @@
           }
         }
 
-        // Progress Calculations
+        // ৫. প্রগ্রেসবার আপডেট ও ট্র্যাকিং ক্যালকুলেশন
         const processedCount = i + 1;
         const pct = Math.round((processedCount / totalLines) * 100);
         textCountEl.textContent = `Processing: ${processedCount} / ${totalLines} (${lineGender.toUpperCase()})`;
