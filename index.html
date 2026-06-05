@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>404 PUNKS | Gender Advanced Mint + Smart Match System</title>
+  <title>404 PUNKS | Skin-Tone Advanced Mint + Smart Match System</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -80,7 +80,7 @@
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-bold">Gender Mandatory BG/Base v4.2</span>
+      <span class="text-xs px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-bold">Skin-Tone Mandatory v5.0</span>
     </div>
   </header>
 
@@ -94,10 +94,10 @@
   <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-5 rounded-2xl">
-      <h3 class="font-raj font-bold text-blue-900 mb-3 text-lg">➕ Add Layer to Global Library with Gender Tag</h3>
+      <h3 class="font-raj font-bold text-blue-900 mb-3 text-lg">➕ Add Layer to Global Library with Custom Name & Gender</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input type="text" id="github-url" placeholder="GitHub RAW Image URL (PNG)" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value Name (e.g., Male 1, Male 2, Female 1, Wild Hair)" class="nft-input">
+        <input type="text" id="layer-value" placeholder="Value Name (e.g., White Male, Brown Male, Midfemale, Alien)" class="nft-input">
         <select id="layer-section" class="nft-input">
           <option value="Background">Background</option>
           <option value="Base">Base (Gender Skin/Type)</option>
@@ -124,7 +124,6 @@
       </div>
     </div>
     
-    <!-- GENDER FILTER FOR VIEWING LIBRARY -->
     <div class="flex items-center gap-2 bg-white/80 p-3 rounded-xl border border-blue-200">
       <span class="text-xs font-bold text-slate-700 uppercase">Library Filter:</span>
       <button onclick="App.setLibraryFilter('all')" id="filter-all" class="text-xs font-bold px-3 py-1.5 bg-blue-600 text-white rounded-lg">All Layers</button>
@@ -138,7 +137,7 @@
   <!-- PANEL 2: MINT ENGINE -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700 bg-blue-50/50">
-      🛡️ <strong>Mandatory Engine Protection Active:</strong> টেক্সট ফাইলে ব্যাকগ্রাউন্ড বা বেস স্কিন টোন মিসিং থাকলেও সিস্টেম লাইব্রেরি থেকে অটোমেটিক অবাধ্যভাবে (Mandatory) লোড করে ইমেজ কমপ্লিট করবে।
+      🛡️ <strong>Custom Skin Tone Engine Active:</strong> টেক্সট ফাইলে `White Male`, `Brown Male` বা যেকোনো কাস্টম বেস টোকেন থাকলে সিস্টেম নিখুঁতভাবে ডিটেক্ট করতে পারবে।
     </div>
 
     <!-- AUTO BATCH GENERATOR -->
@@ -357,7 +356,7 @@
     return `${m}m ${s}s`;
   }
 
-  // --- MANDATORY BG & BASE AUTO GENERATOR ---
+  // --- AUTOMATIC BATCH TEXT GENERATOR WITH ADVANCED TOKEN MATCHING ---
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
@@ -372,7 +371,7 @@
     if(!fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
     
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Enforcing Mandatory Rules...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Skin Tones...';
 
     const file = fileInput.files[0];
     const reader = new FileReader();
@@ -416,9 +415,9 @@
       for (let i = 0; i < totalLines; i++) {
         const lineText = textLines[i];
         
-        // Line-Based Gender Detection
+        // Intelligent Row Gender Auto-Detection
         let lineGender = 'male'; 
-        if (lineText.includes('♀') || lineText.toLowerCase().includes('female')) {
+        if (lineText.includes('♀') || lineText.toLowerCase().includes('female') || lineText.toLowerCase().includes('woman')) {
           lineGender = 'female';
         }
 
@@ -427,25 +426,23 @@
         if(tokens.length > 0) {
           let calculatedBatchLayers = [];
 
-          // 🛡️ RULE 1: MANDATORY BACKGROUND ENFORCEMENT
+          // 🛡️ 1: MANDATORY BACKGROUND ENFORCEMENT
           const bgList = layersBySection['Background'] || [];
           let selectedBg = null;
 
-          // First try to look if any token matches Background names from library
           for(let token of tokens) {
             const tkClean = token.toLowerCase();
             let foundBg = bgList.find(b => b.value.toLowerCase() === tkClean || b.value.toLowerCase().includes(tkClean));
             if(foundBg) { selectedBg = foundBg; break; }
           }
-          // If no background match found in token string, pick a random background forcefully
           if(!selectedBg && bgList.length > 0) {
-            selectedBg = bgList[Math.floor(Math.random() * bgList.length)];
+            selectedBg = bgList[0];
           }
           if(selectedBg) {
             calculatedBatchLayers.push({ section: 'Background', value: selectedBg.value, imageUrl: selectedBg.imageUrl, layerId: selectedBg.id, gender: selectedBg.gender });
           }
 
-          // 🛡️ RULE 2: MANDATORY BASE SKIN ENFORCEMENT
+          // 🛡️ 2: MANDATORY SKIN-TONE BASE DETECTION (White Male, Brown Male, etc.)
           let matchedBaseLayer = null;
           let baseTokenIndex = -1;
           const allBasesInLibrary = layersBySection['Base'] || [];
@@ -453,9 +450,8 @@
           for(let tIdx = 0; tIdx < tokens.length; tIdx++) {
             const currentTokenClean = tokens[tIdx].toLowerCase();
             
-            let match = allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === currentTokenClean && b.gender === lineGender) ||
-                        allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === currentTokenClean) ||
-                        allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase().includes(currentTokenClean) && b.gender === lineGender);
+            let match = allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === currentTokenClean) ||
+                        allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase().includes(currentTokenClean));
             
             if(match) {
               matchedBaseLayer = match;
@@ -464,7 +460,7 @@
             }
           }
 
-          // If no Base found in text row, forcefully pick first matching base for that gender
+          // Force Default Skin Tone Base if missing from row
           if(!matchedBaseLayer && allBasesInLibrary.length > 0) {
             const genderFilteredBases = allBasesInLibrary.filter(b => b.gender === lineGender);
             matchedBaseLayer = genderFilteredBases.length > 0 ? genderFilteredBases[0] : allBasesInLibrary[0];
@@ -472,14 +468,15 @@
 
           if(matchedBaseLayer) {
             calculatedBatchLayers.push({ section: 'Base', value: matchedBaseLayer.value, imageUrl: matchedBaseLayer.imageUrl, layerId: matchedBaseLayer.id, gender: matchedBaseLayer.gender });
+            // Sync current line's actual gender with base properties
+            lineGender = matchedBaseLayer.gender || lineGender;
           }
 
-          // Process the remaining accessories/traits tokens
+          // Process remaining accessories
           for (let j = 0; j < tokens.length; j++) {
-            if (j === baseTokenIndex) continue; // Skip already used base skin token
+            if (j === baseTokenIndex) continue; 
             
             const traitToken = tokens[j].toLowerCase();
-            // Verify if it is not accidentally parsed as background name
             if(selectedBg && selectedBg.value.toLowerCase() === traitToken) continue;
 
             if (globalTraitsLookup[traitToken]) {
@@ -498,7 +495,6 @@
           }
 
           try {
-            // Sort canvas assembly layout sequence
             calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
             const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
@@ -508,7 +504,7 @@
             const batchNFTObject = {
               id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
               name: `Artifact #${currentIndexNo}`,
-              description: `Mandatory composite engine generated unit.`,
+              description: `Skin Tone Engine generated composite.`,
               image: generatedImg,
               attributes: computedAttributes,
               layers: calculatedBatchLayers,
@@ -521,11 +517,10 @@
             nfts.push(batchNFTObject);
             successCount++;
           } catch(err) {
-            console.error("Assembly crash:", err);
+            console.error("Assembly error:", err);
           }
         }
 
-        // Live Render Dashboard Metrics
         const processedCount = i + 1;
         const pct = Math.round((processedCount / totalLines) * 100);
         textCountEl.textContent = `Processing: ${processedCount} / ${totalLines} (${lineGender.toUpperCase()})`;
@@ -546,7 +541,7 @@
       
       btn.disabled = false;
       btn.innerHTML = '🚀 Run Intelligent Auto Generation';
-      showToast(`🎉 Mandatory rules complete. Generated ${successCount} items!`);
+      showToast(`🎉 Process complete! Generated ${successCount} Items.`);
       setTimeout(() => { progressContainer.classList.add('hidden'); }, 3000);
       switchTab('collection');
     };
@@ -655,7 +650,7 @@
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
           const isSel = selectedLayer && selectedLayer.layerId === layer.id; const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
-          html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-2 cursor-pointer ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}<p class="text-xs text-center mt-1 font-medium">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
+          html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-2 cursor-pointer ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}<p class="text-xs text-center mt-1 font-semibold">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
         });
         html += `</div>`;
       }
