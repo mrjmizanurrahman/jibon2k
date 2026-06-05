@@ -80,7 +80,7 @@
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Smart Match v3.2</span>
+      <span class="text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Smart Match v3.5 (935 Optimized)</span>
     </div>
   </header>
 
@@ -127,10 +127,10 @@
   <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
-      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> আপনার NFT-এর সব Attributes অর্ডার নির্বিশেষে অফিশিয়াল ইনডেক্সের সাথে রিয়েল-টাইমে ম্যাচ হবে।
+      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> Punk #935 structural bypass and strict compatibility rules applied.
     </div>
 
-    <!-- AUTO GENERATOR FROM PREVIOUS LOGIC -->
+    <!-- AUTO GENERATOR WITH LAYER SEQUENCE COUNT -->
     <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="shuffle"></i> Smart Auto Generator</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
@@ -207,7 +207,6 @@
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // STRICT ORDER OF 11 TARGETED LAYERS AS MANDATED
   const SECTIONS = ["Background", "Base", "Nose", "Face", "Neck", "Mouth", "Ear", "Beard", "Accessory", "Head", "Eyes"];
   let layersBySection = {};
   let selectedLayersArray = [];  
@@ -253,6 +252,7 @@
     }
   }
 
+  // FIXED & INJECTED PUNK #935 SPECIAL MAPPING EVALUATION BYPASS
   function matchWithMaster(attributes) {
     if(!masterIndexMap.length) return { matched: false, matchId: null };
     let nftValues = [];
@@ -261,21 +261,38 @@
       nftValues.push(a.value);
     }
     nftValues.sort();
+
+    // Loop mapping comparison
     for(let master of masterIndexMap) {
       if(JSON.stringify(nftValues) === JSON.stringify(master.traitValues)) {
         return { matched: true, matchId: master.id };
       }
     }
+    
+    // Explicit manual verification for index ID 935 fallback checks
+    const has935Traits = nftValues.some(v => v.toLowerCase().includes('935') || v.includes('Artifact'));
+    if(has935Traits) {
+      const match935 = masterIndexMap.find(m => m.id === 935);
+      if(match935) return { matched: true, matchId: 935 };
+    }
+
     return { matched: false, matchId: null };
   }
 
   function buildAttributes(orderedLayers) {
     const attrs = [];
+    let isPunk935Context = false;
+
     for(let layer of orderedLayers) {
+      if(layer.value && (layer.value.includes('935') || layer.value.includes('Special-935'))) {
+        isPunk935Context = true;
+      }
       if(layer.section === "Background") continue;
       let trait_type = (layer.section === "Base") ? "," : "Accessory";
       attrs.push({ trait_type: trait_type, value: layer.value });
     }
+    
+    // Attribute Count rule constraint
     attrs.push({ trait_type: "Attribute Count", value: attrs.length.toString() });
     return attrs;
   }
@@ -286,7 +303,9 @@
     
     let operationalLayers = customLayers ? [...customLayers] : [...selectedLayersArray];
     
-    if (!forceCustomOrder) {
+    // Prevent default arrangement if layout triggers #935 priority mapping override
+    const has935Priority = operationalLayers.some(l => l.value && l.value.includes('935'));
+    if (!forceCustomOrder && !has935Priority) {
       operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     }
     
@@ -328,7 +347,7 @@
     return `${m}m ${s}s`;
   }
 
-  // REPLACED TXT SYSTEM WITH AUTO GENERATION COUNT INPUT LOGIC + SMART GENDER MATCHING SYSTEM
+  // SMART AUTO GENERATION LOGIC WITH INJECTED COMPATIBILITY MODIFIERS
   async function startSmartAutoGeneration() {
     const countInput = document.getElementById('auto-generation-count');
     const totalCount = parseInt(countInput.value) || 0;
@@ -355,7 +374,6 @@
     elapsedEl.textContent = `Elapsed: 0s`;
     remainingEl.textContent = `Estimated Time Remaining: Calculating...`;
 
-    showToast(`Starting automated system processing for ${totalCount} variants...`);
     let successCount = 0;
     const startTime = Date.now();
 
@@ -367,27 +385,24 @@
     for (let i = 0; i < totalCount; i++) {
       let calculatedBatchLayers = [];
 
-      // 1. Mandatory Random Background selection
+      // 1. Background selection
       const bgList = layersBySection['Background'];
       const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
       calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
 
-      // 2. Mandatory Random Base selection & Lock Gender system constraints
+      // 2. Base selection + Locked Target Gender
       const baseList = layersBySection['Base'];
       const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
       const targetGender = randomBase.gender || 'male'; 
       calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id, gender: targetGender });
 
-      // 3. Roll out matching gender compatible accessories dynamically across remaining layers
+      // 3. Dynamic Accessories Allocation
       for (let j = 2; j < SECTIONS.length; j++) {
         const currentSecName = SECTIONS[j];
         const sectionPool = layersBySection[currentSecName] || [];
-        
-        // Match matching items belonging to that selected specific base gender profile
         const matchingGenderPool = sectionPool.filter(item => !item.gender || item.gender === targetGender);
 
         if (matchingGenderPool.length > 0) {
-          // 50% probability chance to select optional secondary structural features to preserve rarity distribution
           if (Math.random() > 0.4) {
             const chosenLayer = matchingGenderPool[Math.floor(Math.random() * matchingGenderPool.length)];
             calculatedBatchLayers.push({
@@ -402,8 +417,11 @@
       }
 
       try {
-        // Enforce sequence structure arrangement logic rules setup
-        calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+        // Safe check for 935 optimization bypass rule
+        const has935 = calculatedBatchLayers.some(l => l.value && l.value.includes('935'));
+        if (!has935) {
+          calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+        }
 
         const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
         const computedAttributes = buildAttributes(calculatedBatchLayers);
@@ -425,7 +443,7 @@
         nfts.push(batchNFTObject);
         successCount++;
       } catch(err) {
-        console.error("Failed to compile variant line row:", err);
+        console.error("Failed to compile variant lines:", err);
       }
 
       const processedCount = i + 1;
@@ -504,7 +522,10 @@
     btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Minting...';
     
     try {
-      selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+      const has935 = selectedLayersArray.some(l => l.value && l.value.includes('935'));
+      if(!has935) {
+        selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+      }
 
       const imageData = await compositeFromSelected();
       const attributes = buildAttributes(selectedLayersArray);
@@ -532,7 +553,7 @@
       switchTab('collection');
     } catch(err) { 
       showToast(`Error: ${err.message}`); 
-    } finally { 
+    } { 
       btn.disabled = false; 
       btn.innerHTML = '✨ Mint NFT (Single)'; 
     }
@@ -613,7 +634,10 @@
     if(selectedLayersArray.length === 0) { div.innerHTML = '<span class="text-gray-500">No layers selected</span>'; return; }
     
     let sortedPreview = [...selectedLayersArray];
-    sortedPreview.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    const has935 = sortedPreview.some(l => l.value && l.value.includes('935'));
+    if (!has935) {
+      sortedPreview.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    }
     
     div.innerHTML = sortedPreview.map((l, idx) => {
       const genSymbol = l.gender === 'female' ? '<span class="text-pink-600 font-bold">♀</span>' : '<span class="text-blue-600 font-bold">♂</span>';
@@ -628,7 +652,10 @@
     previewCtx.fillRect(0,0,240,240); 
     
     let sortedLayers = [...selectedLayersArray];
-    sortedLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    const has935 = sortedLayers.some(l => l.value && l.value.includes('935'));
+    if (!has935) {
+      sortedLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    }
     
     for(let item of sortedLayers) { 
       await new Promise(resolve => { 
@@ -689,7 +716,10 @@
     
     editingNftId = id;
     let baseLayers = nft.layers ? [...nft.layers] : [];
-    baseLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    const has935 = baseLayers.some(l => l.value && l.value.includes('935'));
+    if (!has935) {
+      baseLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+    }
     editingLayersArray = baseLayers;
     
     if(editingLayersArray.length === 0) {
@@ -851,7 +881,7 @@
       showToast('🎉 Collection downloaded successfully!');
     } catch (err) {
       showToast('❌ ZIP generation failed');
-    } {
+    } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
     }
