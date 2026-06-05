@@ -113,7 +113,6 @@
             <input type="radio" name="layer-gender" value="female" class="w-4 h-4 text-pink-500"> ♀ Female
           </label>
         </div>
-        <!-- NEW INPUT FOR MAX LIMIT -->
         <input type="number" id="layer-max-count" placeholder="Max NFT Count Limit (e.g., 500, 1000)" min="1" value="500" class="nft-input md:col-span-2 font-bold text-indigo-400">
         
         <button onclick="App.addLayer()" class="btn-primary text-white py-2 rounded-xl font-bold md:col-span-2">➕ Sync to Firebase</button>
@@ -122,27 +121,37 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
-  <!-- PANEL 2: MINT NFT -->
+  <!-- PANEL 2: MINT NFT (UPDATED LAYOUT) -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-slate-300 border-l-4 border-indigo-500 bg-indigo-950/20">
       🚀 <strong>22,000+ Collection Target Enabled:</strong> System process line fully clear. Target data direct apnar PC er 16GB RAM memory vector optimization use korbe. 
     </div>
 
-    <!-- AUTO GENERATOR -->
-    <div class="glass-card p-5 rounded-2xl border-2 border-indigo-500 bg-slate-900/40">
-      <h3 class="font-raj font-bold text-indigo-400 mb-2 flex items-center gap-2"><i data-lucide="shuffle"></i> 100% Unique RAM-Optimized 22,000+ Generator Engine</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1">Total NFTs to mass-produce:</label>
-          <input type="number" id="auto-generation-count" min="1" max="100000" value="22000" class="nft-input font-bold text-indigo-400">
+    <!-- MINT CONTROL INTERFACE (BUTTON ON TOP, QUANTITY INPUT ON BOTTOM) -->
+    <div class="glass-card p-6 rounded-2xl border-2 border-indigo-500 bg-slate-900/60 shadow-xl space-y-4">
+      <h3 class="font-raj font-bold text-lg text-indigo-400 flex items-center gap-2">
+        <i data-lucide="shuffle"></i> 100% Unique Anti-Duplicate Batch Generator
+      </h3>
+      
+      <!-- 1. MINT BUTTON ON TOP -->
+      <button id="mintButtonBatch" onclick="App.startSmartAutoGeneration()" class="btn-generate w-full text-white py-4 px-6 rounded-xl font-extrabold text-lg flex items-center justify-center gap-2 shadow-lg tracking-wider">
+        🚀 Run Custom Batch Mint Engine
+      </button>
+
+      <!-- 2. QUANTITY INPUT FIELD ON BOTTOM -->
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+        <label class="block text-xs font-bold text-indigo-300 uppercase tracking-widest mb-2 text-center">
+          👇 কতগুলো NFT নিয়ে কালেকশন বানাতে চান? (Enter Quantity)
+        </label>
+        <div class="flex items-center justify-center gap-3 max-w-xs mx-auto">
+          <button onclick="document.getElementById('auto-generation-count').stepDown()" class="bg-slate-800 hover:bg-slate-700 text-white font-black px-4 py-2 rounded-lg text-xl border border-slate-700">-</button>
+          <input type="number" id="auto-generation-count" min="1" max="100000" value="22000" class="nft-input font-black text-center text-xl text-emerald-400 focus:border-emerald-500 bg-slate-900">
+          <button onclick="document.getElementById('auto-generation-count').stepUp()" class="bg-slate-800 hover:bg-slate-700 text-white font-black px-4 py-2 rounded-lg text-xl border border-slate-700">+</button>
         </div>
-        <button id="mintButtonBatch" onclick="App.startSmartAutoGeneration()" class="btn-generate text-white py-3 px-6 rounded-xl font-bold flex items-center justify-center gap-2 shadow-md">
-          🚀 Run Anti-Duplicate Generation
-        </button>
       </div>
 
       <!-- PROGRESS TRACKER SYSTEM -->
-      <div id="batch-progress-container" class="hidden mt-4 p-4 bg-slate-950 rounded-xl border border-indigo-900">
+      <div id="batch-progress-container" class="hidden p-4 bg-slate-950 rounded-xl border border-indigo-900">
         <div class="flex justify-between text-xs font-bold text-slate-200 mb-1">
           <span id="progress-text-count">Processing: 0 / 0</span>
           <span id="progress-skips-count" class="text-amber-400 font-bold">Duplicates Prevented: 0</span>
@@ -159,14 +168,23 @@
     </div>
 
     <!-- LIVE MANUAL GENERATOR PREVIEW -->
-    <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
-      <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+      <div class="glass-card p-5 flex flex-col items-center rounded-2xl justify-center h-full">
+        <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Live Manual Matrix</p>
+        <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[210px] h-[210px]"></canvas>
+      </div>
+      
+      <div class="md:col-span-2 space-y-4">
+        <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input font-bold">
+        <textarea id="nft-description" rows="2" placeholder="Description" class="nft-input text-sm">Limited glitch artifact from the 404 dimension.</textarea>
+        <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 w-full py-3 rounded-xl font-bold text-sm transition">
+          ✨ Mint Just This Single Custom Punk
+        </button>
+      </div>
     </div>
+
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
     <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-indigo-300 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
-    <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input">
-    <textarea id="nft-description" rows="2" placeholder="Description" class="nft-input">Limited glitch artifact from the 404 dimension.</textarea>
-    <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
   <!-- PANEL 3: MY COLLECTION -->
@@ -186,10 +204,8 @@
       </div>
     </div>
     
-    <!-- HIGH PERFORMANCE DYNAMIC GRID -->
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     
-    <!-- DYNAMIC PAGINATION ENGINE FOR 22K LOADING -->
     <div id="load-more-container" class="text-center mt-6 hidden">
         <button id="load-more-btn" onclick="App.loadMoreNFTs()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition duration-200 text-sm">
           🔄 Load Next Batch from 16GB RAM Buffer
@@ -201,7 +217,7 @@
   <div id="toast" class="hidden"></div>
 </div>
 
-<!-- DYNAMIC LAYER INJECTION MODAL / META-EDITOR -->
+<!-- DYNAMIC LAYER INJECTION MODAL -->
 <div id="edit-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden flex items-center justify-center z-[1000] p-4 overflow-y-auto">
   <div class="modal-content p-6 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-indigo-500/50 text-slate-200 space-y-4">
     <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -225,7 +241,7 @@
       </div>
     </div>
     <div>
-      <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2">Current Bound Vectors (Click layer to drop)</h4>
+      <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2">Current Bound Vectors</h4>
       <div id="edit-current-layers" class="flex flex-wrap gap-2 p-3 bg-slate-950 rounded-xl border border-slate-800"></div>
     </div>
     <div>
@@ -263,7 +279,6 @@
   let currentEditingNftId = null;
   let editingLayersArray = [];
   let openSectionEditor = null;
-
   let currentDisplayLimit = 500; 
 
   for(let s of SECTIONS) layersBySection[s] = [];
@@ -272,7 +287,7 @@
   function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
   function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
-  function saveUserNFTs() { try { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); } catch(e) { console.warn('Local Storage Full, RAM Vector Stream Engine Active.'); } }
+  function saveUserNFTs() { try { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); } catch(e) { console.warn('Memory Alert: Local Storage Engine Overflown.'); } }
 
   async function fetchMasterIndex() {
     try {
@@ -366,14 +381,11 @@
     return `${m}m ${s}s`;
   }
 
-  // HELPER FUNCTION TO TRACK LAYER USAGE COUNTS
   function getActiveLayerUsageCounts() {
     let counts = {};
     nfts.forEach(nft => {
       if(nft.layers) {
-        nft.layers.forEach(l => {
-          counts[l.layerId] = (counts[l.layerId] || 0) + 1;
-        });
+        nft.layers.forEach(l => { counts[l.layerId] = (counts[l.layerId] || 0) + 1; });
       }
     });
     return counts;
@@ -410,9 +422,7 @@
       existingDNASet.add(ids);
     });
 
-    // Generate dynamic tracking object based on existing collection
     let dynamicUsageTrack = getActiveLayerUsageCounts();
-
     let successCount = 0;
     let duplicateSkips = 0;
     let maxFailSafeAttempts = 500; 
@@ -436,17 +446,15 @@
         loopAttempts++;
         calculatedBatchLayers = [];
 
-        // Filter out backgrounds that reached limit
         const bgList = (layersBySection['Background'] || []).filter(item => {
           let currentCount = dynamicUsageTrack[item.id] || 0;
           let maxLimit = parseInt(item.maxCount) || 500;
           return currentCount < maxLimit;
         });
-        if(bgList.length === 0) break; // Stop if no available options left
+        if(bgList.length === 0) break; 
         const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
         calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, maxCount: randomBg.maxCount || 500 });
 
-        // Filter bases that reached limit
         const baseList = (layersBySection['Base'] || []).filter(item => {
           let currentCount = dynamicUsageTrack[item.id] || 0;
           let maxLimit = parseInt(item.maxCount) || 500;
@@ -459,8 +467,6 @@
 
         for (let j = 2; j < SECTIONS.length; j++) {
           const sectionPool = layersBySection[SECTIONS[j]] || [];
-          
-          // Filter out matching layers checking against their runtime dynamic limits
           const matchingGenderPool = sectionPool.filter(item => {
             const matchGender = !item.gender || item.gender === targetGender;
             const currentCount = dynamicUsageTrack[item.id] || 0;
@@ -484,11 +490,7 @@
         isUniqueFound = true;
       }
 
-      // If configuration space fails due to hard constraints limit
-      if(!isUniqueFound) {
-         duplicateSkips++;
-         continue;
-      }
+      if(!isUniqueFound) { duplicateSkips++; continue; }
 
       try {
         const generatedImg = await compositeFromSelectedFast(calculatedBatchLayers, true, imageCache, offscreenCanvas, offscreenCtx);
@@ -506,7 +508,6 @@
           createdAt: Date.now()
         });
 
-        // Instantly register limits into local tracking engine loop
         calculatedBatchLayers.forEach(layer => {
           dynamicUsageTrack[layer.layerId] = (dynamicUsageTrack[layer.layerId] || 0) + 1;
         });
@@ -536,8 +537,8 @@
     renderCollection();
     
     btn.disabled = false;
-    btn.innerHTML = '🚀 Run Anti-Duplicate Generation';
-    showToast(`🎉 Generation Complete! Total ${successCount} Items saved in Memory Array.`);
+    btn.innerHTML = '🚀 Run Custom Batch Mint Engine';
+    showToast(`🎉 Process Complete! Loaded ${successCount} Vectors.`);
     switchTab('collection');
   }
 
@@ -554,16 +555,14 @@
   }
 
   async function mintSingleNFT() {
-    if(!selectedLayersArray.length) return;
+    if(!selectedLayersArray.length) { showToast('❌ Select manual layers first!'); return; }
     
-    // Check Single Manual Mint Limit Block
     let usageCounts = getActiveLayerUsageCounts();
     for(let layer of selectedLayersArray){
        let currentUsed = usageCounts[layer.layerId] || 0;
        let allowedMax = parseInt(layer.maxCount) || 500;
        if(currentUsed >= allowedMax) {
-          showToast(`❌ layer limit crossed for: ${layer.value}`);
-          return;
+          showToast(`❌ layer limit crossed for: ${layer.value}`); return;
        }
     }
 
@@ -572,7 +571,7 @@
       showToast('❌ Matrix Clone Detected! Blocked.'); return;
     }
     const btn = document.getElementById('mintButtonSingle');
-    btn.disabled = true; btn.innerHTML = 'Syncing Buffer...';
+    btn.disabled = true; btn.innerHTML = 'Syncing...';
     try {
       const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
       const ctx = canvas.getContext('2d');
@@ -599,7 +598,7 @@
       showToast(`✅ Single Minted #${nextNum}`);
       switchTab('collection');
     } catch(err) { console.error(err); }
-    finally { btn.disabled = false; btn.innerHTML = '✨ Mint NFT (Single)'; }
+    finally { btn.disabled = false; btn.innerHTML = '✨ Mint Just This Single Custom Punk'; }
   }
 
   function listenToFirebaseLayers() {
@@ -617,18 +616,16 @@
     await database.ref(`layers/${section}`).set(filtered); 
   }
   
-  // UPDATE LAYER INDIVIDUAL MAXIMUM CONFIGURATION FROM INPUT 
   async function updateLayerLimit(section, layerId, newLimit) {
      let pool = layersBySection[section] || [];
      let index = pool.findIndex(l => String(l.id) === String(layerId));
      if(index !== -1) {
         pool[index].maxCount = parseInt(newLimit) || 0;
         await database.ref(`layers/${section}`).set(pool);
-        showToast('Limit Updated in Database Engine');
+        showToast('Limit Saved to Database Instance.');
      }
   }
 
-  // GLOBAL LAYER PANEL RENDER WITH COUNTER INPUT FIELD
   function renderSectionsLayers() {
     const container = document.getElementById('sections-container'); if(!container) return;
     let html = '';
@@ -645,16 +642,11 @@
           let limitMax = layer.maxCount || 500;
 
           html += `<div class="layer-item p-2 flex flex-col justify-between"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-slate-950"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)}</p>
-          
-          <!-- LIVE COUNTER STATUS -->
-          <div class="text-[11px] text-indigo-300 mt-1 font-mono">Used: ${countUsed} / Total Max: ${limitMax}</div>
-          
-          <!-- LIVE INPUT VALUE UPDATE FIELD -->
+          <div class="text-[11px] text-indigo-300 mt-1 font-mono">Used: ${countUsed} / Max: ${limitMax}</div>
           <div class="mt-2 flex items-center gap-1">
             <span class="text-[10px] text-slate-400">Limit:</span>
             <input type="number" value="${limitMax}" onchange="App.updateLayerLimit('${section}','${layer.id}', this.value)" class="w-full text-xs bg-slate-950 text-emerald-400 p-1 border border-slate-700 rounded text-center outline-none">
           </div>
-          
           <button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-400 text-[10px] w-full mt-2 bg-red-950/40 border border-red-900 rounded py-1">Delete</button></div>`;
         });
         html += `</div>`;
@@ -716,18 +708,12 @@
     const loadMoreBtnContainer = document.getElementById('load-more-container');
     
     if(!container) return;
-    
     if(!nfts.length) { 
-        container.innerHTML=''; 
-        empty.classList.remove('hidden'); 
-        countDiv.innerHTML=''; 
-        loadMoreBtnContainer.classList.add('hidden');
-        return; 
+        container.innerHTML=''; empty.classList.remove('hidden'); countDiv.innerHTML=''; loadMoreBtnContainer.classList.add('hidden'); return; 
     }
     empty.classList.add('hidden');
     
     const viewItems = nfts.slice(0, currentDisplayLimit);
-    
     container.innerHTML = viewItems.map(nft => {
       const isCryptoPunkMatch = matchWithMaster(nft.attributes).matched;
       const label = isCryptoPunkMatch ? `<span class="match-badge">⚠️ CryptoPunk Clone Blocked</span>` : `<span class="nomatch-badge">✅ Unique Design</span>`;
@@ -735,44 +721,30 @@
     }).join('');
     
     countDiv.innerHTML = `<span class="bg-indigo-950 text-indigo-300 font-bold px-4 py-1 rounded-full text-sm">Hardware Cache Load: ${nfts.length} Vectors Registered</span>`;
-    
     if(nfts.length > currentDisplayLimit) {
         loadMoreBtnContainer.classList.remove('hidden');
         document.getElementById('load-more-btn').textContent = `🔄 Load Next Batch (Showing ${viewItems.length} of ${nfts.length})`;
-    } else {
-        loadMoreBtnContainer.classList.add('hidden');
-    }
+    } else { loadMoreBtnContainer.classList.add('hidden'); }
   }
 
-  function loadMoreNFTs() {
-      currentDisplayLimit += 500; 
-      renderCollection();
-  }
+  function loadMoreNFTs() { currentDisplayLimit += 500; renderCollection(); }
 
   function openEditModal(id) {
     currentEditingNftId = id;
-    const targetNft = nfts.find(n => n.id === id);
-    if (!targetNft) return;
-
+    const targetNft = nfts.find(n => n.id === id); if (!targetNft) return;
     editingLayersArray = targetNft.layers ? [...targetNft.layers] : [];
     document.getElementById('edit-nft-name').value = targetNft.name || '';
     document.getElementById('edit-nft-description').value = targetNft.description || '';
-
     document.getElementById('edit-modal').classList.remove('hidden');
-    renderEditorLayersUI();
-    updateEditorLivePreview();
+    renderEditorLayersUI(); updateEditorLivePreview();
   }
 
-  function closeEditModal() {
-    document.getElementById('edit-modal').classList.add('hidden');
-    currentEditingNftId = null;
-    editingLayersArray = [];
-  }
+  function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); currentEditingNftId = null; editingLayersArray = []; }
 
   function renderEditorLayersUI() {
     const currentContainer = document.getElementById('edit-current-layers');
     if (editingLayersArray.length === 0) {
-      currentContainer.innerHTML = `<span class="text-xs text-slate-500">No vector layers bound to this item.</span>`;
+      currentContainer.innerHTML = `<span class="text-xs text-slate-500">No vector layers bound.</span>`;
     } else {
       currentContainer.innerHTML = editingLayersArray.map((l, index) => {
         return `<span onclick="App.removeLayerFromEditor(${index})" class="bg-indigo-900/50 hover:bg-red-900/60 border border-indigo-700 hover:border-red-600 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-200 cursor-pointer transition flex items-center gap-1">${l.section}: ${escapeHtml(l.value)} <b class="text-red-400 ml-1">×</b></span>`;
@@ -794,79 +766,40 @@
       }
       html += `</div>`;
     }
-    injectorContainer.innerHTML = html;
-    lucide.createIcons();
+    injectorContainer.innerHTML = html; lucide.createIcons();
   }
 
-  function toggleEditorSection(section) {
-    openSectionEditor = openSectionEditor === section ? null : section;
-    renderEditorLayersUI();
-  }
-
-  function removeLayerFromEditor(index) {
-    editingLayersArray.splice(index, 1);
-    renderEditorLayersUI();
-    updateEditorLivePreview();
-  }
+  function toggleEditorSection(section) { openSectionEditor = openSectionEditor === section ? null : section; renderEditorLayersUI(); }
+  function removeLayerFromEditor(index) { editingLayersArray.splice(index, 1); renderEditorLayersUI(); updateEditorLivePreview(); }
 
   function addLayerToEditor(section, id, value, imageUrl, gender) {
     const existingIndex = editingLayersArray.findIndex(l => l.section === section);
     const layerObject = { section, layerId: id, value, imageUrl, gender };
-    if (existingIndex !== -1) {
-      editingLayersArray[existingIndex] = layerObject;
-    } else {
-      editingLayersArray.push(layerObject);
-    }
-    renderEditorLayersUI();
-    updateEditorLivePreview();
+    if (existingIndex !== -1) { editingLayersArray[existingIndex] = layerObject; } else { editingLayersArray.push(layerObject); }
+    renderEditorLayersUI(); updateEditorLivePreview();
   }
 
   async function updateEditorLivePreview() {
-    const canvas = document.getElementById('edit-preview-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, 240, 240);
-    
-    let sorted = [...editingLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.version));
+    const canvas = document.getElementById('edit-preview-canvas'); if (!canvas) return;
+    const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, 240, 240);
+    let sorted = [...editingLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     for (let item of sorted) {
-      await new Promise(r => { 
-        const img = new Image(); 
-        img.crossOrigin = "Anonymous"; 
-        img.onload = () => { ctx.drawImage(img, 0, 0, 240, 240); r(); }; 
-        img.onerror = () => r(); 
-        img.src = item.imageUrl; 
-      });
+      await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 240, 240); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
     }
   }
 
   async function saveEditedNFT() {
-    const targetNftIndex = nfts.findIndex(n => n.id === currentEditingNftId);
-    if (targetNftIndex === -1) return;
-
+    const targetNftIndex = nfts.findIndex(n => n.id === currentEditingNftId); if (targetNftIndex === -1) return;
     const computedAttributes = buildAttributes(editingLayersArray);
-    
-    if(matchWithMaster(computedAttributes).matched) {
-       showToast('❌ Configuration rejected! Match found in OpenSea index.');
-       return;
-    }
+    if(matchWithMaster(computedAttributes).matched) { showToast('❌ Structure Match Found! Blocked.'); return; }
 
-    showToast('⚡ Saving Structural Re-compilation...');
-
-    const canvas = document.createElement('canvas'); 
-    canvas.width = 512; canvas.height = 512;
+    showToast('⚡ Processing Vector Maps...');
+    const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
     const ctx = canvas.getContext('2d');
-    
     let sorted = [...editingLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     for (let item of sorted) {
-      await new Promise(r => { 
-        const img = new Image(); 
-        img.crossOrigin = "Anonymous"; 
-        img.onload = () => { ctx.drawImage(img, 0, 0, 512, 512); r(); }; 
-        img.onerror = () => r();
-        img.src = item.imageUrl; 
-      });
+      await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 512, 512); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
     }
-
     const compiledImageData = canvas.toDataURL('image/jpeg', 0.65);
 
     nfts[targetNftIndex].name = document.getElementById('edit-nft-name').value.trim();
@@ -875,16 +808,13 @@
     nfts[targetNftIndex].attributes = computedAttributes;
     nfts[targetNftIndex].image = compiledImageData;
 
-    saveUserNFTs();
-    renderCollection();
-    closeEditModal();
-    showToast('🎉 NFT Updated Successfully inside System Matrix Buffer.');
+    saveUserNFTs(); renderCollection(); closeEditModal(); showToast('🎉 NFT Structure Recompiled.');
   }
 
   async function downloadCollectionAsZip() {
     if(!nfts.length) return;
     const btn = document.getElementById('download-zip-btn');
-    btn.disabled = true; btn.innerHTML = 'Streaming Base64 Buffers...';
+    btn.disabled = true; btn.innerHTML = 'Streaming Base64...';
     try {
       const zip = new JSZip();
       for(let nft of nfts) {
@@ -900,7 +830,7 @@
 
   function clearAllCollection() { if(confirm('Wipe everything?')) { nfts=[]; localStorage.removeItem('404punks_mainnet_v5'); renderCollection(); } }
   function clearMatchedCollection() { nfts = nfts.filter(nft => !matchWithMaster(nft.attributes).matched); saveUserNFTs(); renderCollection(); }
-  function deleteNFT(id) { if(confirm('Are you sure you want to delete this single vector?')) { nfts=nfts.filter(n=>n.id!==id); saveUserNFTs(); renderCollection(); } }
+  function deleteNFT(id) { if(confirm('Delete?')) { nfts=nfts.filter(n=>n.id!==id); saveUserNFTs(); renderCollection(); } }
   
   function viewMetadata(id) {
     const nft = nfts.find(n=>n.id===id); if(!nft) return;
@@ -917,7 +847,7 @@
     const maxCount = document.getElementById('layer-max-count').value;
     if(!url || !val) return;
     await addLayerToFirebase(sec, { id: Date.now(), value: val, imageUrl: url, gender: gen, section: sec, maxCount: parseInt(maxCount) || 500 });
-    showToast('Layer Linked with Limit configuration.');
+    showToast('Layer Configured inside Cloud Server.');
   }
 
   function switchTab(tabId) {
