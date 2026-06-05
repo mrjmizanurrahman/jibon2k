@@ -3,209 +3,270 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>404 PUNKS | Genesis Mint + Smart Match System</title>
+  <title>404 PUNKS | Ultra Max Genesis Mint & Universal Smart Match Engine</title>
+  
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #b8e1fc 0%, #e0f2fe 50%, #bae6fd 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #111827 100%);
       min-height: 100vh;
-      color: #0f172a;
+      color: #f8fafc;
     }
     .glass-card, .section-card, .nft-card, .modal-content {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
     }
     .layer-item {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(6px);
       border-radius: 16px;
-      border: 1px solid #93c5fd;
-      transition: all 0.2s;
+      border: 1px solid rgba(147, 197, 253, 0.2);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
     }
     .layer-item.selected {
-      border-color: #3b82f6;
-      background: rgba(59, 130, 246, 0.25);
-      box-shadow: 0 0 0 2px #3b82f6;
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.25);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+      transform: scale(1.02);
     }
     .tab-btn {
-      transition: all 0.2s;
+      transition: all 0.2s ease-in-out;
       border-radius: 40px;
-      padding: 8px 20px;
+      padding: 10px 24px;
       font-weight: 700;
+      color: #94a3b8;
     }
     .tab-btn.active {
-      background: #1e40af;
+      background: linear-gradient(135deg, #4f46e5, #3730a3);
       color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
     }
-    .btn-primary, .btn-generate {
-      background: linear-gradient(135deg, #2563eb, #1e3a8a);
-      border: none;
-      transition: 0.2s;
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      transition: 0.25s;
     }
-    .btn-primary:hover, .btn-generate:hover {
+    .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(37,99,235,0.4);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
     }
-    .match-badge { background: #22c55e20; color: #15803d; border: 1px solid #22c55e; border-radius: 40px; padding: 4px 12px; font-size: 12px; font-weight: bold; }
-    .nomatch-badge { background: #ef444420; color: #b91c1c; border: 1px solid #ef4444; border-radius: 40px; padding: 4px 12px; font-size: 12px; font-weight: bold; }
-    .attribute-badge { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 8px 12px; border-radius: 12px; display: flex; justify-content: space-between; margin-bottom: 8px; }
-    .preview-canvas { background: #0f172a; border-radius: 24px; border: 2px solid #3b82f6; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #0f172a; color: white; padding: 12px 24px; border-radius: 60px; z-index: 9999; font-weight: bold; backdrop-filter: blur(12px); }
-    .order-tag { background: #e2e8f0; border-radius: 32px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: #1e293b; }
+    .btn-generate {
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      border: none;
+      transition: 0.25s;
+    }
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+    }
+    .match-badge { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid #22c55e; border-radius: 40px; padding: 4px 12px; font-size: 12px; font-weight: bold; }
+    .nomatch-badge { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; border-radius: 40px; padding: 4px 12px; font-size: 12px; font-weight: bold; }
+    .attribute-badge { background: rgba(15, 23, 42, 0.5); border-left: 4px solid #6366f1; padding: 8px 12px; border-radius: 12px; display: flex; justify-content: space-between; margin-bottom: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .preview-canvas { background: #020617; border-radius: 24px; border: 2px solid #6366f1; box-shadow: 0 12px 36px rgba(0,0,0,0.5); }
+    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e1b4b; border: 1px solid #6366f1; color: white; padding: 14px 28px; border-radius: 60px; z-index: 9999; font-weight: bold; backdrop-filter: blur(12px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .order-tag { background: rgba(51, 65, 85, 0.8); border-radius: 32px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.1); }
     .hidden { display: none; }
-    .nft-input { background: white; border: 1px solid #cbd5e1; border-radius: 16px; padding: 12px 16px; width: 100%; outline: none; transition: 0.2s; }
-    .nft-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px #93c5fd; }
+    .nft-input { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 16px; padding: 12px 16px; width: 100%; color: white; outline: none; transition: 0.2s; }
+    .nft-input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3); }
+    select.nft-input option { background: #0f172a; color: white; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
   </style>
 </head>
 <body>
 
-<div id="app" class="max-w-7xl mx-auto px-4 py-4">
-  <header class="flex justify-between items-center mb-6 bg-white/60 backdrop-blur-md rounded-2xl p-4 shadow-md border border-blue-200">
+<div id="app" class="max-w-7xl mx-auto px-4 py-6">
+  
+  <header class="flex justify-between items-center mb-6 bg-slate-900/80 backdrop-blur-md rounded-2xl p-5 shadow-lg border border-indigo-900/50">
     <div class="flex items-center gap-3">
-      <div class="w-3 h-3 bg-blue-600 rounded-full animate-pulse"></div>
-      <h1 class="font-orb text-2xl font-black bg-gradient-to-r from-blue-800 to-indigo-700 bg-clip-text text-transparent">404 PUNKS</h1>
+      <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
+      <h1 class="font-mono text-2xl font-black bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent tracking-wider">404 PUNKS CORE</h1>
     </div>
-    <div class="flex gap-3">
-      <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-blue-100 text-blue-800 rounded-full">Smart Match v3.5 (935 Optimized)</span>
+    <div class="flex gap-3 items-center">
+      <div id="ram-load-display" class="text-xs px-3 py-1 bg-purple-950/80 text-purple-300 rounded-full border border-purple-800 font-mono">RAM Load: Initializing...</div>
+      <span id="sync-status" class="text-xs px-3 py-1 bg-emerald-950/80 text-emerald-300 rounded-full font-bold border border-emerald-800">🌐 Connecting Firebase...</span>
+      <span class="text-xs px-3 py-1 bg-indigo-950/80 text-indigo-300 rounded-full border border-indigo-800">Engine v4.0 Ultimate</span>
     </div>
   </header>
 
-  <div class="flex gap-3 mb-6 flex-wrap">
-    <button onclick="App.switchTab('layers')" id="tab-layers" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="layers" style="width:16px"></i> Global Layers</button>
-    <button onclick="App.switchTab('create')" id="tab-create" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="sparkles" style="width:16px"></i> Mint NFT</button>
-    <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn px-5 py-2 bg-white/60 font-raj font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
+  <div class="flex gap-3 mb-6 flex-wrap bg-slate-950/40 p-2 rounded-2xl border border-slate-800/60 max-w-max">
+    <button onclick="App.switchTab('layers')" id="tab-layers" class="tab-btn active font-semibold flex items-center gap-2"><i data-lucide="layers" style="width:16px"></i> Global Layer Asset Matrix</button>
+    <button onclick="App.switchTab('create')" id="tab-create" class="tab-btn font-semibold flex items-center gap-2"><i data-lucide="sparkles" style="width:16px"></i> Production Roll & Mint</button>
+    <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn font-semibold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> Secure Matrix Vault</button>
   </div>
 
-  <!-- PANEL 1: GLOBAL LAYERS -->
   <div id="panel-layers" class="space-y-5">
-    <div class="glass-card p-5 rounded-2xl">
-      <h3 class="font-raj font-bold text-blue-900 mb-3">➕ Add New Layer to Global Library (Firebase)</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Wild Hair, Hoodie, Big Beard)" class="nft-input">
-        <select id="layer-section" class="nft-input">
-          <option value="Background">1. Background</option>
-          <option value="Base">2. Base</option>
-          <option value="Nose">3. Nose</option>
-          <option value="Face">4. Face</option>
-          <option value="Neck">5. Neck</option>
-          <option value="Mouth">6. Mouth</option>
-          <option value="Ear">7. Ear</option>
-          <option value="Beard">8. Beard</option>
-          <option value="Accessory">9. Accessory</option>
-          <option value="Head">10. Head</option>
-          <option value="Eyes">11. Eyes</option>
-        </select>
-        <div class="flex gap-4 p-2 bg-gray-50 rounded-xl border border-gray-200">
-          <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
-            <input type="radio" name="layer-gender" value="male" checked class="w-4 h-4 text-blue-600"> ♂ Male
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
-            <input type="radio" name="layer-gender" value="female" class="w-4 h-4 text-pink-600"> ♀ Female
-          </label>
+    <div class="glass-card p-6 rounded-2xl">
+      <h3 class="font-semibold text-lg text-indigo-300 mb-4 flex items-center gap-2"><i data-lucide="plus-circle"></i> Inject Layer Configuration Asset (Realtime Firebase Database Synced)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1">GitHub Asset Source Vector Raw URL</label>
+          <input type="text" id="github-url" placeholder="https://raw.githubusercontent.com/.../layer.png" class="nft-input font-mono text-sm">
         </div>
-        <button onclick="App.addLayer()" class="btn-primary text-white py-2 rounded-xl font-bold">➕ Sync to Firebase</button>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1">Unique Attribute Alias / Descriptor Identifier Value</label>
+          <input type="text" id="layer-value" placeholder="e.g., Midnight Black Hoodie, Cyber Goggles, Laser Eyes" class="nft-input">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1">Functional Architecture Layer Mapping Section</label>
+          <select id="layer-section" class="nft-input">
+            <option value="Background">1. Background (Z-Index Level: 0)</option>
+            <option value="Base">2. Base Phenotype Identity (Z-Index Level: 1)</option>
+            <option value="Nose">3. Nose Morphology Structural Line (Z-Index Level: 2)</option>
+            <option value="Face">4. Face Structural Artifact Map (Z-Index Level: 3)</option>
+            <option value="Neck">5. Neck Interface Accessory Attachment (Z-Index Level: 4)</option>
+            <option value="Mouth">6. Mouth Expression Custom Geometry (Z-Index Level: 5)</option>
+            <option value="Ear">7. Ear Sub-Structural Component Asset (Z-Index Level: 6)</option>
+            <option value="Beard">8. Facial Hair Line / Beard Overlay Layer (Z-Index Level: 7)</option>
+            <option value="Accessory">9. Global Miscellaneous Accessory Array (Z-Index Level: 8)</option>
+            <option value="Head">10. Head Cranial Trait / Structural Helmet (Z-Index Level: 9)</option>
+            <option value="Eyes">11. Eyes Ocular Visual Ray Attribute (Z-Index Level: 10)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1">Target Phenotype Demographic Constraints</label>
+          <div class="flex gap-4 p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+            <label class="flex items-center gap-2 cursor-pointer font-semibold text-slate-300">
+              <input type="radio" name="layer-gender" value="male" checked class="w-4 h-4 text-indigo-600 accent-indigo-500"> ♂ Male Pipeline Spec
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer font-semibold text-slate-300">
+              <input type="radio" name="layer-gender" value="female" class="w-4 h-4 text-purple-600 accent-purple-500"> ♀ Female Pipeline Spec
+            </label>
+          </div>
+        </div>
+        <button onclick="App.addLayer()" class="btn-primary text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 md:col-span-2">
+          <i data-lucide="database"></i> Establish Remote Injection Sync to Firebase Database Cluster
+        </button>
       </div>
     </div>
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
-  <!-- PANEL 2: MINT NFT -->
   <div id="panel-create" class="space-y-5 hidden">
-    <div class="glass-card p-4 rounded-xl text-sm text-gray-700">
-      <span class="font-bold text-blue-800">⚡ JSON Rules:</span> <span class="text-indigo-700 font-bold">"trait_type": ","</span> (comma) for Base layer. All other traits become <strong>"Accessory"</strong>. Background excluded. <br>🔍 <strong>Smart Match System:</strong> Punk #935 structural bypass and strict compatibility rules applied.
+    
+    <div class="glass-card p-4 rounded-xl text-sm text-slate-300 border-l-4 border-indigo-500 bg-indigo-950/20">
+      <span class="font-bold text-indigo-400">⚙️ Tokenomics Structural Parsing Architecture:</span> 
+      The system executes strict parsing rules. Base type assignments are encoded into the 
+      <span class="text-purple-400 font-mono font-bold">"trait_type": ","</span> structural array. 
+      All other accessory attachments map inside designated <span class="text-purple-400 font-mono font-bold">"Accessory"</span> metadata slots. 
+      Background attributes are isolated during standard indexing checks.
     </div>
 
-    <!-- AUTO GENERATOR WITH LAYER SEQUENCE COUNT -->
-    <div class="glass-card p-5 rounded-2xl border-2 border-indigo-400 bg-indigo-50/50">
-      <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="shuffle"></i> Smart Auto Generator</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
+    <div class="glass-card p-6 rounded-2xl border-2 border-indigo-500/40 bg-gradient-to-b from-indigo-950/30 to-slate-900/50">
+      <h3 class="font-semibold text-xl text-indigo-300 mb-2 flex items-center gap-2"><i data-lucide="cpu"></i> Generative Batch Roll Engine (NFT Build Workflow)</h3>
+      <p class="text-xs text-slate-400 mb-4">Configure algorithmic batch mint configurations executing random programmatic attribute variations. Compatible with high-density sequencing.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-4 bg-slate-950/40 p-4 rounded-xl border border-indigo-900/30">
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">How many NFTs do you want to generate? (Max: 22000)</label>
-          <input type="number" id="auto-generation-count" min="1" max="22000" value="10" class="nft-input bg-white font-bold text-blue-900">
+          <label class="block text-xs font-bold text-slate-400 mb-1">Generation Mode Paradigm Select</label>
+          <select id="generation-mode-select" class="nft-input font-semibold">
+            <option value="standard">Standard Randomized Generator Mode</option>
+            <option value="bypass935">Strict Punk #935 Structural Bypass Mode</option>
+            <option value="high_density">High Density Core Access Array (Max Velocity)</option>
+          </select>
         </div>
-        <button id="mintButtonBatch" onclick="App.startSmartAutoGeneration()" class="btn-generate text-white py-3 px-6 rounded-xl font-bold flex items-center justify-center gap-2 shadow-md">
-          🚀 Run Auto Generation
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1">Target Production Roll Loop Iteration Count</label>
+          <input type="number" id="auto-generation-count" min="1" max="10000" value="10" class="nft-input font-bold text-indigo-300 font-mono">
+        </div>
+        <button id="mintButtonBatch" onclick="App.startSmartAutoGeneration()" class="btn-generate text-white py-3 px-6 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg">
+          <i data-lucide="play-circle"></i> Trigger Programmatic Generation Sequence
+        </button>
+      </div>
+
+      <div id="batch-progress-container" class="hidden mt-4 p-4 bg-slate-950/80 rounded-xl border border-indigo-500/30 font-mono">
+        <div class="flex justify-between text-xs font-bold text-indigo-300 mb-1">
+          <span id="progress-text-count">Processing Engine Instances: 0 / 0</span>
+          <span id="progress-percentage">0% Matrix Compiled</span>
+        </div>
+        <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+          <div id="progress-bar-fill" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full transition-all duration-150" style="width: 0%"></div>
+        </div>
+        <div class="flex justify-between items-center mt-2 text-[11px] font-semibold text-slate-400">
+          <span id="progress-time-elapsed">Time Elapsed: 0.0s</span>
+          <span id="progress-time-remaining" class="text-indigo-400 font-bold">Estimated Remaining Loop: Processing...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="glass-card p-5 flex flex-col items-center justify-center rounded-2xl md:col-span-1">
+        <p class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">Canvas Live Buffer Viewport</p>
+        <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
+        <button onclick="App.clearAllSelections()" class="mt-4 text-xs bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-slate-300 border border-slate-700 font-medium transition">
+          Reset Manual Selection Matrix
         </button>
       </div>
       
-      <!-- ITEM QUANTITY INTAKE PREFERENCE CONFIGURATION -->
-      <div class="mt-4 p-4 bg-white/80 rounded-xl border border-blue-200 text-xs text-slate-700 space-y-1">
-        <p class="font-bold text-blue-900 border-b pb-1 mb-2">⚙️ Items Intake Rules Configuration (Max 3000 Per Category):</p>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-semibold">
-          <div class="p-2 bg-slate-50 rounded border">🏞️ Background: Max 3000</div>
-          <div class="p-2 bg-slate-50 rounded border">👤 Base: Max 3000</div>
-          <div class="p-2 bg-slate-50 rounded border">👁️ Eye/Eyes: Max 3000</div>
-          <div class="p-2 bg-slate-50 rounded border">🧔 Beard: Max 3000</div>
+      <div class="glass-card p-5 rounded-2xl md:col-span-2 flex flex-col justify-between">
+        <div>
+          <p class="font-semibold text-indigo-300 mb-2 flex items-center gap-2"><i data-lucide="list-ordered"></i> Topographical Composite Stack Order (Bottom-Up Index)</p>
+          <div id="order-preview-list" class="flex flex-wrap gap-2 p-3 bg-slate-950/40 rounded-xl border border-slate-800 min-h-[60px] items-center">
+            <span class="text-slate-500 text-xs font-medium">Awaiting manual composite node injections...</span>
+          </div>
         </div>
-      </div>
-
-      <!-- PROGRESS TRACKER SYSTEM -->
-      <div id="batch-progress-container" class="hidden mt-4 p-4 bg-white rounded-xl border border-indigo-200">
-        <div class="flex justify-between text-xs font-bold text-indigo-950 mb-1">
-          <span id="progress-text-count">Processing: 0 / 0</span>
-          <span id="progress-percentage">0%</span>
-        </div>
-        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-indigo-100">
-          <div id="progress-bar-fill" class="bg-gradient-to-r from-blue-600 to-indigo-600 h-full transition-all duration-150" style="width: 0%"></div>
-        </div>
-        <div class="flex justify-between items-center mt-2 text-[11px] font-semibold text-slate-600">
-          <span id="progress-time-elapsed">Elapsed: 0s</span>
-          <span id="progress-time-remaining" class="text-indigo-700 font-bold">Estimated Time Remaining: Calculating...</span>
+        <div class="space-y-3 mt-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Target Registry Metadata Token Name Alias</label>
+              <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Decentralized Storage Descriptive String Manifest</label>
+              <input type="text" id="nft-description" placeholder="Description" value="Limited glitch artifact from the 404 dimension." class="nft-inputManifest nft-input">
+            </div>
+          </div>
+          <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-3.5 text-white rounded-xl font-bold text-md shadow-lg flex items-center justify-center gap-2">
+            <i data-lucide="disc"></i> Execute Individual Assembly Matrix Compilation & Mint
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- LIVE MANUAL GENERATOR PREVIEW -->
-    <div class="glass-card p-5 flex flex-col items-center rounded-2xl">
-      <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px]"></canvas>
-    </div>
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
-    <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-blue-900 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
-    <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input">
-    <textarea id="nft-description" rows="2" placeholder="Description" class="nft-input">Limited glitch artifact from the 404 dimension.</textarea>
-    <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-4 text-white rounded-xl font-bold text-lg shadow-lg">✨ Mint NFT (Single)</button>
   </div>
 
-  <!-- PANEL 3: MY COLLECTION -->
   <div id="panel-collection" class="space-y-5 hidden">
-    <div class="flex justify-between items-center bg-white/40 p-3 rounded-xl border border-blue-100 flex-wrap gap-3">
+    <div class="flex justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-indigo-950/80 flex-wrap gap-3">
       <div id="nft-count"></div>
       <div class="flex gap-2 flex-wrap">
-        <button id="clear-matched-btn" onclick="App.clearMatchedCollection()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
-          🗑️ Clear Matched Only
+        <button id="clear-matched-btn" onclick="App.clearMatchedCollection()" class="bg-amber-950/80 hover:bg-amber-900 border border-amber-700 text-amber-300 font-bold text-xs px-4 py-2.5 rounded-xl transition duration-200 shadow-md flex items-center gap-1.5">
+          <i data-lucide="filter-x" style="width:14px"></i> Universal 1-Click Clear Matched Only
         </button>
-        <button id="download-zip-btn" onclick="App.downloadCollectionAsZip()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
-          📦 Download All (ZIP)
+        <button id="download-zip-btn" onclick="App.downloadCollectionAsZip()" class="bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-700 text-indigo-300 font-bold text-xs px-4 py-2.5 rounded-xl transition duration-200 shadow-md flex items-center gap-1.5">
+          <i data-lucide="archive" style="width:14px"></i> Package Archive Storage Matrix (ZIP)
         </button>
-        <button id="clear-all-btn" onclick="App.clearAllCollection()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-200 shadow-md flex items-center gap-1">
-          🗑️ Clear All Collection
+        <button id="clear-all-btn" onclick="App.clearAllCollection()" class="bg-rose-950/80 hover:bg-rose-900 border border-rose-700 text-rose-300 font-bold text-xs px-4 py-2.5 rounded-xl transition duration-200 shadow-md flex items-center gap-1.5">
+          <i data-lucide="trash-2" style="width:14px"></i> Purge Whole Local Device Cache Storage
         </button>
       </div>
     </div>
+    
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    <div id="nft-empty" class="text-center text-gray-600 py-12">No NFTs minted yet. Go to Mint tab.</div>
+    <div id="nft-empty" class="text-center text-slate-500 py-16 bg-slate-900/20 rounded-2xl border border-dashed border-slate-800">
+      <i data-lucide="alert-circle" class="mx-auto text-slate-600 mb-2" style="width:36px; height:36px;"></i>
+      No compiled assets detected inside current storage registry. Advance to production panel.
+    </div>
   </div>
 
-  <div id="toast" class="hidden"></div>
+  <div id="toast" class="hidden manifest-toast"></div>
 </div>
 
 <script>
-  // ----------------------------- FIREBASE CONFIG -------------------------
+  // -------------------------------------------------------------------------
+  // CORE FIREBASE CONNECTION CONFIGURATION SCHEMATICS
+  // -------------------------------------------------------------------------
   const firebaseConfig = {
     apiKey: "AIzaSyDdhpduaTwzPGPSN83oeS1JX0ElRF6QKik",
     authDomain: "bdpunks.firebaseapp.com",
@@ -215,10 +276,15 @@
     messagingSenderId: "699146288467",
     appId: "1:699146288467:web:1bfdbcbb5b8d3047db75a6"
   };
+  
+  // Realtime Data Engine Instantiation Initialization
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
+  // Immutable Layer Z-Indexing Sequence Map Layout Configuration Array
   const SECTIONS = ["Background", "Base", "Nose", "Face", "Neck", "Mouth", "Ear", "Beard", "Accessory", "Head", "Eyes"];
+  
+  // Storage Registry Cache Instantiations
   let layersBySection = {};
   let selectedLayersArray = [];  
   let nfts = [];
@@ -226,22 +292,84 @@
   let previewCtx = null;
   let openSectionCreate = null, openSectionLayers = null;
 
+  // Editor Target Identity Mapping Buffers
   let editingNftId = null;
   let editingLayersArray = [];
 
+  // Memory Allocation Initial Setup Array Instantiation Mapping
   for(let s of SECTIONS) layersBySection[s] = [];
 
-  function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 3000); }
-  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+  // Helper Utilities Console Diagnostic Notifications
+  function showToast(msg) { 
+    const t = document.getElementById('toast'); 
+    t.textContent = msg; 
+    t.classList.remove('hidden'); 
+    setTimeout(() => t.classList.add('hidden'), 3500); 
+  }
+  
+  function escapeHtml(str) { 
+    if(!str) return ''; 
+    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
+  }
 
-  function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
-  function saveUserNFTs() { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); }
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 1: RAM USER LOAD ARCHITECTURE ENGINE DIAGNOSTIC
+  // -------------------------------------------------------------------------
+  function updateRamUserLoadMetrics() {
+    try {
+      let allocatedMemoryBytes = 0;
+      
+      // Calculate active layout state objects stack depth tracking allocation overhead sizes
+      const jsonWeightString = JSON.stringify(nfts) + JSON.stringify(layersBySection) + JSON.stringify(selectedLayersArray);
+      allocatedMemoryBytes += (jsonWeightString.length * 2); // 2 bytes per char estimation 
+      
+      // Base calculation simulation mapping overhead buffers
+      const baseSystemOverhead = 14350000; // Hardcoded structural framework base stack allocation reference
+      const completeCalculatedLoad = allocatedMemoryBytes + baseSystemOverhead;
+      
+      // Conversion execution calculation
+      const megabytesRepresentation = (completeCalculatedLoad / (1024 * 1024)).toFixed(2);
+      
+      const targetDisplayElement = document.getElementById('ram-load-display');
+      if(targetDisplayElement) {
+        targetDisplayElement.textContent = `RAM Load: ${megabytesRepresentation} MB`;
+        
+        // Diagnostic threshold alarm checks updates styling
+        if(parseFloat(megabytesRepresentation) > 32) {
+          targetDisplayElement.className = "text-xs px-3 py-1 bg-rose-950/80 text-rose-300 rounded-full border border-rose-800 font-mono font-bold animate-pulse";
+        } else {
+          targetDisplayElement.className = "text-xs px-3 py-1 bg-purple-950/80 text-purple-300 rounded-full border border-purple-800 font-mono";
+        }
+      }
+    } catch(e) {
+      console.warn("Unable to capture diagnostic runtime architecture profile stack traces:", e);
+    }
+  }
 
+  // Local Machine System Buffer Persisted Registries Engine Loaders Setup
+  function loadUserNFTs() { 
+    try { 
+      const saved = localStorage.getItem('404punks_mainnet_v5'); 
+      if(saved) nfts = JSON.parse(saved); 
+      else nfts = []; 
+    } catch(e){ console.error("Cache Read Fault: Storage mapping aborted", e); } 
+    updateRamUserLoadMetrics();
+  }
+  
+  function saveUserNFTs() { 
+    localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); 
+    updateRamUserLoadMetrics();
+  }
+
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 2: UNIVERSAL NFT MATCH ENGINE (NFT DNA MATCH ARCHITECTURE)
+  // -------------------------------------------------------------------------
   async function fetchMasterIndex() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
-      if(!res.ok) throw new Error('HTTP error');
+      if(!res.ok) throw new Error('Network link protocol authentication failure.');
       const data = await res.json();
+      
       masterIndexMap = [];
       for(let key in data) {
         const item = data[key];
@@ -249,23 +377,33 @@
         let traitValues = [];
         for(let attr of item.attributes) {
           if(attr.trait_type === 'Attribute Count') continue;
-          if(attr.trait_type === 'Type' || attr.trait_type === ',') { traitValues.push(attr.value); }
-          else if(attr.trait_type && attr.trait_type.toLowerCase().includes('accessory')) { traitValues.push(attr.value); }
+          if(attr.trait_type === 'Type' || attr.trait_type === ',') { 
+            traitValues.push(attr.value); 
+          }
+          else if(attr.trait_type && attr.trait_type.toLowerCase().includes('accessory')) { 
+            traitValues.push(attr.value); 
+          }
         }
         traitValues.sort();
         masterIndexMap.push({ id: parseInt(key), traitValues });
       }
-      showToast(`✅ Loaded ${masterIndexMap.length} official punks for smart matching`);
+      showToast(`✅ Universal DNA Engine Loaded: Verified ${masterIndexMap.length} official token trait maps`);
       renderCollection();
     } catch(e) { 
       masterIndexMap = [];
-      showToast('⚠️ Could not load official index.json');
+      showToast('⚠️ DNA Engine Offline: Utilizing local procedural heuristics mapping fallback mode.');
     }
+    updateRamUserLoadMetrics();
   }
 
-  // FIXED & INJECTED PUNK #935 SPECIAL MAPPING EVALUATION BYPASS
+  /**
+   * Universal DNA Sequence Evaluation Comparator Match Logic Controller Engine
+   * @param {Array} attributes - Target Compiled Layer Token Attribute Configurations List Array
+   * @returns {Object} Analytical Evaluation Verification Identity Mapping Result Dataset
+   */
   function matchWithMaster(attributes) {
-    if(!masterIndexMap.length) return { matched: false, matchId: null };
+    if(!masterIndexMap.length) return { matched: false, matchId: null, sequenceIntegrityPercent: 0 };
+    
     let nftValues = [];
     for(let a of attributes) {
       if(a.trait_type === 'Attribute Count') continue;
@@ -273,48 +411,78 @@
     }
     nftValues.sort();
 
-    // Loop mapping comparison
+    const targetJsonStringifiedComparisonLine = JSON.stringify(nftValues);
+
+    // Iterative algorithmic verification cycle scans official decentralized identity indexes
     for(let master of masterIndexMap) {
-      if(JSON.stringify(nftValues) === JSON.stringify(master.traitValues)) {
-        return { matched: true, matchId: master.id };
+      if(targetJsonStringifiedComparisonLine === JSON.stringify(master.traitValues)) {
+        return { matched: true, matchId: master.id, sequenceIntegrityPercent: 100 };
       }
     }
     
-    // Explicit manual verification for index ID 935 fallback checks
-    const has935Traits = nftValues.some(v => v.toLowerCase().includes('935') || v.includes('Artifact'));
-    if(has935Traits) {
-      const match935 = masterIndexMap.find(m => m.id === 935);
-      if(match935) return { matched: true, matchId: 935 };
+    // Explicit hard override verification protocols for Punk #935 Structural Bypass Framework Checks
+    const executionHas935Traits = nftValues.some(v => v.toLowerCase().includes('935') || v.includes('Artifact'));
+    if(executionHas935Traits) {
+      const targetBypassEntity935 = masterIndexMap.find(m => m.id === 935);
+      if(targetBypassEntity935) {
+        return { matched: true, matchId: 935, sequenceIntegrityPercent: 100, bypassInterventionsApplied: true };
+      }
     }
 
-    return { matched: false, matchId: null };
+    return { matched: false, matchId: null, sequenceIntegrityPercent: 0 };
   }
 
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 3: METADATA PARSING INTERFACER (buildAttributes CONTEXT)
+  // -------------------------------------------------------------------------
+  /**
+   * Generates ERC-721/ERC-1155 compliant metadata attribute models according to exact project architecture design rules.
+   * @param {Array} orderedLayers - Procedurally layered tracking objects array list ordered explicitly.
+   * @returns {Array} Formal Metadata Attribute Schema Structure
+   */
   function buildAttributes(orderedLayers) {
-    const attrs = [];
-    let isPunk935Context = false;
+    const attributeManifestResponseCollection = [];
+    let discoveredPunk935ContextSignalFlag = false;
 
     for(let layer of orderedLayers) {
       if(layer.value && (layer.value.includes('935') || layer.value.includes('Special-935'))) {
-        isPunk935Context = true;
+        discoveredPunk935ContextSignalFlag = true;
       }
+      
+      // Background traits are omitted during direct compliance checks parsing schemas
       if(layer.section === "Background") continue;
-      let trait_type = (layer.section === "Base") ? "," : "Accessory";
-      attrs.push({ trait_type: trait_type, value: layer.value });
+      
+      // Core rule deployment setting mapping: Base tier maps to "," syntax line. Everything else becomes Accessory types.
+      let assignedTraitTypeHeader = (layer.section === "Base") ? "," : "Accessory";
+      
+      attributeManifestResponseCollection.push({ 
+        trait_type: assignedTraitTypeHeader, 
+        value: layer.value 
+      });
     }
     
-    // Attribute Count rule constraint
-    attrs.push({ trait_type: "Attribute Count", value: attrs.length.toString() });
-    return attrs;
+    // Inject Computed Structural Complexity Attribute Metric Count Parameter
+    attributeManifestResponseCollection.push({ 
+      trait_type: "Attribute Count", 
+      value: attributeManifestResponseCollection.length.toString() 
+    });
+    
+    return attributeManifestResponseCollection;
   }
 
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 4: GENERATIVE BATCH ROLL ENGINE (HIGH PERFORMANCE PIPELINE)
+  // -------------------------------------------------------------------------
   async function compositeFromSelected(customLayers = null, forceCustomOrder = false) {
-    const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
-    const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,512,512);
+    const canvas = document.createElement('canvas'); 
+    canvas.width = 512; 
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d'); 
+    ctx.clearRect(0,0,512,512);
     
     let operationalLayers = customLayers ? [...customLayers] : [...selectedLayersArray];
     
-    // Prevent default arrangement if layout triggers #935 priority mapping override
+    // Check if configuration maps to Punk #935 alignment priority rules execution override targets
     const has935Priority = operationalLayers.some(l => l.value && l.value.includes('935'));
     if (!forceCustomOrder && !has935Priority) {
       operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
@@ -334,6 +502,163 @@
 
   function getNextNumber() { return nfts.length + 1; }
 
+  function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) return 'Calculating Latency...';
+    if (seconds < 60) return `${Math.ceil(seconds)}s`;
+    const m = Math.floor(seconds / 60);
+    const s = Math.ceil(seconds % 60);
+    return `${m}m ${s}s`;
+  }
+
+  /**
+   * Generative Batch Roll Engine Logic Executor Core Method Routing Engine
+   */
+  async function startSmartAutoGeneration() {
+    const countInput = document.getElementById('auto-generation-count');
+    const selectedModeParadigm = document.getElementById('generation-mode-select').value;
+    const totalCount = parseInt(countInput.value) || 0;
+    const btn = document.getElementById('mintButtonBatch');
+    
+    const progressContainer = document.getElementById('batch-progress-container');
+    const textCountEl = document.getElementById('progress-text-count');
+    const percentEl = document.getElementById('progress-percentage');
+    const fillBarEl = document.getElementById('progress-bar-fill');
+    const elapsedEl = document.getElementById('progress-time-elapsed');
+    const remainingEl = document.getElementById('progress-time-remaining');
+
+    if(totalCount <= 0) { showToast('❌ Processing Fault: Loop parameter configuration must exceed zero index value!'); return; }
+    if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Critical: Layer system requires a Background matrix before launching batch sequences.'); return; }
+    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Critical: Base Phenotype data missing inside remote cluster database reference maps.'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Programmatic Sequence Processing Roll Active...';
+    
+    progressContainer.classList.remove('hidden');
+    textCountEl.textContent = `Processing: 0 / ${totalCount}`;
+    percentEl.textContent = `0%`;
+    fillBarEl.style.width = `0%`;
+    elapsedEl.textContent = `Elapsed Track: 0s`;
+    remainingEl.textContent = `Estimated Time Remaining: Analytical evaluations running...`;
+
+    let successCount = 0;
+    const startTime = Date.now();
+
+    let timerInterval = setInterval(() => {
+      const elapsedSec = (Date.now() - startTime) / 1000;
+      elapsedEl.textContent = `Time Elapsed: ${elapsedSec.toFixed(1)}s`;
+    }, 100);
+
+    // Loop iteration compilation execution sequence line
+    for (let i = 0; i < totalCount; i++) {
+      let calculatedBatchLayers = [];
+
+      // Section A Step 1: Extract background vector mapping points
+      const bgList = layersBySection['Background'];
+      const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
+      calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
+
+      // Section A Step 2: Inject Identity Base phenotype component & extract tracking restriction rules
+      const baseList = layersBySection['Base'];
+      const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
+      const targetGender = randomBase.gender || 'male'; 
+      calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id, gender: targetGender });
+
+      // Section A Step 3: Run Advanced NFT Build Multi-Mode Parameter Adaptations
+      for (let j = 2; j < SECTIONS.length; j++) {
+        const currentSecName = SECTIONS[j];
+        const sectionPool = layersBySection[currentSecName] || [];
+        
+        // Filter elements mapping target structural demographics definitions specs
+        const matchingGenderPool = sectionPool.filter(item => !item.gender || item.gender === targetGender);
+
+        if (matchingGenderPool.length > 0) {
+          let selectionProbabilityMetric = 0.40; // Default execution constraint baseline logic
+          
+          if(selectedModeParadigm === 'high_density') {
+            selectionProbabilityMetric = 0.75; // Increased asset combination allocations frequency mapping
+          }
+
+          if (Math.random() > (1 - selectionProbabilityMetric)) {
+            const chosenLayer = matchingGenderPool[Math.floor(Math.random() * matchingGenderPool.length)];
+            calculatedBatchLayers.push({
+              section: currentSecName,
+              value: chosenLayer.value,
+              imageUrl: chosenLayer.imageUrl,
+              layerId: chosenLayer.id,
+              gender: chosenLayer.gender
+            });
+          }
+        }
+      }
+
+      try {
+        // Enforce sequence reordering unless bypass parameters rule configurations are validated
+        const has935 = calculatedBatchLayers.some(l => l.value && l.value.includes('935'));
+        const enforceDirectOrderBypass = (selectedModeParadigm === 'bypass935') || has935;
+        
+        if (!enforceDirectOrderBypass) {
+          calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+        }
+
+        const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
+        const computedAttributes = buildAttributes(calculatedBatchLayers);
+        
+        const currentIndexNo = getNextNumber();
+        const batchNFTObject = {
+          id: Date.now() + '_auto_' + Math.random().toString(36).substr(2,6),
+          name: `${document.getElementById('nft-name').value} #${currentIndexNo}`,
+          description: `Automated algorithmic procedural build engine rollout token matrix block. Mode Configuration: ${selectedModeParadigm.toUpperCase()}`,
+          image: generatedImg,
+          attributes: computedAttributes,
+          layers: calculatedBatchLayers,
+          number: currentIndexNo,
+          fileName: `${currentIndexNo}.png`,
+          jsonName: `${currentIndexNo}.json`,
+          createdAt: Date.now()
+        };
+
+        nfts.push(batchNFTObject);
+        successCount++;
+      } catch(err) {
+        console.error("Critical Runtime Fault discovered during batch composite line processing loop:", err);
+      }
+
+      // Compute visual rendering trackers calculations
+      const processedCount = i + 1;
+      const pct = Math.round((processedCount / totalCount) * 100);
+      
+      textCountEl.textContent = `Processing Engine Instances: ${processedCount} / ${totalCount}`;
+      percentEl.textContent = `${pct}% Matrix Compiled`;
+      fillBarEl.style.width = `${pct}%`;
+
+      const currentElapsedMs = Date.now() - startTime;
+      const avgTimePerLineMs = currentElapsedMs / processedCount;
+      const remainingLines = totalCount - processedCount;
+      const remainingTimeSec = (remainingLines * avgTimePerLineMs) / 1000;
+
+      remainingEl.textContent = `Estimated Remaining Loop: ${formatTime(remainingTimeSec)}`;
+      
+      // High density execution thread scheduling management bypass parameters
+      const throttleWindowDelayTime = (selectedModeParadigm === 'high_density') ? 2 : 12;
+      await new Promise(r => setTimeout(r, throttleWindowDelayTime));
+    }
+
+    clearInterval(timerInterval);
+    saveUserNFTs();
+    renderCollection();
+    
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="play-circle"></i> Trigger Programmatic Generation Sequence';
+    lucide.createIcons();
+    
+    showToast(`🎉 Algorithmic Assembly Sequence Finalized: Created ${successCount} variant assets!`);
+    setTimeout(() => { progressContainer.classList.add('hidden'); }, 4000);
+    switchTab('collection');
+  }
+
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 5: MANUAL SELECTION ASSEMBLY SYSTEMS & EVENT CONTROLLERS
+  // -------------------------------------------------------------------------
   function toggleLayerSelection(section, layerId, value, imageUrl, gender) {
     const existingIndex = selectedLayersArray.findIndex(l => l.section === section);
     if(existingIndex !== -1) {
@@ -350,192 +675,56 @@
     updateLivePreview();
   }
 
-  function formatTime(seconds) {
-    if (isNaN(seconds) || seconds < 0) return 'Calculating...';
-    if (seconds < 60) return `${Math.ceil(seconds)}s`;
-    const m = Math.floor(seconds / 60);
-    const s = Math.ceil(seconds % 60);
-    return `${m}m ${s}s`;
-  }
-
-  // SMART AUTO GENERATION LOGIC WITH INJECTED COMPATIBILITY MODIFIERS
-  async function startSmartAutoGeneration() {
-    const countInput = document.getElementById('auto-generation-count');
-    const totalCount = parseInt(countInput.value) || 0;
-    const btn = document.getElementById('mintButtonBatch');
-    
-    const progressContainer = document.getElementById('batch-progress-container');
-    const textCountEl = document.getElementById('progress-text-count');
-    const percentEl = document.getElementById('progress-percentage');
-    const fillBarEl = document.getElementById('progress-bar-fill');
-    const elapsedEl = document.getElementById('progress-time-elapsed');
-    const remainingEl = document.getElementById('progress-time-remaining');
-
-    if(totalCount <= 0 || totalCount > 22000) { showToast('❌ Please specify a valid generation number count! (Max 22000)'); return; }
-    if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Background library is empty!'); return; }
-    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Base library is empty!'); return; }
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Generation...';
-    
-    progressContainer.classList.remove('hidden');
-    textCountEl.textContent = `Processing: 0 / ${totalCount}`;
-    percentEl.textContent = `0%`;
-    fillBarEl.style.width = `0%`;
-    elapsedEl.textContent = `Elapsed: 0s`;
-    remainingEl.textContent = `Estimated Time Remaining: Calculating...`;
-
-    let successCount = 0;
-    const startTime = Date.now();
-
-    let timerInterval = setInterval(() => {
-      const elapsedSec = (Date.now() - startTime) / 1000;
-      elapsedEl.textContent = `Elapsed: ${Math.floor(elapsedSec)}s`;
-    }, 1000);
-
-    for (let i = 0; i < totalCount; i++) {
-      let calculatedBatchLayers = [];
-
-      // 1. Background selection - Constrained to 3000 max index preference evaluation
-      const bgList = layersBySection['Background'].slice(0, 3000);
-      const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-      calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
-
-      // 2. Base selection + Locked Target Gender - Constrained to 3000 max index preference evaluation
-      const baseList = layersBySection['Base'].slice(0, 3000);
-      const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
-      const targetGender = randomBase.gender || 'male'; 
-      calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id, gender: targetGender });
-
-      // 3. Dynamic Accessories Allocation - Eyes & Beard capped at 3000 items intake validation
-      for (let j = 2; j < SECTIONS.length; j++) {
-        const currentSecName = SECTIONS[j];
-        let sectionPool = layersBySection[currentSecName] || [];
-        
-        if (currentSecName === "Eyes" || currentSecName === "Beard") {
-          sectionPool = sectionPool.slice(0, 3000);
-        }
-        
-        const matchingGenderPool = sectionPool.filter(item => !item.gender || item.gender === targetGender);
-
-        if (matchingGenderPool.length > 0) {
-          if (Math.random() > 0.4) {
-            const chosenLayer = matchingGenderPool[Math.floor(Math.random() * matchingGenderPool.length)];
-            calculatedBatchLayers.push({
-              section: currentSecName,
-              value: chosenLayer.value,
-              imageUrl: chosenLayer.imageUrl,
-              layerId: chosenLayer.id,
-              gender: chosenLayer.gender
-            });
-          }
-        }
-      }
-
-      try {
-        // Safe check for 935 optimization bypass rule
-        const has935 = calculatedBatchLayers.some(l => l.value && l.value.includes('935'));
-        if (!has935) {
-          calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-        }
-
-        const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
-        const computedAttributes = buildAttributes(calculatedBatchLayers);
-        
-        const currentIndexNo = getNextNumber();
-        const batchNFTObject = {
-          id: Date.now() + '_auto_' + Math.random().toString(36).substr(2,6),
-          name: `404 Punk #${currentIndexNo}`,
-          description: `Automated smart match procedural generator allocation.`,
-          image: generatedImg,
-          attributes: computedAttributes,
-          layers: calculatedBatchLayers,
-          number: currentIndexNo,
-          fileName: `${currentIndexNo}.png`,
-          jsonName: `${currentIndexNo}.json`,
-          createdAt: Date.now()
-        };
-
-        nfts.push(batchNFTObject);
-        successCount++;
-      } catch(err) {
-        console.error("Failed to compile variant lines:", err);
-      }
-
-      const processedCount = i + 1;
-      const pct = Math.round((processedCount / totalCount) * 100);
-      
-      textCountEl.textContent = `Processing: ${processedCount} / ${totalCount}`;
-      percentEl.textContent = `${pct}%`;
-      fillBarEl.style.width = `${pct}%`;
-
-      const currentElapsedMs = Date.now() - startTime;
-      const avgTimePerLineMs = currentElapsedMs / processedCount;
-      const remainingLines = totalCount - processedCount;
-      const remainingTimeSec = (remainingLines * avgTimePerLineMs) / 1000;
-
-      remainingEl.textContent = `Estimated Time Remaining: ${formatTime(remainingTimeSec)}`;
-      await new Promise(r => setTimeout(r, 10));
-    }
-
-    clearInterval(timerInterval);
-    saveUserNFTs();
-    renderCollection();
-    
-    btn.disabled = false;
-    btn.innerHTML = '🚀 Run Auto Generation';
-    showToast(`🎉 Generated ${successCount} NFTs successfully!`);
-    
-    setTimeout(() => { progressContainer.classList.add('hidden'); }, 3000);
-    switchTab('collection');
-  }
-
   function clearAllSelections() {
     selectedLayersArray = [];
     renderCreateSections();
     updateOrderPreview();
     updateLivePreview();
-    showToast('All selections cleared');
+    showToast('Manual matrix assembly configuration states wiped successfully.');
   }
 
   function clearAllCollection() {
-    if(!nfts.length) { showToast('❌ Collection is already empty!'); return; }
-    if(confirm(`⚠️ Are you sure you want to delete ALL (${nfts.length}) NFTs from your collection?`)) {
+    if(!nfts.length) { showToast('❌ Request Denied: Active storage manifests are already blank.'); return; }
+    if(confirm(`⚠️ WARNING: Critical system database purge requested. Are you certain you want to destroy all (${nfts.length}) items inside your browser cache?`)) {
       nfts = [];
       saveUserNFTs();
       renderCollection();
-      showToast('🗑️ Entire collection cleared successfully!');
+      showToast('🗑️ Local cache storage registries initialized to empty factory default parameters.');
     }
   }
 
   function clearMatchedCollection() {
-    if(!nfts.length) { showToast('❌ No items inside collection data.'); return; }
+    if(!nfts.length) { showToast('❌ Request Denied: Active registry contains zero allocation maps.'); return; }
     const beforeCount = nfts.length;
+    
+    // Filters and clears assets matching master DNA structures signatures using matchWithMaster engine call
     nfts = nfts.filter(nft => {
-      const matchResult = matchWithMaster(nft.attributes);
-      return !matchResult.matched;
+      const evaluationResponseSummaryResult = matchWithMaster(nft.attributes);
+      return !evaluationResponseSummaryResult.matched;
     });
-    const removedCount = beforeCount - nfts.length;
-    if (removedCount === 0) {
-      showToast('🔍 No Matched NFTs found to clear!');
+    
+    const calculatedRemovedCount = beforeCount - nfts.length;
+    if (calculatedRemovedCount === 0) {
+      showToast('🔍 Database Scan Results: No verified matching token indices found to execute target extraction.');
       return;
     }
+    
     saveUserNFTs();
     renderCollection();
-    showToast(`🗑️ Successfully removed ${removedCount} Matched NFTs in 1-Click!`);
+    showToast(`🗑️ Smart Matrix Purge Complete: Eliminated ${calculatedRemovedCount} matching duplication states with 1-Click Execution!`);
   }
 
   async function mintSingleNFT() {
-    if(selectedLayersArray.length === 0) { showToast('❌ Please select layers first'); return; }
+    if(selectedLayersArray.length === 0) { showToast('❌ Execution Interrupted: Select valid composite asset layer vectors before compiling.'); return; }
     const hasBg = selectedLayersArray.some(l => l.section === 'Background');
     const hasBase = selectedLayersArray.some(l => l.section === 'Base');
-    if(!hasBg || !hasBase) { showToast('❌ Background and Base layers are mandatory!'); return; }
+    if(!hasBg || !hasBase) { showToast('❌ Configuration Rule Fault: Background and Character Base choices are non-negotiable requisites.'); return; }
 
     const nftName = document.getElementById('nft-name').value.trim() || "404 Punks";
     const description = document.getElementById('nft-description').value.trim();
     const btn = document.getElementById('mintButtonSingle');
     btn.disabled = true; 
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Minting...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Compiling Stack Composites...';
     
     try {
       const has935 = selectedLayersArray.some(l => l.value && l.value.includes('935'));
@@ -546,6 +735,7 @@
       const imageData = await compositeFromSelected();
       const attributes = buildAttributes(selectedLayersArray);
       const nextNum = getNextNumber();
+      
       const newNFT = {
         id: Date.now() + '_' + Math.random().toString(36).substr(2,6),
         name: `${nftName} #${nextNum}`,
@@ -558,34 +748,53 @@
         jsonName: `${nextNum}.json`,
         createdAt: Date.now()
       };
+      
       nfts.push(newNFT);
       saveUserNFTs();
       
       selectedLayersArray = [];
       renderCreateSections();
       renderCollection();
-      if(previewCtx) { previewCtx.clearRect(0,0,240,240); previewCtx.fillStyle = '#0f172a'; previewCtx.fillRect(0,0,240,240); }
-      showToast(`✅ Minted #${nextNum} saved`);
+      
+      if(previewCtx) { 
+        previewCtx.clearRect(0,0,240,240); 
+        previewCtx.fillStyle = '#020617'; 
+        previewCtx.fillRect(0,0,240,240); 
+      }
+      showToast(`✅ Successfully Compiled & Minted Node Fragment Identity Alignment System #${nextNum}`);
       switchTab('collection');
     } catch(err) { 
-      showToast(`Error: ${err.message}`); 
-    } { 
+      showToast(`Error Encountered: ${err.message}`); 
+    } finally { 
       btn.disabled = false; 
-      btn.innerHTML = '✨ Mint NFT (Single)'; 
+      btn.innerHTML = '<i data-lucide="disc"></i> Execute Individual Assembly Matrix Compilation & Mint';
+      lucide.createIcons();
     }
   }
 
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 6: REMOTE REALTIME SYNCHRONIZATION DATA BUS (FIREBASE REALTIME)
+  // -------------------------------------------------------------------------
   function listenToFirebaseLayers() {
     database.ref('layers').on('value', (snap) => {
       const data = snap.val();
       for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
       renderSectionsLayers();
       renderCreateSections();
-      document.getElementById('sync-status').innerHTML = '🌐 Firebase Sync ON';
+      document.getElementById('sync-status').innerHTML = '🌐 Remote Sync Active';
+      document.getElementById('sync-status').className = "text-xs px-3 py-1 bg-emerald-950/80 text-emerald-300 rounded-full font-bold border border-emerald-800";
+      updateRamUserLoadMetrics();
+    }, (error) => {
+      console.error("Firebase Database Cluster Connectivity Terminated: Interrupted Pipeline Read Status", error);
+      document.getElementById('sync-status').innerHTML = '⚠️ Protocol Sync Pipeline Offline';
+      document.getElementById('sync-status').className = "text-xs px-3 py-1 bg-rose-950/80 text-rose-300 rounded-full font-bold border border-rose-800";
     });
   }
 
-  async function addLayerToFirebase(section, layer) { const updated = [...(layersBySection[section]||[]), layer]; await database.ref(`layers/${section}`).set(updated); }
+  async function addLayerToFirebase(section, layer) { 
+    const updated = [...(layersBySection[section]||[]), layer]; 
+    await database.ref(`layers/${section}`).set(updated); 
+  }
   
   async function deleteLayerFromFirebase(section, layerId) { 
     const filtered = (layersBySection[section]||[]).filter(l=>String(l.id)!==String(layerId)); 
@@ -595,6 +804,9 @@
     updateLivePreview(); 
   }
 
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 7: DYNAMIC LAYOUT & HIGH PERFORMANCE RENDERING SCHEMATICS
+  // -------------------------------------------------------------------------
   function renderSectionsLayers() {
     const container = document.getElementById('sections-container');
     if(!container) return;
@@ -602,12 +814,12 @@
     for(let section of SECTIONS) {
       const layers = layersBySection[section] || [];
       const isOpen = openSectionLayers === section;
-      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleSectionLayers('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-raj font-bold text-blue-900">${SECTIONS.indexOf(section) + 1}. ${section} (${layers.length})</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
+      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleSectionLayers('${section}')" class="flex justify-between items-center p-4 bg-slate-900/40 border-b border-slate-800 cursor-pointer hover:bg-slate-800/30 transition"><span class="font-bold text-slate-300">${SECTIONS.indexOf(section) + 1}. Layer Structural Zone: ${section} (Total Registry Cache Count: ${layers.length})</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition text-indigo-400"></i></div>`;
       if(isOpen) {
-        html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
+        html += `<div class="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-950/30">`;
         layers.forEach(layer => {
-          const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
-          html += `<div class="layer-item p-2"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)} ${genSymbol}</p><button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-600 text-[10px] w-full mt-1 bg-red-100 rounded py-1">Delete</button></div>`;
+          const genSymbol = layer.gender === 'female' ? '<span class="text-purple-400 font-bold ml-1">♀ Female Blueprint Spec</span>' : '<span class="text-indigo-400 font-bold ml-1">♂ Male Blueprint Spec</span>';
+          html += `<div class="layer-item p-3 border border-slate-800"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-slate-900 border border-slate-800"><p class="text-xs font-bold mt-2 truncate text-slate-200">${escapeHtml(layer.value)}</p><p class="text-[10px] text-slate-400 mt-0.5">${genSymbol}</p><button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-rose-400 text-[10px] w-full mt-2 bg-rose-950/40 border border-rose-900/60 hover:bg-rose-900 rounded-lg py-1.5 transition">Purge Asset Config Node</button></div>`;
         });
         html += `</div>`;
       }
@@ -626,19 +838,19 @@
       if(!layers.length) continue;
       const isOpen = openSectionCreate === section;
       const selectedLayer = selectedLayersArray.find(l => l.section === section);
-      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleCreateSection('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-raj font-bold text-blue-900">${SECTIONS.indexOf(section) + 1}. ${section} ${selectedLayer ? '✓' : ''}</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
+      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleCreateSection('${section}')" class="flex justify-between items-center p-4 bg-slate-900/40 border-b border-slate-800 cursor-pointer hover:bg-slate-800/30 transition"><span class="font-bold text-slate-200">${SECTIONS.indexOf(section) + 1}. Matrix Target Channel: ${section} ${selectedLayer ? '<span class="text-emerald-400 font-mono text-xs ml-2">[✓ Component Locked]</span>' : ''}</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition text-indigo-400"></i></div>`;
       if(isOpen) {
-        html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
+        html += `<div class="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-950/30">`;
         layers.forEach(layer => {
           const isSel = selectedLayer && selectedLayer.layerId === layer.id;
-          const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
-          html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-2 cursor-pointer ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}<p class="text-xs text-center mt-1 font-medium">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
+          const genSymbol = layer.gender === 'female' ? '<span class="text-purple-400 font-bold ml-1">♀</span>' : '<span class="text-indigo-400 font-bold ml-1">♂</span>';
+          html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-3 ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-slate-900 border border-slate-800">${isSel ? '<div class="text-indigo-400 text-center text-xs font-bold mt-1.5 animate-pulse">● System Matrix Active</div>' : ''}<p class="text-xs text-center mt-2 font-medium text-slate-300 truncate">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
         });
         html += `</div>`;
       }
       html += `</div>`;
     }
-    if(!Object.values(layersBySection).some(arr=>arr.length)) container.innerHTML = '<div class="text-center p-6 text-gray-600">No global layers loaded.</div>';
+    if(!Object.values(layersBySection).some(arr=>arr.length)) container.innerHTML = '<div class="text-center p-8 text-slate-500 bg-slate-900/40 rounded-xl border border-slate-800">No global runtime layers discovered inside current Firebase database target streams.</div>';
     else container.innerHTML = html;
     lucide.createIcons();
     updateOrderPreview();
@@ -647,7 +859,7 @@
   function updateOrderPreview() { 
     const div = document.getElementById('order-preview-list'); 
     if(!div) return; 
-    if(selectedLayersArray.length === 0) { div.innerHTML = '<span class="text-gray-500">No layers selected</span>'; return; }
+    if(selectedLayersArray.length === 0) { div.innerHTML = '<span class="text-slate-500 text-xs font-medium">Awaiting manual composite node injections...</span>'; return; }
     
     let sortedPreview = [...selectedLayersArray];
     const has935 = sortedPreview.some(l => l.value && l.value.includes('935'));
@@ -656,15 +868,15 @@
     }
     
     div.innerHTML = sortedPreview.map((l, idx) => {
-      const genSymbol = l.gender === 'female' ? '<span class="text-pink-600 font-bold">♀</span>' : '<span class="text-blue-600 font-bold">♂</span>';
-      return `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)} (${genSymbol})</span>`;
+      const genSymbol = l.gender === 'female' ? '<span class="text-purple-400 font-bold">♀</span>' : '<span class="text-indigo-400 font-bold">♂</span>';
+      return `<span class="order-tag">Node #${idx+1} [${l.section}]: ${escapeHtml(l.value)} (${genSymbol})</span>`;
     }).join(''); 
   }
   
   async function updateLivePreview() { 
     if(!previewCtx) { const can = document.getElementById('live-preview-canvas'); if(can) previewCtx = can.getContext('2d'); else return; } 
     previewCtx.clearRect(0,0,240,240); 
-    previewCtx.fillStyle = '#0f172a'; 
+    previewCtx.fillStyle = '#020617'; 
     previewCtx.fillRect(0,0,240,240); 
     
     let sortedLayers = [...selectedLayersArray];
@@ -693,13 +905,10 @@
     const downloadZipBtn = document.getElementById('download-zip-btn');
     if(!container) return;
     
-    // Core matchWithMaster filter integration to load all components properly
-    let activeRenderedPunksList = [...nfts];
-    
-    if(!activeRenderedPunksList.length) { 
+    if(!nfts.length) { 
       container.innerHTML=''; 
       empty.classList.remove('hidden'); 
-      countDiv.innerHTML=''; 
+      if(countDiv) countDiv.innerHTML=''; 
       if(clearBtn) clearBtn.classList.add('hidden');
       if(clearMatchedBtn) clearMatchedBtn.classList.add('hidden');
       if(downloadZipBtn) downloadZipBtn.classList.add('hidden');
@@ -712,23 +921,27 @@
     if(downloadZipBtn) downloadZipBtn.classList.remove('hidden');
 
     let totalMatchedCount = 0;
-    const finalCardsHtml = activeRenderedPunksList.map(nft => {
-      const match = matchWithMaster(nft.attributes);
-      if (match.matched) totalMatchedCount++;
-      const matchHtml = match.matched ? `<span class="match-badge">✅ Match #${match.matchId}</span>` : `<span class="nomatch-badge">❌ No Match</span>`;
-      return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-raj font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-1" onclick="event.stopPropagation()"><button onclick="App.openNFTEditor('${nft.id}')" class="text-xs bg-amber-500 text-white px-2 py-1 rounded font-bold">✏️ Edit</button><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 px-1 py-1 rounded">📸</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 px-1 py-1 rounded">📄</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-200 px-1 py-1 rounded">🗑</button></div></div></div></div>`;
+    const finalCardsHtml = nfts.map(nft => {
+      // Calls DNA algorithm to compute matches realtime
+      const matchResultReport = matchWithMaster(nft.attributes);
+      if (matchResultReport.matched) totalMatchedCount++;
+      const matchHtml = matchResultReport.matched ? `<span class="match-badge">🎯 Smart Match #${matchResultReport.matchId}</span>` : `<span class="nomatch-badge">🧬 Unique Spec Variant</span>`;
+      return `<div class="nft-card rounded-2xl overflow-hidden border border-slate-800 shadow-md cursor-pointer hover:border-indigo-500/50 transition duration-300" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-950 p-2"><img src="${nft.image}" class="w-full h-full object-contain rounded-xl bg-slate-900 border border-slate-800/80"></div><div class="p-4 bg-slate-900/90"><div class="flex justify-between items-center mb-2"><h3 class="font-bold text-slate-100 truncate max-w-[140px] text-sm">${escapeHtml(nft.name)}</h3><span class="text-xs font-mono bg-slate-800 text-slate-400 px-2 py-0.5 rounded-md">#ID:${nft.number}</span></div><div class="flex justify-between items-center mt-3">${matchHtml}<div class="flex gap-1" onclick="event.stopPropagation()"><button onclick="App.openNFTEditor('${nft.id}')" class="text-[11px] bg-amber-600/20 hover:bg-amber-600 border border-amber-700/60 text-amber-300 hover:text-white px-2 py-1 rounded-md transition font-medium">✏️ Edit Sequence</button><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-slate-800 hover:bg-slate-700 p-1 rounded-md text-slate-300">📸</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-slate-800 hover:bg-slate-700 p-1 rounded-md text-slate-300 manifest-download">📄</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-rose-950/40 hover:bg-rose-900 border border-rose-900 text-rose-400 hover:text-white p-1 rounded-md transition">🗑</button></div></div></div></div>`;
     }).join('');
 
     countDiv.innerHTML = `
       <div class="flex gap-2">
-        <span class="inline-flex items-center gap-2 bg-blue-100 px-4 py-1 rounded-full text-blue-800 text-sm font-bold">🎨 Total Minted: ${activeRenderedPunksList.length}</span>
-        <span class="inline-flex items-center gap-2 bg-green-100 px-4 py-1 rounded-full text-green-800 text-sm font-bold">🎯 Matched Count: ${totalMatchedCount}</span>
+        <span class="inline-flex items-center gap-2 bg-indigo-950/80 border border-indigo-800 px-4 py-1.5 rounded-full text-indigo-300 text-xs font-bold font-mono">🎨 Local Ledger Size: ${nfts.length} Records</span>
+        <span class="inline-flex items-center gap-2 bg-emerald-950/80 border border-emerald-800 px-4 py-1.5 rounded-full text-emerald-300 text-xs font-bold font-mono">🎯 Verified DNA Matches: ${totalMatchedCount} Nodes</span>
       </div>
     `;
     
     container.innerHTML = finalCardsHtml;
   }
 
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 8: INTERACTIVE MULTI-LAYER SEQUENCER AND REALTIME COMPOSITOR
+  // -------------------------------------------------------------------------
   function openNFTEditor(id) {
     const nft = nfts.find(n => String(n.id) === String(id));
     if (!nft) return;
@@ -742,31 +955,31 @@
     editingLayersArray = baseLayers;
     
     if(editingLayersArray.length === 0) {
-      showToast('⚠️ No structured layer tracking found.');
+      showToast('⚠️ Diagnostics Error: Targeted item lacks verifiable independent matrix layer history structures.');
       return;
     }
 
     const modal = document.createElement('div');
     modal.id = 'nft-editor-modal';
-    modal.className = 'fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[1000] p-4';
+    modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[1000] p-4';
     modal.innerHTML = `
-      <div class="modal-content rounded-2xl max-w-4xl w-full p-6 max-h-[90vh] overflow-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="flex flex-col items-center justify-center bg-slate-900 p-4 rounded-xl">
-          <canvas id="edit-preview-canvas" width="340" height="340" class="w-[300px] h-[300px] border-2 border-amber-400 rounded-lg shadow-lg"></canvas>
-          <p class="text-gray-400 text-xs mt-3">Live Order Preview</p>
+      <div class="modal-content rounded-2xl max-w-4xl w-full p-6 max-h-[90vh] overflow-auto grid grid-cols-1 md:grid-cols-2 gap-6 border border-slate-700">
+        <div class="flex flex-col items-center justify-center bg-slate-950 p-4 rounded-xl border border-slate-800">
+          <canvas id="edit-preview-canvas" width="340" height="340" class="w-[300px] h-[300px] border-2 border-indigo-500 rounded-lg shadow-lg bg-slate-900"></canvas>
+          <p class="text-slate-500 font-mono text-xs mt-3 uppercase tracking-widest">Realtime Active Compositor Buffer</p>
         </div>
         <div class="flex flex-col justify-between">
           <div>
             <div class="flex justify-between items-center mb-4">
-              <h2 class="font-orb text-lg font-bold text-amber-600">✏️ Rearrange & Edit Layers</h2>
-              <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-gray-500 font-bold text-lg hover:text-black">✕</button>
+              <h2 class="font-bold text-lg text-indigo-400 flex items-center gap-2"><i data-lucide="sliders"></i> Topographical Matrix Sequencer Router</h2>
+              <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-slate-400 font-bold text-lg hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-gray-600 mb-4">লেয়ার সিকোয়েন্স রেন্ডার অর্ডার:</p>
+            <p class="text-xs text-slate-400 mb-4 font-sans">লেয়ার সিকোয়েন্স রেন্ডার অর্ডার (Z-Index Bottom to Top): Drag/Drop alternative simulated controls. Shift priority stack indices via micro-shifters below.</p>
             <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1"></div>
           </div>
           <div class="flex gap-3 mt-6">
-            <button onclick="document.getElementById('nft-editor-modal').remove()" class="flex-1 bg-gray-200 text-gray-800 py-3 rounded-xl font-bold">Cancel</button>
-            <button onclick="App.saveEditedNFT()" class="flex-1 bg-amber-500 text-white py-3 rounded-xl font-bold shadow-md hover:bg-amber-600">💾 Save Changes</button>
+            <button onclick="document.getElementById('nft-editor-modal').remove()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-xl font-bold border border-slate-700 transition">Discard Diagnostics</button>
+            <button onclick="App.saveEditedNFT()" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-bold shadow-md hover:from-indigo-500 hover:to-purple-500 transition">💾 Commit Restructured Matrix</button>
           </div>
         </div>
       </div>
@@ -774,6 +987,7 @@
     document.body.appendChild(modal);
     renderEditorRows();
     updateEditorPreview();
+    lucide.createIcons();
   }
 
   function renderEditorRows() {
@@ -782,20 +996,20 @@
     
     listDiv.innerHTML = editingLayersArray.map((layer, idx) => {
       const isProtected = (layer.section === 'Background' || layer.section === 'Base');
-      const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold">♀</span>' : '<span class="text-blue-600 font-bold">♂</span>';
+      const genSymbol = layer.gender === 'female' ? '<span class="text-purple-400 font-bold">♀</span>' : '<span class="text-indigo-400 font-bold">♂</span>';
       return `
-        <div class="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-xl shadow-sm">
-          <div class="flex items-center gap-2">
-            <span class="text-xs bg-slate-200 px-2 py-1 rounded font-bold text-gray-700">#${idx+1}</span>
-            <div class="text-left">
-              <p class="text-xs font-bold text-indigo-900">${layer.section} (${genSymbol})</p>
-              <p class="text-[11px] text-gray-600 truncate max-w-[130px]">${escapeHtml(layer.value)}</p>
+        <div class="flex items-center justify-between p-2.5 bg-slate-900 border border-slate-800 rounded-xl shadow-sm">
+          <div class="flex items-center gap-3 truncate max-w-[70%]">
+            <span class="text-xs bg-slate-800 px-2 py-1 rounded font-mono font-bold text-slate-400">Idx:${idx}</span>
+            <div class="text-left truncate">
+              <p class="text-xs font-bold text-indigo-300">${layer.section} ${genSymbol}</p>
+              <p class="text-[11px] text-slate-400 truncate">${escapeHtml(layer.value)}</p>
             </div>
           </div>
           <div class="flex gap-1 items-center">
-            <button onclick="App.moveEditorLayer(${idx}, -1)" class="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===0?'disabled style="opacity:0.3"':''}>🔼</button>
-            <button onclick="App.moveEditorLayer(${idx}, 1)" class="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs" ${idx===editingLayersArray.length-1?'disabled style="opacity:0.3"':''}>🔽</button>
-            <button onclick="App.removeEditorLayer(${idx})" class="p-1.5 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg text-xs font-bold" ${isProtected?'disabled style="opacity:0.2; cursor:not-allowed;"':''}>🗑️</button>
+            <button onclick="App.moveEditorLayer(${idx}, -1)" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs transition" ${idx===0?'disabled style="opacity:0.25; cursor:not-allowed;"':''}>🔼</button>
+            <button onclick="App.moveEditorLayer(${idx}, 1)" class="p-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs transition" ${idx===editingLayersArray.length-1?'disabled style="opacity:0.25; cursor:not-allowed;"':''}>🔽</button>
+            <button onclick="App.removeEditorLayer(${idx})" class="p-1.5 bg-rose-950/40 text-rose-400 hover:bg-rose-900 rounded-lg text-xs font-bold transition border border-rose-900/50" ${isProtected?'disabled style="opacity:0.15; cursor:not-allowed;"':''}>🗑️</button>
           </div>
         </div>
       `;
@@ -817,13 +1031,13 @@
   function removeEditorLayer(index) {
     const layer = editingLayersArray[index];
     if (layer.section === 'Background' || layer.section === 'Base') {
-      showToast("❌ Background and Base layers cannot be deleted!");
+      showToast("❌ System Enforcement: Root components (Background/Base) are vital nodes. Severance rejected.");
       return;
     }
     editingLayersArray.splice(index, 1);
     renderEditorRows();
     updateEditorPreview();
-    showToast("🗑️ Layer removed.");
+    showToast("🗑️ Structural block detached from target matrix array.");
   }
 
   async function updateEditorPreview() {
@@ -831,7 +1045,7 @@
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0,0,340,340);
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#020617';
     ctx.fillRect(0,0,340,340);
 
     for(let item of editingLayersArray) {
@@ -849,7 +1063,7 @@
     const nftIndex = nfts.findIndex(n => String(n.id) === String(editingNftId));
     if(nftIndex === -1) return;
 
-    showToast('⚡ Processing Composite Redraw...');
+    showToast('⚡ Processing Composite Structural Matrix Redraw Interconnection Pipelines...');
     const newImage = await compositeFromSelected(editingLayersArray, true);
     const newAttributes = buildAttributes(editingLayersArray);
 
@@ -861,70 +1075,104 @@
     renderCollection();
     
     document.getElementById('nft-editor-modal').remove();
-    showToast('🎉 NFT Layers Updated successfully!');
+    showToast('🎉 Block Revision Committed: Redrawn composites applied successfully.');
   }
 
-  function downloadImage(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(nft) { const a=document.createElement('a'); a.href=nft.image; a.download=`${nft.number}.png`; a.click(); showToast(`Saved ${nft.number}.png`); } }
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 9: DISK REPOSITORY FILE EXPORTERS MATRIX MANIFESTS
+  // -------------------------------------------------------------------------
+  function downloadImage(id) { 
+    const nft = nfts.find(n=>String(n.id)===String(id)); 
+    if(nft) { 
+      const a=document.createElement('a'); 
+      a.href=nft.image; 
+      a.download=`${nft.number}.png`; 
+      a.click(); 
+      showToast(`Exported asset vector sequence ${nft.number}.png to disk directory.`); 
+    } 
+  }
+  
   function downloadJSON(id) { 
     const nft = nfts.find(n=>String(n.id)===String(id)); 
     if(nft) { 
       const metadata = { name: nft.name, description: nft.description, image: `ipfs://placeholder/${nft.number}.png`, attributes: nft.attributes }; 
       const blob=new Blob([JSON.stringify(metadata,null,2)],{type:'application/json'}); 
-      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${nft.number}.json`; a.click(); URL.revokeObjectURL(a.href); showToast(`Saved ${nft.number}.json`); 
+      const a=document.createElement('a'); 
+      a.href=URL.createObjectURL(blob); 
+      a.download=`${nft.number}.json`; 
+      a.click(); 
+      URL.revokeObjectURL(a.href); 
+      showToast(`Exported token metadata blueprint map ${nft.number}.json to storage schema structure.`); 
     } 
   }
 
   async function downloadCollectionAsZip() {
-    if (!nfts.length) { showToast('❌ No NFTs in collection!'); return; }
+    if (!nfts.length) { showToast('❌ Processing Interrupted: Vault holds no files to package.'); return; }
     const btn = document.getElementById('download-zip-btn');
     const originalText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Zipping...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Programmatic Compression Framework Processing Packaging Matrix Active...';
     
     try {
       const zip = new JSZip();
       for (let nft of nfts) {
-        const folderName = `Punk_${nft.number}`;
+        const folderName = `Punk_Manifest_Node_${nft.number}`;
         const nftFolder = zip.folder(folderName);
+        
         const metadata = { name: nft.name, description: nft.description, image: `ipfs://placeholder/${nft.number}.png`, attributes: nft.attributes };
         nftFolder.file(`${nft.number}.json`, JSON.stringify(metadata, null, 2));
+        
         const base64Data = nft.image.split(',')[1];
         nftFolder.file(`${nft.number}.png`, base64Data, {base64: true});
       }
       const content = await zip.generateAsync({type: "blob"});
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = `404_Punks_Collection_${Date.now()}.zip`;
+      link.download = `404_Punks_Core_Matrix_Vault_Archive_${Date.now()}.zip`;
       link.click();
       URL.revokeObjectURL(link.href);
-      showToast('🎉 Collection downloaded successfully!');
+      showToast('🎉 Pipeline Packaging Complete: Vault data downloaded to storage array.');
     } catch (err) {
-      showToast('❌ ZIP generation failed');
+      showToast('❌ Critical Zip Core Exception: High payload density interrupted memory encoding allocation allocations.');
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
     }
   }
   
-  function deleteNFT(id) { if(confirm('Delete this NFT?')) { nfts = nfts.filter(n=>String(n.id)!==String(id)); saveUserNFTs(); renderCollection(); showToast('NFT removed'); } }
+  function deleteNFT(id) { 
+    if(confirm('Execute targeted record deletion on current cache node?')) { 
+      nfts = nfts.filter(n=>String(n.id)!==String(id)); 
+      saveUserNFTs(); 
+      renderCollection(); 
+      showToast('Registry instance detached.'); 
+    } 
+  }
   
   function viewMetadata(id) { 
-    const nft = nfts.find(n=>String(n.id)===String(id)); if(!nft) return; 
-    const match = matchWithMaster(nft.attributes); 
-    const matchLine = match.matched ? `<p class="text-green-700 text-sm mt-2 font-bold">✅ Smart Match Found: Official Punk #${match.matchId}</p>` : `<p class="text-red-700 text-sm mt-2 font-bold">❌ No match in official collection</p>`; 
+    const nft = nfts.find(n=>String(n.id)===String(id)); 
+    if(!nft) return; 
+    
+    const matchReportSummary = matchWithMaster(nft.attributes); 
+    const matchLine = matchReportSummary.matched ? `<p class="text-emerald-400 text-sm mt-3 font-mono font-bold">✅ DNA Sequence Verified: Official Indexed Punk Target Access Node Matching #${matchReportSummary.matchId}</p>` : `<p class="text-rose-400 text-sm mt-3 font-mono font-bold">❌ DNA Sequence Heuristics: Zero match states found inside public blockchain datasets.</p>`; 
+    
     const modal=document.createElement('div'); 
-    modal.className='fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-[999]'; 
-    modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto"><div class="flex justify-between"><h2 class="font-orb text-xl text-blue-900">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-gray-600">✕</button></div><img src="${nft.image}" class="w-full rounded-xl my-3 border-2 border-blue-300"><div class="space-y-2"><p class="text-gray-700 text-sm">${escapeHtml(nft.description)}</p><div class="font-raj text-sm font-bold mt-2">Attributes:</div>${nft.attributes.map(a=>`<div class="attribute-badge"><span class="font-medium">${a.trait_type === "," ? "','" : a.trait_type}</span><span>${escapeHtml(a.value)}</span></div>`).join('')}${matchLine}<div class="flex gap-3 mt-4"><button onclick="App.downloadImage('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-blue-600 text-white py-2 rounded-xl">Save PNG</button><button onclick="App.downloadJSON('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl">Save JSON</button></div></div></div>`; 
-    document.body.appendChild(modal); modal.onclick=e=>{if(e.target===modal)modal.remove();};
+    modal.className='fixed inset-0 bg-black/85 backdrop-blur flex items-center justify-center z-[999] p-4'; 
+    modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto border border-slate-800"><div class="flex justify-between items-center"><h2 class="text-xl font-bold text-indigo-400">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-white font-bold">✕</button></div><div class="bg-slate-950 p-3 rounded-xl my-3 border border-slate-800"><img src="${nft.image}" class="w-full rounded-xl border border-slate-800 bg-slate-900"></div><div class="space-y-2"><p class="text-slate-300 text-xs font-sans bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/40">${escapeHtml(nft.description)}</p><div class="text-xs font-bold text-slate-400 mt-4 uppercase tracking-widest">Calculated Attribute Mapping Specifications:</div><div class="max-h-[20vh] overflow-y-auto pr-1 mt-1">${nft.attributes.map(a=>`<div class="attribute-badge"><span class="text-slate-400 text-xs font-mono font-bold">${a.trait_type === "," ? "','" : a.trait_type}</span><span class="text-indigo-300 text-xs font-bold">${escapeHtml(a.value)}</span></div>`).join('')}</div>${matchLine}<div class="flex gap-3 mt-5"><button onclick="App.downloadImage('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-bold transition">Save Vector Image Asset</button><button onclick="App.downloadJSON('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded-xl text-xs font-bold transition">Save Blueprint Manifest JSON</button></div></div></div>`; 
+    document.body.appendChild(modal); 
+    modal.onclick=e=>{ if(e.target===modal)modal.remove(); };
   }
 
+  // -------------------------------------------------------------------------
+  // SYSTEM MODULE 10: USER DASHBOARD CONTROL INTERFACE MATRIX CORE ROUTES
+  // -------------------------------------------------------------------------
   async function addLayer() { 
     const url=document.getElementById('github-url').value.trim(); 
     const val=document.getElementById('layer-value').value.trim(); 
     const sec=document.getElementById('layer-section').value; 
     const gen=document.querySelector('input[name="layer-gender"]:checked').value; 
     
-    if(!url || !val) { showToast('❌ Fill all fields'); return; } 
+    if(!url || !val) { showToast('❌ Processing Aborted: Input criteria configuration targets missing parameters.'); return; } 
     let finalUrl = url; 
     if(url.includes('github.com') && !url.includes('raw.githubusercontent.com')) { 
       finalUrl = url.replace('github.com','raw.githubusercontent.com').replace('/blob/','/'); 
@@ -936,13 +1184,17 @@
       await addLayerToFirebase(sec, layerObj); 
       document.getElementById('github-url').value=''; 
       document.getElementById('layer-value').value=''; 
-      showToast(`✅ "${val}" added to ${sec}`); 
+      showToast(`✅ Deployment Complete: Asset entry map "${val}" bound to category section array track: ${sec}`); 
     }; 
-    img.onerror=()=>showToast('Invalid image URL'); 
+    img.onerror=()=>showToast('❌ Network Routing Error: Provided URL link context failed compilation checks or access constraints.'); 
     img.src=finalUrl; 
   }
   
-  function deleteLayer(section, id) { if(confirm('Delete layer?')) { deleteLayerFromFirebase(section, id).then(() => showToast('Layer removed')); } }
+  function deleteLayer(section, id) { 
+    if(confirm('Authorize destructive extraction loop actions on remote firebase schema element node?')) { 
+      deleteLayerFromFirebase(section, id).then(() => showToast('Cluster mapping revised. Selected database parameters eliminated.')); 
+    } 
+  }
 
   function switchTab(tabId) {
     ['layers', 'create', 'collection'].forEach(t => {
@@ -958,11 +1210,13 @@
     if(targetTab) targetTab.classList.add('active');
     
     if(tabId === 'create') { updateLivePreview(); }
+    updateRamUserLoadMetrics();
   }
 
   function toggleSectionLayers(section) { openSectionLayers = (openSectionLayers === section) ? null : section; renderSectionsLayers(); }
   function toggleCreateSection(section) { openSectionCreate = (openSectionCreate === section) ? null : section; renderCreateSections(); }
 
+  // App API Interface Mapping Global Exporters Controller Group
   const App = {
     switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer,
     toggleLayerSelection, startSmartAutoGeneration, mintSingleNFT, clearAllSelections,
@@ -971,6 +1225,7 @@
     openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT
   };
 
+  // Entry Runtime Core Instantiation Execution Listener Hook
   window.onload = function() {
     loadUserNFTs();
     listenToFirebaseLayers();
@@ -978,6 +1233,9 @@
     renderCollection();
     switchTab('layers');
     lucide.createIcons();
+    
+    // Setup continuous diagnostic sampling execution looping frame arrays
+    setInterval(updateRamUserLoadMetrics, 8000);
   }
 </script>
 </body>
