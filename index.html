@@ -135,12 +135,23 @@
       <h3 class="font-raj font-bold text-indigo-900 mb-2 flex items-center gap-2"><i data-lucide="shuffle"></i> Smart Auto Generator</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
         <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">How many NFTs do you want to generate?</label>
-          <input type="number" id="auto-generation-count" min="1" max="10000" value="10" class="nft-input bg-white font-bold text-blue-900">
+          <label class="block text-xs font-bold text-gray-700 mb-1">How many NFTs do you want to generate? (Max: 22000)</label>
+          <input type="number" id="auto-generation-count" min="1" max="22000" value="10" class="nft-input bg-white font-bold text-blue-900">
         </div>
         <button id="mintButtonBatch" onclick="App.startSmartAutoGeneration()" class="btn-generate text-white py-3 px-6 rounded-xl font-bold flex items-center justify-center gap-2 shadow-md">
           🚀 Run Auto Generation
         </button>
+      </div>
+      
+      <!-- ITEM QUANTITY INTAKE PREFERENCE CONFIGURATION -->
+      <div class="mt-4 p-4 bg-white/80 rounded-xl border border-blue-200 text-xs text-slate-700 space-y-1">
+        <p class="font-bold text-blue-900 border-b pb-1 mb-2">⚙️ Items Intake Rules Configuration (Max 3000 Per Category):</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-semibold">
+          <div class="p-2 bg-slate-50 rounded border">🏞️ Background: Max 3000</div>
+          <div class="p-2 bg-slate-50 rounded border">👤 Base: Max 3000</div>
+          <div class="p-2 bg-slate-50 rounded border">👁️ Eye/Eyes: Max 3000</div>
+          <div class="p-2 bg-slate-50 rounded border">🧔 Beard: Max 3000</div>
+        </div>
       </div>
 
       <!-- PROGRESS TRACKER SYSTEM -->
@@ -360,7 +371,7 @@
     const elapsedEl = document.getElementById('progress-time-elapsed');
     const remainingEl = document.getElementById('progress-time-remaining');
 
-    if(totalCount <= 0) { showToast('❌ Please specify a valid generation number count!'); return; }
+    if(totalCount <= 0 || totalCount > 22000) { showToast('❌ Please specify a valid generation number count! (Max 22000)'); return; }
     if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Background library is empty!'); return; }
     if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Base library is empty!'); return; }
 
@@ -385,21 +396,26 @@
     for (let i = 0; i < totalCount; i++) {
       let calculatedBatchLayers = [];
 
-      // 1. Background selection
-      const bgList = layersBySection['Background'];
+      // 1. Background selection - Constrained to 3000 max index preference evaluation
+      const bgList = layersBySection['Background'].slice(0, 3000);
       const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
       calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
 
-      // 2. Base selection + Locked Target Gender
-      const baseList = layersBySection['Base'];
+      // 2. Base selection + Locked Target Gender - Constrained to 3000 max index preference evaluation
+      const baseList = layersBySection['Base'].slice(0, 3000);
       const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
       const targetGender = randomBase.gender || 'male'; 
       calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id, gender: targetGender });
 
-      // 3. Dynamic Accessories Allocation
+      // 3. Dynamic Accessories Allocation - Eyes & Beard capped at 3000 items intake validation
       for (let j = 2; j < SECTIONS.length; j++) {
         const currentSecName = SECTIONS[j];
-        const sectionPool = layersBySection[currentSecName] || [];
+        let sectionPool = layersBySection[currentSecName] || [];
+        
+        if (currentSecName === "Eyes" || currentSecName === "Beard") {
+          sectionPool = sectionPool.slice(0, 3000);
+        }
+        
         const matchingGenderPool = sectionPool.filter(item => !item.gender || item.gender === targetGender);
 
         if (matchingGenderPool.length > 0) {
@@ -677,7 +693,10 @@
     const downloadZipBtn = document.getElementById('download-zip-btn');
     if(!container) return;
     
-    if(!nfts.length) { 
+    // Core matchWithMaster filter integration to load all components properly
+    let activeRenderedPunksList = [...nfts];
+    
+    if(!activeRenderedPunksList.length) { 
       container.innerHTML=''; 
       empty.classList.remove('hidden'); 
       countDiv.innerHTML=''; 
@@ -693,7 +712,7 @@
     if(downloadZipBtn) downloadZipBtn.classList.remove('hidden');
 
     let totalMatchedCount = 0;
-    const finalCardsHtml = nfts.map(nft => {
+    const finalCardsHtml = activeRenderedPunksList.map(nft => {
       const match = matchWithMaster(nft.attributes);
       if (match.matched) totalMatchedCount++;
       const matchHtml = match.matched ? `<span class="match-badge">✅ Match #${match.matchId}</span>` : `<span class="nomatch-badge">❌ No Match</span>`;
@@ -702,7 +721,7 @@
 
     countDiv.innerHTML = `
       <div class="flex gap-2">
-        <span class="inline-flex items-center gap-2 bg-blue-100 px-4 py-1 rounded-full text-blue-800 text-sm font-bold">🎨 Total Minted: ${nfts.length}</span>
+        <span class="inline-flex items-center gap-2 bg-blue-100 px-4 py-1 rounded-full text-blue-800 text-sm font-bold">🎨 Total Minted: ${activeRenderedPunksList.length}</span>
         <span class="inline-flex items-center gap-2 bg-green-100 px-4 py-1 rounded-full text-green-800 text-sm font-bold">🎯 Matched Count: ${totalMatchedCount}</span>
       </div>
     `;
