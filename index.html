@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>404 PUNKS | Ultra Max Genesis Mint & Universal Smart Match Engine</title>
   
-  <!-- EXTERNAL DEPENDENCIES & CORE FRAMEWORKS -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
-  <!-- PREMIUM FONTS SETUP -->
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -92,7 +90,6 @@
 
 <div id="app" class="max-w-7xl mx-auto px-4 py-6">
   
-  <!-- MAIN HEADER CONTAINER -->
   <header class="flex justify-between items-center mb-6 bg-slate-900/80 backdrop-blur-md rounded-2xl p-5 shadow-lg border border-indigo-900/50">
     <div class="flex items-center gap-3">
       <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
@@ -100,19 +97,17 @@
     </div>
     <div class="flex gap-3 items-center">
       <div id="ram-load-display" class="text-xs px-3 py-1 bg-purple-950/80 text-purple-300 rounded-full border border-purple-800 font-mono">RAM Load: Initializing...</div>
-      <span id="sync-status" class="text-xs px-3 py-1 bg-emerald-950/80 text-emerald-300 rounded-full font-bold border border-emerald-800">🌐 Connecting Firebase...</span>
+      <span id="sync-status" class="text-xs px-3 py-1 bg-amber-950/80 text-amber-300 rounded-full font-bold border border-amber-800">🌐 Connecting Firebase...</span>
       <span class="text-xs px-3 py-1 bg-indigo-950/80 text-indigo-300 rounded-full border border-indigo-800">Engine v4.5 Pro Max</span>
     </div>
   </header>
 
-  <!-- NAVIGATION TABS MULTI-PANEL -->
   <div class="flex gap-3 mb-6 flex-wrap bg-slate-950/40 p-2 rounded-2xl border border-slate-800/60 max-w-max">
     <button onclick="App.switchTab('layers')" id="tab-layers" class="tab-btn active font-semibold flex items-center gap-2"><i data-lucide="layers" style="width:16px"></i> Global Layer Asset Matrix</button>
     <button onclick="App.switchTab('create')" id="tab-create" class="tab-btn font-semibold flex items-center gap-2"><i data-lucide="sparkles" style="width:16px"></i> Production Roll & Mint</button>
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn font-semibold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> Secure Matrix Vault</button>
   </div>
 
-  <!-- PANEL 1: GLOBAL LAYERS MANAGEMENT SYSTEM -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-6 rounded-2xl">
       <h3 class="font-semibold text-lg text-indigo-300 mb-4 flex items-center gap-2"><i data-lucide="plus-circle"></i> Inject Layer Configuration Asset (Realtime Firebase Database Synced)</h3>
@@ -160,10 +155,8 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
-  <!-- PANEL 2: PRODUCTION BUILD & MINTING ENGINE -->
   <div id="panel-create" class="space-y-5 hidden">
     
-    <!-- ENGINE RULES COMPLIANCE ALERT BOX -->
     <div class="glass-card p-4 rounded-xl text-sm text-slate-300 border-l-4 border-indigo-500 bg-indigo-950/20">
       <span class="font-bold text-indigo-400">⚙️ Tokenomics Structural Parsing Architecture:</span> 
       The system executes strict parsing rules. Base type assignments are encoded into the 
@@ -172,7 +165,6 @@
       Background attributes are isolated during standard indexing checks.
     </div>
 
-    <!-- MODULE A: GENERATIVE BATCH ROLL ENGINE -->
     <div class="glass-card p-6 rounded-2xl border-2 border-indigo-500/40 bg-gradient-to-b from-indigo-950/30 to-slate-900/50">
       <h3 class="font-semibold text-xl text-indigo-300 mb-2 flex items-center gap-2"><i data-lucide="cpu"></i> Generative Batch Roll Engine (NFT Build Workflow)</h3>
       <p class="text-xs text-slate-400 mb-4">Configure algorithmic batch mint configurations executing random programmatic attribute variations. Compatible with high-density sequencing.</p>
@@ -210,7 +202,6 @@
       </div>
     </div>
 
-    <!-- MODULE B: MANUAL ASSEMBLY MIX LAYER MATRIX PREVIEW & CUSTOM MULTI-SELECT ENGINE -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="glass-card p-5 flex flex-col items-center justify-center rounded-2xl md:col-span-1">
         <p class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">Canvas Live Buffer Viewport</p>
@@ -220,7 +211,6 @@
         </button>
       </div>
       
-      <!-- COMPREHENSIVE LAYER ARRANGEMENT PREVIEW & CUSTOM INPUT MATRIX -->
       <div class="glass-card p-5 rounded-2xl md:col-span-2 flex flex-col justify-between">
         <div>
           <p class="font-semibold text-indigo-300 mb-2 flex items-center gap-2"><i data-lucide="list-ordered"></i> Topographical Composite Stack Order (Bottom-Up Index)</p>
@@ -228,7 +218,6 @@
             <span class="text-slate-500 text-xs font-medium">Awaiting manual composite node injections...</span>
           </div>
 
-          <!-- NEW: CUSTOM MULTI-SELECTED ACCESSORIES INJECTION MODULE -->
           <div class="bg-slate-900/90 border border-indigo-500/30 p-4 rounded-xl space-y-3 mb-4">
             <p class="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1">
               <i data-lucide="sliders-horizontal" style="width:14px"></i> Multi-Selected Custom Attribute/Accessories Generator
@@ -240,10 +229,8 @@
                 <i data-lucide="plus" style="width:14px"></i> Inject Custom Trait
               </button>
             </div>
-            <!-- Live Active Custom Attributes Container Stack -->
             <div id="custom-badges-container" class="flex flex-wrap gap-2 pt-2">
-              <!-- Dynamically Appended Custom badging will mount here -->
-            </div>
+              </div>
           </div>
         </div>
 
@@ -255,7 +242,7 @@
             </div>
             <div>
               <label class="block text-[11px] font-bold text-slate-400 mb-1">Decentralized Storage Descriptive String Manifest</label>
-              <input type="text" id="nft-description" placeholder="Description" value="Limited glitch artifact from the 404 dimension." class="nft-inputManifest nft-input">
+              <input type="text" id="nft-description" placeholder="Description" value="Limited glitch artifact from the 404 dimension." class="nft-input">
             </div>
           </div>
           <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-generate w-full py-3.5 text-white rounded-xl font-bold text-md shadow-lg flex items-center justify-center gap-2">
@@ -265,11 +252,9 @@
       </div>
     </div>
 
-    <!-- RENDERING SECTIONS FOR LAYER MATRIX SELECTION -->
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
   </div>
 
-  <!-- PANEL 3: UNIVERSAL SECURE STORAGE MATRIX VAULT (COLLECTION VIEW) -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-indigo-950/80 flex-wrap gap-3">
       <div id="nft-count"></div>
@@ -286,7 +271,6 @@
       </div>
     </div>
     
-    <!-- COLLECTION GRID SYSTEM -->
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     <div id="nft-empty" class="text-center text-slate-500 py-16 bg-slate-900/20 rounded-2xl border border-dashed border-slate-800">
       <i data-lucide="alert-circle" class="mx-auto text-slate-600 mb-2" style="width:36px; height:36px;"></i>
@@ -478,8 +462,8 @@
     
     // Inject Computed Structural Complexity Attribute Metric Count Parameter
     attributeManifestResponseCollection.push({ 
-      trait_type: "Attribute Count", 
-      value: attributeManifestResponseCollection.length.toString() 
+       trait_type: "Attribute Count", 
+       value: attributeManifestResponseCollection.length.toString() 
     });
     
     return attributeManifestResponseCollection;
@@ -646,8 +630,6 @@
         }
 
         const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
-        
-        // Pass empty custom list for fully automated procedural batch structures
         const computedAttributes = buildAttributes(calculatedBatchLayers, []);
         
         const currentIndexNo = getNextNumber();
@@ -779,8 +761,6 @@
       }
 
       const imageData = await compositeFromSelected();
-      
-      // Inject both layers array and custom typed multi-selected components array here
       const attributes = buildAttributes(selectedLayersArray, customAttributesArray);
       const nextNum = getNextNumber();
       
@@ -791,7 +771,7 @@
         image: imageData,
         attributes: attributes,
         layers: [...selectedLayersArray],
-        customAttributes: [...customAttributesArray], // Persist custom manually entered dataset entries
+        customAttributes: [...customAttributesArray], 
         number: nextNum,
         fileName: `${nextNum}.png`,
         jsonName: `${nextNum}.json`,
@@ -833,13 +813,20 @@
       for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
       renderSectionsLayers();
       renderCreateSections();
-      document.getElementById('sync-status').innerHTML = '🌐 Remote Sync Active';
-      document.getElementById('sync-status').className = "text-xs px-3 py-1 bg-emerald-950/80 text-emerald-300 rounded-full font-bold border border-emerald-800";
+      
+      const statusEl = document.getElementById('sync-status');
+      if (statusEl) {
+        statusEl.innerHTML = '🌐 Remote Sync Active';
+        statusEl.className = "text-xs px-3 py-1 bg-emerald-950/80 text-emerald-300 rounded-full font-bold border border-emerald-800";
+      }
       updateRamUserLoadMetrics();
     }, (error) => {
-      console.error("Firebase Connect Interrupted Pipeline Read Status", error);
-      document.getElementById('sync-status').innerHTML = '⚠️ Protocol Sync Pipeline Offline';
-      document.getElementById('sync-status').className = "text-xs px-3 py-1 bg-rose-950/80 text-rose-300 rounded-full font-bold border border-rose-800";
+      console.error("Firebase Connection Interrupted Pipeline Read Status", error);
+      const statusEl = document.getElementById('sync-status');
+      if (statusEl) {
+        statusEl.innerHTML = '⚠️ Protocol Sync Pipeline Offline';
+        statusEl.className = "text-xs px-3 py-1 bg-rose-950/80 text-rose-300 rounded-full font-bold border border-rose-800";
+      }
     });
   }
 
@@ -1025,7 +1012,7 @@
               <h2 class="font-bold text-lg text-indigo-400 flex items-center gap-2"><i data-lucide="sliders"></i> Topographical Matrix Sequencer Router</h2>
               <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-slate-400 font-bold text-lg hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-slate-400 mb-4 font-sans">লেয়ার সিকোয়েন্স রেন্ডার অর্ডার (Z-Index Bottom to Top)</p>
+            <p class="text-xs text-slate-400 mb-4 font-sans">Render Order Setup (Z-Index Bottom to Top)</p>
             <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1"></div>
           </div>
           <div class="flex gap-3 mt-6">
@@ -1117,7 +1104,6 @@
     showToast('⚡ Processing Composite Structural Matrix Redraw...');
     const newImage = await compositeFromSelected(editingLayersArray, true);
     
-    // Retain existing custom attributes inside manual restructuring saves
     const existingCustoms = nfts[nftIndex].customAttributes || [];
     const newAttributes = buildAttributes(editingLayersArray, existingCustoms);
 
@@ -1188,10 +1174,10 @@
       showToast('🎉 Pipeline Packaging Complete!');
     } catch (err) {
       showToast('❌ Critical Zip Exception.');
-    } .finally(() => {
+    } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
-    });
+    }
   }
   
   function deleteNFT(id) { 
@@ -1277,7 +1263,7 @@
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
     downloadCollectionAsZip, clearMatchedCollection,
     openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT,
-    addCustomAttributeNode, removeCustomAttributeNode // NEW EXPORTS ATTACHED HERE
+    addCustomAttributeNode, removeCustomAttributeNode 
   };
 
   window.onload = function() {
