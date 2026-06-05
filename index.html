@@ -3,804 +3,1192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>404 PUNKS | Hyper RAM Matrix Engine + Multi-Select Editor</title>
+  <title>404 PUNKS // UNIVERSAL MATCH ENGINE</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%);
-      min-height: 100vh;
-      color: #f8fafc;
-    }
-    .glass-card, .section-card, .nft-card, .modal-content {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-    }
-    .layer-item {
-      background: rgba(30, 41, 59, 0.5);
-      border-radius: 16px;
-      border: 1px solid #334155;
-      transition: all 0.2s;
-    }
-    .layer-item.selected {
-      border-color: #6366f1;
-      background: rgba(99, 102, 241, 0.2);
-    }
-    .tab-btn {
-      transition: all 0.2s;
-      border-radius: 40px;
-      padding: 8px 20px;
-      font-weight: 700;
-      color: #94a3b8;
-    }
-    .tab-btn.active {
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      color: white;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
-    }
-    .btn-primary, .btn-generate {
-      background: linear-gradient(135deg, #4f46e5, #3730a3);
-      border: none;
-      transition: 0.2s;
-    }
-    .btn-primary:hover, .btn-generate:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.5);
-    }
-    .match-badge { background: #ef444420; color: #f87171; border: 1px solid #ef4444; border-radius: 40px; padding: 4px 12px; font-size: 12px; font-weight: bold; }
-    .nomatch-badge { background: #22c55e20; color: #4ade80; border: 1px solid #22c55e; border-radius: 40px; padding: 4px 12px; font-size: 12px; font-weight: bold; }
-    .preview-canvas { background: #020617; border-radius: 24px; border: 2px solid #6366f1; }
-    #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #ff007f; color: white; padding: 12px 24px; border-radius: 60px; z-index: 9999; font-weight: bold; }
-    .nft-input { background: #020617; border: 1px solid #334155; border-radius: 16px; padding: 12px 16px; width: 100%; color: white; outline: none; }
-    .nft-input:focus { border-color: #6366f1; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #008080; font-family: 'VT323', 'Press Start 2P', monospace; overflow-x: hidden; padding: 20px; }
+    .win95-desktop { max-width: 1400px; margin: 0 auto; }
+    .win95-window { background: #c0c0c0; border: 3px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; margin-bottom: 20px; }
+    .win95-titlebar { background: #000080; color: #ffffff; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-family: 'Press Start 2P', monospace; font-size: 11px; }
+    .win95-titlebar button { background: #c0c0c0; border: 2px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; width: 22px; height: 22px; cursor: pointer; }
+    .win95-content { padding: 16px; background: #c0c0c0; }
+    .win95-btn { background: #c0c0c0; border: 3px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; padding: 8px 16px; font-family: 'Press Start 2P', monospace; font-size: 10px; cursor: pointer; }
+    .win95-btn:active { border-top-color: #808080; border-left-color: #808080; border-right-color: #ffffff; border-bottom-color: #ffffff; transform: translate(1px, 1px); }
+    .win95-input { background: #ffffff; border: 2px inset #808080; padding: 8px 12px; font-family: 'VT323', monospace; font-size: 14px; width: 100%; outline: none; }
+    .win95-select { background: #ffffff; border: 2px inset #808080; padding: 8px 12px; font-family: 'VT323', monospace; font-size: 14px; cursor: pointer; }
+    .layer-item { background: #d4d0c8; border: 2px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; cursor: pointer; padding: 6px; position: relative; }
+    .layer-item.selected { background: #000080; border: 2px solid #ffffff; }
+    .layer-item.selected p, .layer-item.selected span { color: #ffffff !important; }
+    .qty-input { background: #ffffff; border: 2px inset #808080; padding: 6px 8px; width: 90px; text-align: center; font-family: 'Press Start 2P', monospace; font-size: 10px; }
+    .win95-tab { background: #c0c0c0; border: 3px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; padding: 8px 20px; font-family: 'Press Start 2P', monospace; font-size: 10px; cursor: pointer; margin-right: 4px; }
+    .win95-tab.active { border-top-color: #808080; border-left-color: #808080; border-right-color: #ffffff; border-bottom-color: #ffffff; }
+    .nft-card { background: #d4d0c8; border: 3px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; cursor: pointer; }
+    .progress-bar { background: #ffffff; border: 2px inset #808080; height: 20px; }
+    .progress-fill { background: #000080; height: 100%; width: 0%; transition: width 0.05s; }
+    .order-tag { background: #d4d0c8; border: 2px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; padding: 4px 10px; font-family: 'Press Start 2P', monospace; font-size: 8px; }
+    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #c0c0c0; border: 3px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; padding: 10px 20px; font-family: 'Press Start 2P', monospace; font-size: 10px; z-index: 10000; }
+    .hidden { display: none; }
+    .text-pixel { font-family: 'Press Start 2P', monospace; }
+    .grid-2cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    @media(max-width: 640px) { .grid-2cols { grid-template-columns: 1fr; } }
+    .layer-row { background: #d4d0c8; border: 2px outset #808080; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .move-btn { background: #c0c0c0; border: 2px solid; border-top-color: #ffffff; border-left-color: #ffffff; border-right-color: #808080; border-bottom-color: #808080; padding: 5px 10px; cursor: pointer; font-family: monospace; font-size: 14px; margin-left: 5px; }
+    .move-btn:active { border-top-color: #808080; border-left-color: #808080; border-right-color: #ffffff; border-bottom-color: #ffffff; transform: translate(1px, 1px); }
+    .search-input { background: #ffffff; border: 2px inset #808080; padding: 8px 12px; font-family: 'VT323', monospace; font-size: 16px; width: 200px; }
+    .warning-text { color: #aa0000; font-family: 'Press Start 2P', monospace; font-size: 8px; margin-top: 5px; }
+    .info-text { color: #000080; font-family: 'Press Start 2P', monospace; font-size: 8px; margin-top: 5px; }
+    .match-badge { background: #000080; color: #ffff00; border: 2px solid; border-top-color: #4444ff; border-left-color: #4444ff; border-right-color: #000044; border-bottom-color: #000044; padding: 3px 6px; font-family: 'Press Start 2P', monospace; font-size: 6px; margin-top: 5px; display: block; text-align: center; line-height: 1.6; }
+    .match-badge-loading { background: #404040; color: #00ff00; border: 2px inset #808080; padding: 3px 6px; font-family: 'Press Start 2P', monospace; font-size: 6px; margin-top: 5px; text-align: center; animation: blink 1s step-start infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .success-bg { background: #006400 !important; }
+    .match-engine-header { background: linear-gradient(135deg, #000080 0%, #0000aa 100%); border-bottom: 2px solid #ffff00; }
+    .pulse-text { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .layer-item .order-num { position: absolute; top: 2px; right: 2px; background: #ffff00; color: #000000; font-family: 'Press Start 2P', monospace; font-size: 6px; padding: 1px 3px; border: 1px solid #000; display: none; }
+    .layer-item.selected .order-num { display: block; }
+    .prob-badge { background: #000080; color: #ffff00; font-family: 'Press Start 2P', monospace; font-size: 7px; padding: 2px 6px; border: 1px solid #4444ff; }
+    .selected-order-item { background: #d4d0c8; border: 2px outset #808080; padding: 6px 10px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; font-family: 'Press Start 2P', monospace; font-size: 7px; }
+
+    /* Per-layer quantity inputs */
+    .layer-qty-box { background: #fff; border: 2px inset #808080; display: flex; flex-direction: column; gap: 2px; padding: 4px; margin-top: 4px; }
+    .layer-qty-row { display: flex; align-items: center; gap: 4px; font-family: 'Press Start 2P', monospace; font-size: 6px; }
+    .layer-qty-input { background: #ffffff; border: 1px inset #808080; width: 52px; padding: 2px 4px; font-family: 'Press Start 2P', monospace; font-size: 6px; text-align: center; color: #000; }
+    .layer-qty-input.selected-input { background: #ccddff; }
+    .section-auto-prob { background: #006400; color: #ffff00; font-family: 'Press Start 2P', monospace; font-size: 6px; padding: 2px 6px; border: 1px solid #004400; margin-left: 6px; }
   </style>
 </head>
 <body>
 
-<div id="app" class="max-w-7xl mx-auto px-4 py-4">
-  <header class="flex justify-between items-center mb-6 bg-slate-900/90 backdrop-blur-md rounded-2xl p-4 shadow-md border border-slate-800">
-    <div class="flex items-center gap-3">
-      <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
-      <h1 class="font-orb text-2xl font-black bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">404 PUNKS</h1>
-    </div>
-    <div class="flex gap-3">
-      <span id="sync-status" class="text-xs px-3 py-1 bg-green-950 text-green-400 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-indigo-950 text-indigo-400 rounded-full font-bold">⚡ Hyper RAM Engine Enabled</span>
-    </div>
-  </header>
-
-  <div class="flex gap-3 mb-6 flex-wrap">
-    <button onclick="App.switchTab('layers')" id="tab-layers" class="tab-btn bg-slate-800/60 font-bold flex items-center gap-2"><i data-lucide="layers" style="width:16px"></i> Global Layers Display</button>
-    <button onclick="App.switchTab('create')" id="tab-create" class="tab-btn bg-slate-800/60 font-bold flex items-center gap-2"><i data-lucide="sparkles" style="width:16px"></i> Mint NFT & Engine</button>
-    <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn bg-slate-800/60 font-bold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> My Collection</button>
-  </div>
-
-  <!-- PANEL 1: GLOBAL LAYERS VISUALIZER WITH INPUT -->
-  <div id="panel-layers" class="space-y-5">
-    <div class="glass-card p-5 rounded-2xl border border-dashed border-indigo-500/60 bg-slate-900/80">
-      <h3 class="font-raj font-bold text-indigo-300 mb-3 flex items-center gap-2">
-        <i data-lucide="plus-circle" class="text-indigo-400 w-5 h-5"></i> + Add New Layer to Global Library (Firebase)
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <input type="text" id="github-url" placeholder="GitHub RAW image URL" class="nft-input">
-        <input type="text" id="layer-value" placeholder="Value (e.g., Purple Background, Wild Hair)" class="nft-input">
-        <select id="layer-section" class="nft-input">
-          <option value="Background">1. Background</option>
-          <option value="Base">2. Base</option>
-          <option value="Nose">3. Nose</option>
-          <option value="Face">4. Face</option>
-          <option value="Neck">5. Neck</option>
-          <option value="Mouth">6. Mouth</option>
-          <option value="Ear">7. Ear</option>
-          <option value="Beard">8. Beard</option>
-          <option value="Accessory">9. Accessory</option>
-          <option value="Head">10. Head</option>
-          <option value="Eyes">11. Eyes</option>
-        </select>
-        <div class="flex gap-4 p-2 bg-slate-950 rounded-xl border border-slate-800">
-          <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-300">
-            <input type="radio" name="layer-gender" value="male" checked class="w-4 h-4 text-indigo-500"> ♂ Male
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-300">
-            <input type="radio" name="layer-gender" value="female" class="w-4 h-4 text-pink-500"> ♀ Female
-          </label>
-        </div>
-        <div class="md:col-span-2">
-          <label class="block text-xs font-bold text-indigo-400 mb-1">Max NFT Count Limit (Max 22,000):</label>
-          <input type="number" id="layer-max-count" placeholder="Limit (e.g., 500, 22000)" min="1" max="22000" value="500" oninput="App.validateMaxLimit(this)" class="nft-input font-bold text-emerald-400">
-        </div>
-        
-        <button onclick="App.addLayer()" class="btn-primary text-white py-2.5 rounded-xl font-bold md:col-span-2 shadow-lg">➕ Sync to Firebase</button>
+<div class="win95-desktop">
+  <div class="win95-window">
+    <div class="win95-titlebar"><span>📁 404 PUNKS - UNIVERSAL MATCH ENGINE</span><button onclick="location.reload()">✕</button></div>
+    <div style="background: #c0c0c0; padding: 8px 16px 0 16px;">
+      <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+        <button onclick="App.switchTab('layers')" id="tab-layers" class="win95-tab active">📂 LAYERS</button>
+        <button onclick="App.switchTab('create')" id="tab-create" class="win95-tab">🎨 CREATE NFT</button>
+        <button onclick="App.switchTab('collection')" id="tab-collection" class="win95-tab">📋 COLLECTION</button>
       </div>
     </div>
-    
-    <div id="sections-container" class="space-y-4"></div>
-  </div>
+    <div class="win95-content">
 
-  <!-- PANEL 2: MINT NFT + DYNAMIC EDITABLE ITEM LAYERS -->
-  <div id="panel-create" class="space-y-5 hidden">
-    <div class="glass-card p-4 rounded-xl text-sm text-slate-300 border-l-4 border-emerald-500 bg-emerald-950/20">
-      🚀 <strong>Multi-Selection Mode Enabled:</strong> আপনি এখন যেকোনো সেকশন থেকে একসাথে একাধিক লেয়ার সিলেক্ট করতে পারবেন।
-    </div>
+      <div id="panel-layers">
+        <div class="win95-window" style="margin-bottom: 16px;">
+          <div class="win95-titlebar" style="background: #808080;">➕ ADD NEW LAYER</div>
+          <div class="win95-content">
+            <input id="github-url" placeholder="[ IMAGE URL ]" class="win95-input w-full mb-2">
+            <div class="flex gap-2 mb-2 flex-wrap">
+              <input id="layer-value" placeholder="[ VALUE ]" class="win95-input flex-1">
+              <select id="layer-section" class="win95-select flex-1">
+                <option value="Background">Background</option><option value="Base">Base</option>
+                <option value="Nose">Nose</option><option value="Face">Face</option>
+                <option value="Accessory">Accessory</option><option value="Mouth">Mouth</option>
+                <option value="Eyes">Eyes</option><option value="Head">Head</option>
+                <option value="Neck">Neck</option>
+                <option value="Ear">Ear</option><option value="Beard">Beard</option>
+              </select>
+            </div>
+            <div class="flex gap-4 mb-3">
+              <label><input type="radio" name="layer-gender" value="male" checked> ♂ MALE</label>
+              <label><input type="radio" name="layer-gender" value="female"> ♀ FEMALE</label>
+              <label><input type="radio" name="layer-gender" value="both"> ⚥ BOTH</label>
+            </div>
+            <button onclick="App.addLayer()" class="win95-btn w-full">📀 ADD TO LIBRARY</button>
+          </div>
+        </div>
+        <div id="sections-container" class="space-y-3"></div>
+      </div>
 
-    <!-- MINT CONTROL INTERFACE -->
-    <div class="glass-card p-6 rounded-2xl border-2 border-indigo-500 bg-slate-900/60 shadow-xl space-y-4">
-      <h3 class="font-raj font-bold text-lg text-indigo-400 flex items-center gap-2">
-        <i data-lucide="cpu"></i> Hyper RAM Anti-Duplicate Batch Generator (Limit: 22,000)
-      </h3>
-      
-      <button id="mintButtonBatch" onclick="App.startSmartAutoGeneration()" class="btn-generate w-full text-white py-4 px-6 rounded-xl font-extrabold text-lg flex items-center justify-center gap-2 shadow-lg tracking-wider">
-        🚀 Run Custom Batch Mint Engine
-      </button>
+      <div id="panel-create" class="hidden">
+        <div class="win95-window" style="margin-bottom: 16px;">
+          <div class="win95-titlebar" style="background: #808080;">📜 HOW IT WORKS</div>
+          <div class="win95-content">
+            <div class="info-text">✓ প্রতিটি লেয়ারে আলাদা quantity দিন (কতটি NFT এই লেয়ার পাবে)</div>
+            <div class="info-text">✓ Male/Female আলাদা আলাদা quantity সেট করুন</div>
+            <div class="info-text">✓ Section-এর % অটো ক্যালকুলেট হবে layer quantity থেকে</div>
+            <div class="info-text">✓ Background + Base সবসময় থাকবে</div>
+            <div class="info-text">✓ MAX 20,000 NFTs</div>
+          </div>
+        </div>
 
-      <!-- QUANTITY FIELD -->
-      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-        <label class="block text-xs font-bold text-indigo-300 uppercase tracking-widest mb-2 text-center">
-          👇 কতগুলো NFT বানাতে চান টাইপ করুন (সর্বোচ্চ ২২,০০০ টি)
-        </label>
-        <div class="flex items-center justify-center gap-3 max-w-xs mx-auto">
-          <button onclick="App.stepQuantity(-1)" class="bg-slate-800 hover:bg-slate-700 text-white font-black px-4 py-2 rounded-lg text-xl border border-slate-700">-</button>
-          <input type="number" id="auto-generation-count" min="1" max="22000" value="100" oninput="App.validateQuantity(this)" class="nft-input font-black text-center text-xl text-emerald-400 focus:border-emerald-500 bg-slate-900 w-36">
-          <button onclick="App.stepQuantity(1)" class="bg-slate-800 hover:bg-slate-700 text-white font-black px-4 py-2 rounded-lg text-xl border border-slate-700">+</button>
+        <div class="win95-window" style="margin-bottom:16px;">
+          <div class="win95-titlebar" style="background: #808080;">⚙️ MINT SETTINGS</div>
+          <div class="win95-content">
+            <div class="flex gap-3 mb-3 flex-wrap">
+              <div class="flex-1">
+                <div class="text-pixel text-[8px] mb-1">TOTAL NFTs (MAX 20,000)</div>
+                <input type="number" id="total-nft-count" min="1" max="20000" value="10" class="qty-input w-full" oninput="App.onTotalChange()">
+              </div>
+              <div class="flex-1">
+                <div class="text-pixel text-[8px] mb-1">NAME PREFIX</div>
+                <input type="text" id="name-prefix" value="PUNK#" class="win95-input w-full" style="font-size: 12px;">
+              </div>
+            </div>
+            <textarea id="nft-description" rows="2" class="win95-input w-full mb-3 mt-2">404 PUNKS // RETRO GLITCH COLLECTION</textarea>
+            
+            <div class="flex gap-2 mb-3">
+              <button id="bulk-mint-btn" onclick="App.startMint()" class="win95-btn flex-1">🎮 BATCH ROLL ENGINE (GENERATIVE)</button>
+              <button id="single-mint-btn" onclick="App.mintSingleSelected()" class="win95-btn bg-blue-800 text-white flex-1" style="background:#000080;color:#fff;">🎯 MINT SINGLE (SELECTED BLUEPRINT)</button>
+            </div>
+
+            <div id="progress-wrap" class="hidden mt-3">
+              <div class="flex justify-between text-pixel text-[8px] mb-1">
+                <span id="progress-text">MINTING...</span>
+                <span id="progress-counter">0/0</span>
+              </div>
+              <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+              <div id="progress-eta" class="text-pixel text-[7px] mt-1" style="color:#000080;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="win95-window" style="margin-bottom:16px;">
+          <div class="win95-titlebar" style="background:#808080;">🎲 LAYER QUANTITY & MULTI-SELECTION (Click multiple layers per section)</div>
+          <div class="win95-content">
+            <div class="info-text mb-2">💡 Multi-selection supported. Batch engine automatically shuffles among checked components based on weights. Single Mint locks selected ones.</div>
+            <div id="create-sections-container" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <div class="win95-window" style="margin-bottom:16px;">
+          <div class="win95-titlebar" style="background: #808080;">🔢 LAYER COMPOSITING ORDER (First selected = Bottom)</div>
+          <div class="win95-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+              <div style="flex:1;">
+                <div class="text-pixel text-[8px] mb-2" style="color:#000080;">⬇ BOTTOM</div>
+                <div id="order-preview-list"></div>
+                <div class="text-pixel text-[8px] mt-2" style="color:#000080;">⬆ TOP</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="text-pixel text-[8px] mb-2">LIVE COMPOSITE PREVIEW</div>
+                <canvas id="live-preview-canvas" width="128" height="128" style="border: 3px outset #808080; background: #fff; display:block;"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="win95-window" style="margin-top: 16px;">
+          <div class="win95-titlebar" style="background: #808080;">🗑️ BATCH ACTIONS</div>
+          <div class="win95-content">
+            <div class="flex gap-3 flex-wrap">
+              <button onclick="App.deleteAllNFTs()" class="win95-btn flex-1" style="border-color:#ff4444;color:#aa0000;">🗑️ DELETE ALL</button>
+              <button onclick="App.downloadAllPNG()" class="win95-btn flex-1">🖼️ ALL PNG</button>
+              <button onclick="App.downloadAllJSON()" class="win95-btn flex-1">📄 ALL JSON</button>
+              <button onclick="App.downloadAllAsZip()" class="win95-btn flex-1">📦 PNG+JSON</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- PROGRESS TRACKER SYSTEM -->
-      <div id="batch-progress-container" class="hidden p-4 bg-slate-950 rounded-xl border border-indigo-900">
-        <div class="flex justify-between text-xs font-bold text-slate-200 mb-1">
-          <span id="progress-text-count">Processing: 0 / 0</span>
-          <span id="progress-skips-count" class="text-amber-400 font-bold">Duplicates Prevented: 0</span>
-          <span id="progress-percentage">0%</span>
+      <div id="panel-collection" class="hidden">
+        <div class="win95-window" style="margin-bottom: 16px;">
+          <div class="win95-titlebar" style="background: #808080;">🔍 SEARCH NFTs</div>
+          <div class="win95-content">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <input type="text" id="search-range" placeholder="555-1500 or single number" class="search-input" style="flex:2;">
+              <button onclick="App.searchNFTs()" class="win95-btn">🔍 SEARCH</button>
+              <button onclick="App.clearSearch()" class="win95-btn">🗑️ CLEAR</button>
+            </div>
+            <div class="text-pixel text-[8px] mt-2">💡 Example: "100-500" or "42"</div>
+          </div>
         </div>
-        <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
-          <div id="progress-bar-fill" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-150" style="width: 0%"></div>
+
+        <div class="win95-window" style="margin-bottom: 16px; overflow: hidden;">
+          <div class="win95-titlebar match-engine-header">
+            <span>🎯 UNIVERSAL MATCH ENGINE <span class="pulse-text" style="color: #ffff00;">● LIVE</span></span>
+            <span style="font-size: 8px;">v8.0</span>
+          </div>
+          <div class="win95-content" style="background: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%);">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <div style="background: #000080; padding: 8px 12px; border: 2px outset #4444ff;">
+                <span style="font-family: 'Press Start 2P', monospace; font-size: 10px; color: #00ff00;">⬤</span>
+                <span style="font-family: 'Press Start 2P', monospace; font-size: 8px; color: #ffffff; margin-left: 6px;">MATCH MODE</span>
+              </div>
+              <div style="flex: 1;">
+                <div id="index-status" class="info-text" style="color: #000080; font-weight: bold;">🔄 Initializing match engine...</div>
+                <div id="index-stats" class="text-pixel text-[7px] mt-1" style="color: #006400;"></div>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button onclick="App.loadIndexJSON()" class="win95-btn" style="background:#000080;color:#fff;padding:4px 8px;font-size:7px;">🔄 RELOAD</button>
+                <button onclick="App.deleteAllMatched()" class="win95-btn" style="background:#aa0000;color:#fff;padding:4px 8px;font-size:7px;border-color:#ff4444;">🗑️ DELETE MATCHED</button>
+              </div>
+            </div>
+            <div class="mt-2 text-pixel text-[7px]" style="color: #404040; border-top: 1px solid #808080; padding-top: 6px; margin-top: 8px;">
+              💡 Matching: ALL traits (except Attribute Count) - regardless of trait_type name
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- LIVE MANUAL GENERATOR PREVIEW -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-      <div class="glass-card p-5 flex flex-col items-center rounded-2xl justify-center h-full">
-        <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Live Multi Matrix Preview</p>
-        <canvas id="live-preview-canvas" width="240" height="240" class="preview-canvas w-[210px] h-[210px]"></canvas>
+        <div id="nft-count" class="mb-3"></div>
+        <div id="nft-list" class="grid-2cols"></div>
+        <p id="nft-empty" class="text-center text-pixel text-xs mt-10 hidden">[ NO NFTS FOUND ]</p>
       </div>
-      
-      <div class="md:col-span-2 space-y-4">
-        <input type="text" id="nft-name" placeholder="NFT Name" value="404 Punks" class="nft-input font-bold">
-        <textarea id="nft-description" rows="2" placeholder="Description" class="nft-input text-sm">Limited glitch artifact from the 404 dimension.</textarea>
-        <div class="flex gap-2">
-          <button id="mintButtonSingle" onclick="App.mintSingleNFT()" class="btn-primary text-white flex-1 py-3 rounded-xl font-bold text-sm transition">
-            ✨ Mint Selected Multi Layers Combined Punk
-          </button>
-          <button onclick="App.clearSelectedLayers()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 rounded-xl text-xs font-bold text-red-400">
-            Reset Selection
-          </button>
-        </div>
-      </div>
-    </div>
 
-    <!-- MINT NFT SECTION WITH MULTI-SELECTION AND LIVE INPUT LIMIT -->
-    <div id="create-sections-container" class="space-y-4 max-h-[60vh] overflow-auto pr-1"></div>
-    <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-indigo-300 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
-  </div>
-
-  <!-- PANEL 3: MY COLLECTION -->
-  <div id="panel-collection" class="space-y-5 hidden">
-    <div class="flex justify-between items-center bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex-wrap gap-3">
-      <div id="nft-count"></div>
-      <div class="flex gap-2 flex-wrap">
-        <button onclick="App.clearMatchedCollection()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition">🗑️ Clear Matched</button>
-        <button id="download-zip-btn" onclick="App.downloadCollectionAsZip()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition">📦 Download (ZIP)</button>
-        <button onclick="App.clearAllCollection()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition">🗑️ Wipe All</button>
-      </div>
-    </div>
-    
-    <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    <div id="load-more-container" class="text-center mt-6 hidden">
-        <button id="load-more-btn" onclick="App.loadMoreNFTs()" class="bg-gradient-to-r from-emerald-600 to-indigo-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition text-sm">🔄 Load Next 500 NFTs</button>
-    </div>
-    <div id="nft-empty" class="text-center text-slate-500 py-12">No NFTs minted yet.</div>
-  </div>
-
-  <div id="toast" class="hidden"></div>
-</div>
-
-<!-- DYNAMIC LAYER INJECTION STUDIO MODAL (FOR MY COLLECTION EDITING) -->
-<div id="edit-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden flex items-center justify-center z-[1000] p-4 overflow-y-auto">
-  <div class="modal-content p-6 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-indigo-500/50 text-slate-200 space-y-4">
-    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-      <h3 class="font-orb font-bold text-lg text-indigo-400">✏️ Metadata & Layer Injector Studio</h3>
-      <button onclick="App.closeEditModal()" class="text-slate-400 hover:text-white text-xl font-bold">✕</button>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="flex flex-col items-center justify-center bg-slate-950 p-3 rounded-xl border border-slate-800">
-        <canvas id="edit-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px] mb-2"></canvas>
-      </div>
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1">Edit Title Name:</label>
-          <input type="text" id="edit-nft-name" class="nft-input font-bold">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1">Edit Description:</label>
-          <textarea id="edit-nft-description" rows="3" class="nft-input text-sm"></textarea>
-        </div>
-      </div>
-    </div>
-    <div>
-      <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2">Current Bound Vectors (Click to Remove)</h4>
-      <div id="edit-current-layers" class="flex flex-wrap gap-2 p-3 bg-slate-950 rounded-xl border border-slate-800"></div>
-    </div>
-    <div>
-      <h4 class="text-xs font-bold text-purple-300 uppercase tracking-wider mb-2">Inject Matrix Database Layers</h4>
-      <div id="edit-global-injector-container" class="space-y-2 max-h-[25vh] overflow-y-auto pr-1"></div>
-    </div>
-    <div class="flex gap-3 pt-2">
-      <button onclick="App.saveEditedNFT()" class="btn-generate flex-1 py-3 text-white rounded-xl font-bold shadow-md">💾 Save Structural Changes</button>
-      <button onclick="App.closeEditModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-6 rounded-xl font-bold">Cancel</button>
     </div>
   </div>
 </div>
+<div id="toast" class="hidden"></div>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDdhpduaTwzPGPSN83oeS1JX0ElRF6QKik",
-    authDomain: "bdpunks.firebaseapp.com",
-    databaseURL: "https://bdpunks-default-rtdb.firebaseio.com",
-    projectId: "bdpunks",
-    storageBucket: "bdpunks.firebasestorage.app",
-    messagingSenderId: "699146288467",
-    appId: "1:699146288467:web:1bfdbcbb5b8d3047db75a6"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+const FIXED_INDEX_URL = "https://raw.githubusercontent.com/punksgif/punksgif.github.io/main/index.json";
+let matchIndexMap = new Map();
+let isIndexLoaded = false;
 
-  const SECTIONS = ["Background", "Base", "Nose", "Face", "Neck", "Mouth", "Ear", "Beard", "Accessory", "Head", "Eyes"];
-  let layersBySection = {};
-  let selectedLayersArray = [];  // MULTI SELECTION SUPPORT RE-ARCHITECTED
-  let nfts = [];
-  let masterIndexMap = [];
-  let previewCtx = null;
-  let openSectionCreate = null, openSectionLayers = null;
+function showToast(m) {
+  let t = document.getElementById('toast');
+  t.innerText = m;
+  t.classList.remove('hidden');
+  clearTimeout(window.tt);
+  window.tt = setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+function extractAllTraitValues(attributes) {
+  const values = [];
+  for (const attr of attributes) {
+    if (!attr.value) continue;
+    if (attr.trait_type && attr.trait_type.toLowerCase() === "attribute count") continue;
+    values.push(String(attr.value).toLowerCase().trim());
+  }
+  values.sort();
+  return values;
+}
+
+function createMatchKey(values) { return values.join("|"); }
+
+async function loadIndexJSON() {
+  document.getElementById('index-status').innerHTML = '<span style="color:#aa0000;">⏳ LOADING...</span>';
+  try {
+    const response = await fetch(FIXED_INDEX_URL);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    matchIndexMap.clear();
+    let totalTokens = 0;
+    for (const [tokenId, tokenData] of Object.entries(data)) {
+      if (!tokenData.attributes) continue;
+      const traitValues = extractAllTraitValues(tokenData.attributes);
+      if (traitValues.length > 0) {
+        matchIndexMap.set(tokenId, createMatchKey(traitValues));
+        totalTokens++;
+      }
+    }
+    isIndexLoaded = true;
+    document.getElementById('index-status').innerHTML = `<span style="color:#006400;">✅ INDEX LOADED!</span>`;
+    document.getElementById('index-stats').innerHTML = `🎯 ${totalTokens} tokens indexed`;
+    updateAllMatchBadges();
+  } catch(err) {
+    document.getElementById('index-status').innerHTML = `<span style="color:#aa0000;">❌ FAILED: ${err.message}</span>`;
+    isIndexLoaded = false;
+  }
+}
+
+function getNFTTraitValues(nft) {
+  if (!nft || !nft.layers) return [];
+  const values = [];
+  for (const l of nft.layers) {
+    if (l.section !== 'Background') values.push(String(l.value).toLowerCase().trim());
+  }
+  values.sort();
+  return values;
+}
+
+function findMatchesForNFT(nft) {
+  if (!isIndexLoaded || !nft) return [];
+  const myValues = getNFTTraitValues(nft);
+  if (!myValues.length) return [];
+  const myMatchKey = createMatchKey(myValues);
+  const matched = [];
+  for (const [tokenId, indexKey] of matchIndexMap.entries()) {
+    if (indexKey === myMatchKey) matched.push(Number(tokenId));
+  }
+  matched.sort((a,b) => a-b);
+  return matched;
+}
+
+function updateMatchBadgeForNFT(nft) {
+  const badgeEl = document.getElementById(`match-badge-${nft.id}`);
+  if (!badgeEl) return;
+  if (!isIndexLoaded) { badgeEl.innerHTML = '<div class="match-badge-loading">⚠️ LOAD INDEX FIRST</div>'; return; }
+  const matches = findMatchesForNFT(nft);
+  if (matches.length === 0) {
+    badgeEl.innerHTML = `<div class="match-badge" style="background:#404040; color:#cccccc;">❌ NO MATCH</div>`;
+  } else {
+    const show = matches.slice(0, 8).map(n => '#' + n).join(', ');
+    const extra = matches.length > 8 ? ` +${matches.length-8}` : '';
+    badgeEl.innerHTML = `<div class="match-badge success-bg">🎯 MATCH (${matches.length}): ${show}${extra}</div>`;
+  }
+}
+
+function updateAllMatchBadges() {
+  if (!isIndexLoaded) return;
+  const displayNFTs = filteredNFTs || nfts;
+  for (const nft of displayNFTs) updateMatchBadgeForNFT(nft);
+}
+
+async function deleteAllMatched() {
+  if (!isIndexLoaded) { showToast('Please load index first!'); return; }
+  const matched = nfts.filter(nft => findMatchesForNFT(nft).length > 0);
+  if (!matched.length) { showToast('No matches found!'); return; }
+  if (!confirm(`⚠️ Delete ${matched.length} matched NFTs?`)) return;
+  const matchedIds = new Set(matched.map(n => n.id));
+  nfts = nfts.filter(n => !matchedIds.has(n.id));
+  await updateNFTsInFirebase();
+  renderCollection();
+  showToast(`🗑️ ${matched.length} matched NFTs deleted!`);
+}
+
+// ============================================================
+// MAIN ENGINE WORKFLOW
+// ============================================================
+const SECTIONS_ORDER = ["Background","Base","Nose","Face","Neck","Mouth","Eyes","Ear","Beard","Accessory","Head"];
+const MAX_NFT_LIMIT = 20000;
+const BLOCKED_SECTIONS_FOR_ALIEN_APE = ["Nose", "Face", "Neck", "Beard"];
+const ALIEN_APE_BASES = ["Alien", "Ape"];
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDdhpduaTwzPGPSN83oeS1JX0ElRF6QKik",
+  authDomain: "bdpunks.firebaseapp.com",
+  databaseURL: "https://bdpunks-default-rtdb.firebaseio.com",
+  projectId: "bdpunks",
+  storageBucket: "bdpunks.firebasestorage.app",
+  messagingSenderId: "699146288467",
+  appId: "1:699146288467:web:1bfdbcbb5b8d3047db75a6"
+};
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+let layersBySection = {};
+let selectedLayersPerSection = {};
+let layerQuantity = {};
+let nfts = [], filteredNFTs = null;
+let openSectionLayers = null, openSectionCreate = null;
+let previewCtx = null;
+let globalSelectionCounter = 0;
+
+SECTIONS_ORDER.forEach(s => {
+  layersBySection[s] = [];
+  selectedLayersPerSection[s] = [];
+  layerQuantity[s] = {};
+});
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]||m));
+}
+
+async function saveNFTsToFirebase() {
+  try { await database.ref('user_nfts').set(nfts); } catch(e) { console.error(e); }
+}
+async function updateNFTsInFirebase() {
+  await saveNFTsToFirebase();
+  localStorage.setItem('404punks_backup', JSON.stringify(nfts));
+}
+
+async function loadNFTsFromFirebase() {
+  try {
+    const snap = await database.ref('user_nfts').once('value');
+    const data = snap.val();
+    if (data && Array.isArray(data)) nfts = data;
+    else { const local = localStorage.getItem('404punks_backup'); nfts = local ? JSON.parse(local) : []; }
+    renderCollection();
+  } catch(e) {
+    const local = localStorage.getItem('404punks_backup');
+    nfts = local ? JSON.parse(local) : [];
+    renderCollection();
+  }
+}
+
+function listenFirebase() {
+  database.ref('layers').on('value', snap => {
+    let d = snap.val();
+    if (d) for (let s of SECTIONS_ORDER) layersBySection[s] = d[s] || [];
+    else for (let s of SECTIONS_ORDER) layersBySection[s] = [];
+    renderSections();
+    renderCreateSections();
+  });
+  database.ref('user_nfts').on('value', snap => {
+    const data = snap.val();
+    if (data && Array.isArray(data)) { nfts = data; localStorage.setItem('404punks_backup', JSON.stringify(nfts)); renderCollection(); }
+  });
+}
+
+async function addLayerToFirebase(section, layer) {
+  let arr = [...layersBySection[section], layer];
+  await database.ref(`layers/${section}`).set(arr);
+  showToast(`ADDED: ${layer.value}`);
+}
+async function deleteLayerFromFirebase(section, id) {
+  let filtered = layersBySection[section].filter(l => String(l.id) !== String(id));
+  await database.ref(`layers/${section}`).set(filtered);
+  showToast('LAYER DELETED');
+}
+
+function getLayerQty(section, layerId, gender) {
+  if (!layerQuantity[section]) layerQuantity[section] = {};
+  if (!layerQuantity[section][layerId]) layerQuantity[section][layerId] = { male: 0, female: 0 };
+  return layerQuantity[section][layerId][gender] || 0;
+}
+
+function setLayerQty(section, layerId, gender, val) {
+  if (!layerQuantity[section]) layerQuantity[section] = {};
+  if (!layerQuantity[section][layerId]) layerQuantity[section][layerId] = { male: 0, female: 0 };
+  layerQuantity[section][layerId][gender] = Math.max(0, parseInt(val) || 0);
+}
+
+function getTotalNFTCount() {
+  return Math.min(MAX_NFT_LIMIT, parseInt(document.getElementById('total-nft-count')?.value) || 10);
+}
+
+function calcSectionProbability(section, gender) {
+  const total = getTotalNFTCount();
+  const half = gender === 'male' ? Math.ceil(total / 2) : Math.floor(total / 2);
+  const selected = selectedLayersPerSection[section] || [];
+  if (!selected.length) return 0;
+  let sumQty = 0;
+  for (let l of selected) {
+    if (l.gender === 'both' || l.gender === gender) {
+      sumQty += getLayerQty(section, l.layerId, gender);
+    }
+  }
+  if (half === 0) return 0;
+  return Math.min(100, Math.round((sumQty / half) * 100));
+}
+
+// Multi-Selection System Permanent Support
+function toggleLayerSelection(section, layerId, value, imageUrl, gender) {
+  let selected = selectedLayersPerSection[section];
+  let existingIdx = selected.findIndex(l => l.layerId === layerId);
+  if (existingIdx !== -1) {
+    selected.splice(existingIdx, 1);
+  } else {
+    selected.push({ layerId, value, imageUrl, gender, selectionOrder: globalSelectionCounter++ });
+  }
+  renderCreateSections();
+  updateLivePreview();
+}
+
+function onTotalChange() {
+  renderCreateSections();
+}
+
+function getAllSelectedLayersInOrder() {
+  let all = [];
+  for (let s of SECTIONS_ORDER) {
+    for (let l of selectedLayersPerSection[s]) {
+      all.push({ ...l, section: s });
+    }
+  }
+  all.sort((a, b) => a.selectionOrder - b.selectionOrder);
+  return all;
+}
+
+function renderSections() {
+  let html = '';
+  for (let s of SECTIONS_ORDER) {
+    let layers = layersBySection[s] || [];
+    let isOpen = openSectionLayers === s;
+    html += `<div class="win95-window" style="margin-bottom:12px;">
+      <div onclick="App.toggleSectionLayers('${s}')" style="padding:10px 15px; display:flex; justify-content:space-between; cursor:pointer; background:#d4d0c8;">
+        <span style="font-family:'Press Start 2P',monospace; font-size:10px;">[${s}]</span><span>${layers.length} layers ▼</span>
+      </div>
+      ${isOpen ? `<div style="padding:12px; display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px;">
+        ${layers.map(l => `<div style="border:2px outset #808080; padding:8px; background:#d4d0c8;">
+          <div style="aspect-ratio:1; background:#fff; margin-bottom:6px;"><img src="${l.imageUrl}" style="width:100%;height:100%;object-fit:contain;"></div>
+          <div class="text-pixel text-[8px] text-center">${escapeHtml(l.value)}</div>
+          <div class="text-center text-[10px]">${l.gender}</div>
+          <button onclick="App.deleteLayer('${s}','${l.id}')" style="margin-top:6px; width:100%; background:#c0c0c0; border:3px outset #808080; padding:4px; font-size:6px; cursor:pointer;">DELETE</button>
+        </div>`).join('')}
+      </div>` : ''}</div>`;
+  }
+  document.getElementById('sections-container').innerHTML = html;
+}
+
+function renderCreateSections() {
+  let container = document.getElementById('create-sections-container');
+  if (!container) return;
+  let html = '';
+  const totalNFTs = getTotalNFTCount();
+  const maleTotal = Math.ceil(totalNFTs / 2);
+  const femaleTotal = Math.floor(totalNFTs / 2);
+
+  for (let section of SECTIONS_ORDER) {
+    let layers = layersBySection[section] || [];
+    if (!layers.length) continue;
+
+    let selectedInSection = selectedLayersPerSection[section] || [];
+    let isOpen = openSectionCreate === section;
+    let selectedIds = selectedInSection.map(l => l.layerId);
+    const isRequired = section === 'Background' || section === 'Base';
+
+    let allSelected = getAllSelectedLayersInOrder();
+    let rankMap = {};
+    allSelected.forEach((l, idx) => { rankMap[l.layerId + '_' + l.section] = idx + 1; });
+
+    const maleProb = calcSectionProbability(section, 'male');
+    const femaleProb = calcSectionProbability(section, 'female');
+
+    let maleLayers = layers.filter(l => l.gender === 'male');
+    let femaleLayers = layers.filter(l => l.gender === 'female');
+    let bothLayers = layers.filter(l => l.gender === 'both');
+
+    function layerCard(l) {
+      const rank = rankMap[l.id + '_' + section];
+      const isSelected = selectedIds.includes(l.id);
+      const mQty = getLayerQty(section, l.id, 'male');
+      const fQty = getLayerQty(section, l.id, 'female');
+      const showMale = (l.gender === 'male' || l.gender === 'both');
+      const showFemale = (l.gender === 'female' || l.gender === 'both');
+      return `<div onclick="App.toggleLayerSelection('${section}','${l.id}','${escapeHtml(l.value).replace(/'/g,"\\'")}','${l.imageUrl.replace(/'/g,"\\'")}','${l.gender}')"
+          class="layer-item ${isSelected ? 'selected' : ''}" style="padding:6px; text-align:center;">
+          ${isSelected ? `<div class="order-num">#${rank}</div>` : ''}
+          <div style="aspect-ratio:1; background:#fff;"><img src="${l.imageUrl}" style="width:100%;height:100%;object-fit:contain;"></div>
+          <div class="text-pixel text-[7px]" style="${isSelected?'color:#fff':''}">${escapeHtml(l.value)}</div>
+          ${isSelected ? `<div class="layer-qty-box" onclick="event.stopPropagation()">
+            ${showMale ? `<div class="layer-qty-row">
+              <span style="color:#4488ff;">♂</span>
+              <input type="number" min="0" max="${maleTotal}" value="${mQty}" class="layer-qty-input ${isSelected?'selected-input':''}"
+                oninput="App.setQty('${section}','${l.id}','male',this.value); App.refreshSectionStats('${section}')">
+            </div>` : ''}
+            ${showFemale ? `<div class="layer-qty-row">
+              <span style="color:#ff88cc;">♀</span>
+              <input type="number" min="0" max="${femaleTotal}" value="${fQty}" class="layer-qty-input ${isSelected?'selected-input':''}"
+                oninput="App.setQty('${section}','${l.id}','female',this.value); App.refreshSectionStats('${section}')">
+            </div>` : ''}
+          </div>` : ''}
+        </div>`;
+    }
+
+    html += `<div class="win95-window" style="margin-bottom:12px;" id="section-wrap-${section}">
+      <div onclick="App.toggleSectionCreate('${section}')" style="padding:10px 15px; display:flex; justify-content:space-between; align-items:center; background:#d4d0c8; cursor:pointer; gap:8px;">
+        <span style="font-family:'Press Start 2P',monospace; font-size:10px;">[${escapeHtml(section)}]</span>
+        <div style="display:flex; align-items:center; gap:8px;" onclick="event.stopPropagation()">
+          ${selectedInSection.length ? `<span class="prob-badge">✓ ${selectedInSection.length} SEL</span>` : ''}
+          <div id="section-prob-${section}">
+            ${isRequired
+              ? `<span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#006400;">🔒 100%</span>`
+              : `<span class="section-auto-prob">♂${maleProb}% ♀${femaleProb}%</span>`
+            }
+          </div>
+          <span>▼</span>
+        </div>
+      </div>
+      ${isOpen ? `<div style="padding:12px;">
+        <div class="info-text mb-2">📊 Scale: ♂${maleTotal} Male / ♀${femaleTotal} Female NFTs.</div>
+        ${bothLayers.length ? `<div class="text-pixel text-[8px] mb-2">⚥ BOTH</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px; margin-bottom:15px;">
+            ${bothLayers.map(l => layerCard(l)).join('')}
+          </div>` : ''}
+        ${maleLayers.length ? `<div class="text-pixel text-[8px] mb-2">♂ MALE</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px; margin-bottom:15px;">
+            ${maleLayers.map(l => layerCard(l)).join('')}
+          </div>` : ''}
+        ${femaleLayers.length ? `<div class="text-pixel text-[8px] mb-2">♀ FEMALE</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px;">
+            ${femaleLayers.map(l => layerCard(l)).join('')}
+          </div>` : ''}
+      </div>` : ''}
+    </div>`;
+  }
+
+  container.innerHTML = html || '<div class="win95-window"><div class="win95-content text-center">[ NO LAYERS ]</div></div>';
+  updateOrderPreview();
+}
+
+function refreshSectionStats(section) {
+  const probEl = document.getElementById('section-prob-' + section);
+  if (!probEl) return;
+  const isRequired = section === 'Background' || section === 'Base';
+  if (isRequired) return;
+  const maleProb = calcSectionProbability(section, 'male');
+  const femaleProb = calcSectionProbability(section, 'female');
+  probEl.innerHTML = `<span class="section-auto-prob">♂${maleProb}% ♀${femaleProb}%</span>`;
+}
+
+function updateOrderPreview() {
+  let div = document.getElementById('order-preview-list');
+  if (!div) return;
+  let all = getAllSelectedLayersInOrder();
+  if (!all.length) {
+    div.innerHTML = '<div class="selected-order-item" style="color:#808080;">[ Select layers first ]</div>';
+    return;
+  }
+  div.innerHTML = all.map((l, i) =>
+    `<div class="selected-order-item">
+      <span>${i + 1}. <strong>${l.section}</strong>: ${escapeHtml(l.value)}
+      <span style="font-size:6px;color:#808080;">(${l.gender})</span></span>
+      <span style="color:#808080;font-size:7px;">${i === 0 ? '⬇ BOTTOM' : i === all.length-1 ? '⬆ TOP' : ''}</span>
+    </div>`
+  ).join('');
+}
+
+async function updateLivePreview() {
+  if (!previewCtx) {
+    let c = document.getElementById('live-preview-canvas');
+    if (c) previewCtx = c.getContext('2d');
+    else return;
+  }
+  previewCtx.clearRect(0, 0, 128, 128);
+  previewCtx.fillStyle = '#ffffff';
+  previewCtx.fillRect(0, 0, 128, 128);
+  let all = getAllSelectedLayersInOrder();
+  for (let l of all) {
+    await new Promise(res => {
+      let img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.onload = () => { previewCtx.drawImage(img, 0, 0, 128, 128); res(); };
+      img.onerror = () => res();
+      img.src = l.imageUrl;
+    });
+  }
+}
+
+async function compositeFromLayers(layers, w = 512, h = 512) {
+  let canvas;
+  if (typeof OffscreenCanvas !== 'undefined') {
+    canvas = new OffscreenCanvas(w, h);
+  } else {
+    canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+  }
+  let ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, w, h);
+
+  const images = await Promise.all(layers.map(l => new Promise(res => {
+    let img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = () => res(img);
+    img.onerror = () => res(null);
+    img.src = l.imageUrl;
+  })));
+
+  for (let img of images) {
+    if (img) ctx.drawImage(img, 0, 0, w, h);
+  }
+
+  if (canvas instanceof OffscreenCanvas) {
+    const blob = await canvas.convertToBlob({ type: 'image/png' });
+    return new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(blob); });
+  }
+  return canvas.toToDataURL ? canvas.toDataURL('image/png') : canvas.toDataURL();
+}
+
+function isSectionBlockedForBase(section, baseValue) {
+  if (!baseValue) return false;
+  for (let fb of ALIEN_APE_BASES) {
+    if (baseValue.toLowerCase().includes(fb.toLowerCase()) && BLOCKED_SECTIONS_FOR_ALIEN_APE.includes(section)) return true;
+  }
+  return false;
+}
+
+function buildNFTAttributes(layers) {
+  let attrs = [];
+  let baseValue = null;
+  for (let l of layers) { if (l.section === "Base") { baseValue = l.value; break; } }
+  if (baseValue) attrs.push({ trait_type: "Base", value: baseValue });
+  for (let l of layers) {
+    if (l.section === "Background" || l.section === "Base") continue;
+    attrs.push({ trait_type: l.section, value: l.value });
+  }
+  attrs.push({ trait_type: "Attribute Count", value: attrs.length.toString() });
+  return attrs;
+}
+
+function buildWeightedPool(section, gender, allSelectedByOrder) {
+  const sectionLayers = allSelectedByOrder.filter(l => l.section === section);
+  let pool = [];
+  for (let l of sectionLayers) {
+    if (l.gender !== 'both' && l.gender !== gender) continue;
+    const qty = getLayerQty(section, l.layerId, gender);
+    for (let i = 0; i < qty; i++) pool.push(l);
+  }
+  for (let i = pool.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool;
+}
+
+// 🎯 MANUAL MINT SINGLE BLUEPRINT (Permanently Added)
+async function mintSingleSelected() {
+  let bgLayers = selectedLayersPerSection['Background'] || [];
+  let baseLayers = selectedLayersPerSection['Base'] || [];
+  if (!bgLayers.length) { showToast('⚠️ Select a Background layout blueprint!'); return; }
+  if (!baseLayers.length) { showToast('⚠️ Select a Base layer blueprint!'); return; }
+
+  let prefix = document.getElementById('name-prefix').value.trim() || "PUNK#";
+  let desc = document.getElementById('nft-description').value;
   
-  let currentEditingNftId = null;
-  let editingLayersArray = [];
-  let openSectionEditor = null;
-  let currentDisplayLimit = 500; 
+  let allSelected = getAllSelectedLayersInOrder();
+  if(!allSelected.length) return;
 
-  for(let s of SECTIONS) layersBySection[s] = [];
+  showToast('🎨 Rendering custom blueprint...');
+  let imgData = await compositeFromLayers(allSelected);
+  let attributes = buildNFTAttributes(allSelected);
+  
+  let gender = allSelected.find(l => l.section === 'Base')?.gender || 'both';
+  if(gender === 'both') gender = 'male';
 
-  function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 3000); }
-  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+  let manualNFT = {
+    id: Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+    name: `${prefix}MANUAL_${nfts.length + 1}`,
+    description: desc,
+    image: imgData,
+    attributes: attributes,
+    layers: allSelected.map(p => ({ section: p.section, value: p.value, imageUrl: p.imageUrl, selectionOrder: p.selectionOrder })),
+    gender: gender,
+    createdAt: new Date().toISOString()
+  };
 
-  function loadUserNFTs() { try { const saved = localStorage.getItem('404punks_mainnet_v5'); if(saved) nfts = JSON.parse(saved); else nfts = []; } catch(e){} }
-  function saveUserNFTs() { try { localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); } catch(e) {} }
+  nfts.push(manualNFT);
+  await updateNFTsInFirebase();
+  renderCollection();
+  showToast('✅ Unique Manual Custom blueprint Minted!');
+  if (isIndexLoaded) updateAllMatchBadges();
+}
 
-  function validateQuantity(input) {
-    let val = parseInt(input.value);
-    if (val > 22000) { input.value = 22000; showToast("⚠️ Max Batch Limit is 22,000."); }
-    else if (val < 1) input.value = "";
+async function startMint() {
+  let total = Math.min(MAX_NFT_LIMIT, parseInt(document.getElementById('total-nft-count').value) || 1);
+
+  let bgLayers = selectedLayersPerSection['Background'] || [];
+  let baseLayers = selectedLayersPerSection['Base'] || [];
+  if (!bgLayers.length) { showToast('⚠️ Please select Background layer!'); return; }
+  if (!baseLayers.length) { showToast('⚠️ Please select Base layer!'); return; }
+
+  let prefix = document.getElementById('name-prefix').value.trim() || "PUNK#";
+  let desc = document.getElementById('nft-description').value;
+  let btn = document.getElementById('bulk-mint-btn');
+  btn.disabled = true;
+
+  let progWrap = document.getElementById('progress-wrap');
+  progWrap.classList.remove('hidden');
+  let progFill = document.getElementById('progress-fill');
+  let progCounter = document.getElementById('progress-counter');
+  let progText = document.getElementById('progress-text');
+  let progEta = document.getElementById('progress-eta');
+
+  let maleCount = Math.ceil(total / 2);
+  let femaleCount = Math.floor(total / 2);
+  let order = [...Array(maleCount).fill('male'), ...Array(femaleCount).fill('female')];
+  for (let i = order.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
   }
 
-  function validateMaxLimit(input) {
-    let val = parseInt(input.value);
-    if (val > 22000) { input.value = 22000; showToast("⚠️ Max Limit 22,000."); }
-    else if (val < 1) input.value = "";
+  let allSelectedByOrder = getAllSelectedLayersInOrder();
+
+  let pools = {};
+  let poolIdx = {};
+  for (let section of SECTIONS_ORDER) {
+    for (let g of ['male', 'female']) {
+      const key = section + '_' + g;
+      pools[key] = buildWeightedPool(section, g, allSelectedByOrder);
+      poolIdx[key] = 0;
+    }
   }
 
-  function stepQuantity(amount) {
-    const input = document.getElementById('auto-generation-count');
-    let current = parseInt(input.value) || 0;
-    let nextVal = current + amount;
-    if (nextVal > 22000) { nextVal = 22000; showToast("⚠️ Limit 22,000."); }
-    if (nextVal < 1) nextVal = 1;
-    input.value = nextVal;
+  function pickFromPool(section, gender) {
+    const key = section + '_' + gender;
+    const pool = pools[key];
+    if (!pool || !pool.length) return null;
+    const item = pool[poolIdx[key] % pool.length];
+    poolIdx[key]++;
+    return item;
   }
 
-  async function fetchMasterIndex() {
-    try {
-      const res = await fetch('https://raw.githubusercontent.com/404punkslab/404punkslab.github.io/main/index.json');
-      if(res.ok) {
-        const data = await res.json();
-        masterIndexMap = [];
-        for(let key in data) {
-          const item = data[key]; if(!item.attributes) continue;
-          let vals = [];
-          for(let a of item.attributes) {
-            if(a.trait_type !== 'Attribute Count') vals.push(a.value);
+  function pickRandom(section, gender) {
+    const sectionLayers = allSelectedByOrder.filter(l => l.section === section && (l.gender === 'both' || l.gender === gender));
+    if (!sectionLayers.length) return null;
+    return sectionLayers[Math.floor(Math.random() * sectionLayers.length)];
+  }
+
+  function hasQtyForSection(section, gender) {
+    const key = section + '_' + gender;
+    return pools[key] && pools[key].length > 0;
+  }
+
+  let newNFTs = [];
+  let startTime = Date.now();
+  const BATCH = 5;
+
+  for (let idx = 0; idx < order.length; idx += BATCH) {
+    const batchEnd = Math.min(idx + BATCH, order.length);
+    const batchGenders = order.slice(idx, batchEnd);
+
+    let batchLayerSets = batchGenders.map((gender) => {
+      let pickedLayersMap = {};
+
+      let bgPicked = hasQtyForSection('Background', gender) ? pickFromPool('Background', gender) : pickRandom('Background', gender);
+      if (bgPicked) pickedLayersMap['Background'] = bgPicked;
+
+      let basePicked = hasQtyForSection('Base', gender) ? pickFromPool('Base', gender) : pickRandom('Base', gender);
+      if (basePicked) pickedLayersMap['Base'] = basePicked;
+
+      let baseValue = pickedLayersMap['Base'] ? pickedLayersMap['Base'].value : null;
+
+      for (let section of SECTIONS_ORDER) {
+        if (section === 'Background' || section === 'Base') continue;
+        if (isSectionBlockedForBase(section, baseValue)) continue;
+
+        let picked = null;
+        if (hasQtyForSection(section, gender)) {
+          const key = section + '_' + gender;
+          const pool = pools[key];
+          if (poolIdx[key] < pool.length) {
+            picked = pool[poolIdx[key]];
+            poolIdx[key]++;
           }
-          vals.sort(); masterIndexMap.push({ id: parseInt(key), traitValues: vals });
-        }
-      }
-    } catch(e) {}
-  }
-
-  function matchWithMaster(attributes) {
-    if(!masterIndexMap.length) return { matched: false, matchId: null };
-    let nftValues = attributes.filter(a => a.trait_type !== 'Attribute Count').map(a => a.value).sort();
-    for(let master of masterIndexMap) {
-      if(JSON.stringify(nftValues) === JSON.stringify(master.traitValues)) return { matched: true, matchId: master.id };
-    }
-    return { matched: false, matchId: null };
-  }
-
-  function buildAttributes(orderedLayers) {
-    const attrs = [];
-    for(let layer of orderedLayers) {
-      if(layer.section === "Background") continue;
-      attrs.push({ trait_type: (layer.section === "Base") ? "," : "Accessory", value: layer.value });
-    }
-    attrs.push({ trait_type: "Attribute Count", value: attrs.length.toString() });
-    return attrs;
-  }
-
-  async function preloadLayerImages() {
-    const cache = {}; const promises = [];
-    for (let s of SECTIONS) {
-      for (let layer of (layersBySection[s] || [])) {
-        if (!cache[layer.imageUrl]) {
-          promises.push(new Promise(resolve => {
-            const img = new Image(); img.crossOrigin = "Anonymous";
-            img.onload = () => { cache[layer.imageUrl] = img; resolve(); };
-            img.onerror = () => resolve(); img.src = layer.imageUrl;
-          }));
-        }
-      }
-    }
-    await Promise.all(promises); return cache;
-  }
-
-  async function compositeFromSelectedFast(operationalLayers, forceCustomOrder, imageCache, canvas, ctx) {
-    ctx.clearRect(0, 0, 512, 512);
-    if (!forceCustomOrder) operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    for(let item of operationalLayers) {
-      const cachedImg = imageCache[item.imageUrl];
-      if (cachedImg) ctx.drawImage(cachedImg, 0, 0, 512, 512);
-    }
-    return canvas.toDataURL('image/jpeg', 0.60);
-  }
-
-  function getNextNumber() { return nfts.length + 1; }
-
-  function getActiveLayerUsageCounts() {
-    let counts = {};
-    nfts.forEach(nft => { if(nft.layers) nft.layers.forEach(l => { counts[l.layerId] = (counts[l.layerId] || 0) + 1; }); });
-    return counts;
-  }
-
-  async function startSmartAutoGeneration() {
-    const countInput = document.getElementById('auto-generation-count');
-    let totalCount = parseInt(countInput.value) || 0;
-    if(totalCount <= 0) { showToast('❌ Enter valid amount!'); return; }
-    if(totalCount > 22000) totalCount = 22000;
-
-    const btn = document.getElementById('mintButtonBatch');
-    const progressContainer = document.getElementById('batch-progress-container');
-    const textCountEl = document.getElementById('progress-text-count');
-    const skipsCountEl = document.getElementById('progress-skips-count');
-    const percentEl = document.getElementById('progress-percentage');
-    const fillBarEl = document.getElementById('progress-bar-fill');
-
-    if(!layersBySection['Background']?.length || !layersBySection['Base']?.length) { showToast('❌ Database empty!'); return; }
-
-    btn.disabled = true; btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Engine...';
-    const imageCache = await preloadLayerImages();
-    progressContainer.classList.remove('hidden');
-    
-    let existingDNASet = new Set();
-    nfts.forEach(nft => { existingDNASet.add(nft.layers.map(l => l.layerId).sort().join('-')); });
-
-    let dynamicUsageTrack = getActiveLayerUsageCounts();
-    let successCount = 0; let duplicateSkips = 0;
-    
-    const offscreenCanvas = document.createElement('canvas'); offscreenCanvas.width = 512; offscreenCanvas.height = 512;
-    const offscreenCtx = offscreenCanvas.getContext('2d');
-
-    for (let i = 0; i < totalCount; i++) {
-      let calculatedBatchLayers = []; let isUniqueFound = false; let loopAttempts = 0;
-
-      while (!isUniqueFound && loopAttempts < 150) {
-        loopAttempts++; calculatedBatchLayers = [];
-
-        // If user already multi-selected manual layers, engine uses them as blueprint base pools
-        const selectedBgs = selectedLayersArray.filter(l => l.section === 'Background');
-        const bgPool = selectedBgs.length ? selectedBgs : (layersBySection['Background'] || []);
-        const bgList = bgPool.filter(item => (dynamicUsageTrack[item.layerId || item.id] || 0) < (parseInt(item.maxCount) || 22000));
-        if(!bgList.length) break;
-        const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-        calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.layerId || randomBg.id, maxCount: randomBg.maxCount || 22000 });
-
-        const selectedBases = selectedLayersArray.filter(l => l.section === 'Base');
-        const basePool = selectedBases.length ? selectedBases : (layersBySection['Base'] || []);
-        const baseList = basePool.filter(item => (dynamicUsageTrack[item.layerId || item.id] || 0) < (parseInt(item.maxCount) || 22000));
-        if(!baseList.length) break;
-        const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
-        const targetGender = randomBase.gender || 'male';
-        calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.layerId || randomBase.id, gender: targetGender, maxCount: randomBase.maxCount || 22000 });
-
-        for (let j = 2; j < SECTIONS.length; j++) {
-          const secName = SECTIONS[j];
-          const selectedSecLayers = selectedLayersArray.filter(l => l.section === secName);
-          
-          // Multi-Selection architecture allows generation from multiple active filters chosen
-          if(selectedSecLayers.length > 0) {
-             const matchPool = selectedSecLayers.filter(item => (dynamicUsageTrack[item.layerId] || 0) < (parseInt(item.maxCount) || 22000));
-             if(matchPool.length > 0) {
-                const chosen = matchPool[Math.floor(Math.random() * matchPool.length)];
-                calculatedBatchLayers.push({ section: secName, value: chosen.value, imageUrl: chosen.imageUrl, layerId: chosen.layerId, maxCount: chosen.maxCount || 22000 });
-             }
-          } else {
-             const pool = layersBySection[secName] || [];
-             const matchPool = pool.filter(item => (!item.gender || item.gender === targetGender) && (dynamicUsageTrack[item.id] || 0) < (parseInt(item.maxCount) || 22000));
-             if (matchPool.length > 0 && Math.random() > 0.45) {
-               const chosen = matchPool[Math.floor(Math.random() * matchPool.length)];
-               calculatedBatchLayers.push({ section: secName, value: chosen.value, imageUrl: chosen.imageUrl, layerId: chosen.id, maxCount: chosen.maxCount || 22000 });
-             }
+        } else {
+          const maleProb = calcSectionProbability(section, 'male');
+          const femaleProb = calcSectionProbability(section, 'female');
+          const prob = gender === 'male' ? maleProb : femaleProb;
+          const useProb = prob > 0 ? prob : 50;
+          if (Math.random() * 100 < useProb) {
+            picked = pickRandom(section, gender);
           }
         }
-
-        let currentDNAKey = calculatedBatchLayers.map(l => l.layerId).sort().join('-');
-        if (existingDNASet.has(currentDNAKey) || matchWithMaster(buildAttributes(calculatedBatchLayers)).matched) { duplicateSkips++; continue; }
-
-        existingDNASet.add(currentDNAKey); isUniqueFound = true;
+        if (picked) pickedLayersMap[section] = picked;
       }
 
-      if(!isUniqueFound) { duplicateSkips++; continue; }
-
-      try {
-        const generatedImg = await compositeFromSelectedFast(calculatedBatchLayers, true, imageCache, offscreenCanvas, offscreenCtx);
-        const computedAttributes = buildAttributes(calculatedBatchLayers);
-        const currentIndexNo = getNextNumber();
-
-        nfts.push({
-          id: Date.now() + '_mega_' + Math.random().toString(36).substr(2,6),
-          name: `404 Punk #${currentIndexNo}`,
-          description: `RAM Vector Engine.`,
-          image: generatedImg,
-          attributes: computedAttributes,
-          layers: calculatedBatchLayers,
-          number: currentIndexNo,
-          createdAt: Date.now()
-        });
-
-        calculatedBatchLayers.forEach(layer => { dynamicUsageTrack[layer.layerId] = (dynamicUsageTrack[layer.layerId] || 0) + 1; });
-        successCount++;
-      } catch(err) {}
-
-      if (i % 50 === 0 || i === totalCount - 1) {
-        const pct = Math.round(((i + 1) / totalCount) * 100);
-        textCountEl.textContent = `Processed: ${i + 1} / ${totalCount}`;
-        skipsCountEl.textContent = `Duplicates Prevented: ${duplicateSkips}`;
-        percentEl.textContent = `${pct}%`; fillBarEl.style.width = `${pct}%`;
-        await new Promise(r => setTimeout(r, 0));
+      let finalLayers = [];
+      for (let section of Object.keys(pickedLayersMap)) {
+        let p = pickedLayersMap[section];
+        finalLayers.push({ section, value: p.value, imageUrl: p.imageUrl, selectionOrder: p.selectionOrder });
       }
-    }
+      finalLayers.sort((a, b) => a.selectionOrder - b.selectionOrder);
+      return finalLayers;
+    });
 
-    saveUserNFTs(); currentDisplayLimit = 500; renderCollection(); renderCreateSections();
-    btn.disabled = false; btn.innerHTML = '🚀 Run Custom Batch Mint Engine';
-    showToast(`🎉 Minted ${successCount} NFTs Successfully.`); switchTab('collection');
-  }
+    let batchImages = await Promise.all(batchLayerSets.map(layers => compositeFromLayers(layers)));
 
-  // UPDATED METHOD TO SUPPORT TRUE MULTI-SELECTION PER SECTION
-  function toggleLayerSelection(section, layerId, value, imageUrl, gender, maxCount) {
-    const existingIndex = selectedLayersArray.findIndex(l => l.layerId === layerId);
-    if(existingIndex !== -1) {
-      // Remove if clicked again
-      selectedLayersArray.splice(existingIndex, 1);
-    } else {
-      // Append multi-select layer to stack array safely
-      selectedLayersArray.push({ section, layerId, value, imageUrl, gender, maxCount });
-    }
-    renderCreateSections(); updateLivePreview();
-  }
+    for (let bi = 0; bi < batchGenders.length; bi++) {
+      const nftIdx = idx + bi;
+      const gender = batchGenders[bi];
+      const finalLayers = batchLayerSets[bi];
+      const imgData = batchImages[bi];
+      const attributes = buildNFTAttributes(finalLayers);
 
-  function clearSelectedLayers() {
-     selectedLayersArray = [];
-     renderCreateSections(); updateLivePreview();
-     showToast('🧹 Selection Resetted.');
-  }
-
-  async function mintSingleNFT() {
-    if(!selectedLayersArray.length) { showToast('❌ Select layer assets first!'); return; }
-    let usageCounts = getActiveLayerUsageCounts();
-    for(let layer of selectedLayersArray){
-       if((usageCounts[layer.layerId] || 0) >= (parseInt(layer.maxCount) || 22000)) { showToast(`❌ Limit Crossed: ${layer.value}`); return; }
-    }
-    if(matchWithMaster(buildAttributes(selectedLayersArray)).matched) { showToast('❌ Clone Identity Found!'); return; }
-    
-    const btn = document.getElementById('mintButtonSingle'); btn.disabled = true;
-    try {
-      const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
-      const ctx = canvas.getContext('2d');
-      selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-      for(let item of selectedLayersArray) {
-        await new Promise(r => { const img = new Image(); img.crossOrigin="Anonymous"; img.onload=()=>{ ctx.drawImage(img,0,0,512,512); r(); }; img.src=item.imageUrl; });
-      }
-      const nextNum = getNextNumber();
-      nfts.push({
-        id: Date.now() + '_single',
-        name: `${document.getElementById('nft-name').value} #${nextNum}`,
-        description: document.getElementById('nft-description').value,
-        image: canvas.toDataURL('image/jpeg', 0.7),
-        attributes: buildAttributes(selectedLayersArray),
-        layers: [...selectedLayersArray],
-        number: nextNum,
-        createdAt: Date.now()
+      newNFTs.push({
+        id: Date.now() + '_' + Math.random().toString(36).substr(2, 8) + '_' + nftIdx,
+        name: `${prefix}${nftIdx + 1}`,
+        description: desc,
+        image: imgData,
+        attributes: attributes,
+        layers: finalLayers,
+        gender: gender,
+        createdAt: new Date().toISOString()
       });
-      saveUserNFTs(); selectedLayersArray = []; renderCreateSections(); renderCollection(); switchTab('collection');
-    } catch(err) {} finally { btn.disabled = false; }
-  }
-
-  function listenToFirebaseLayers() {
-    database.ref('layers').on('value', (snap) => {
-      const data = snap.val();
-      for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
-      renderSectionsLayers(); renderCreateSections();
-    });
-  }
-
-  async function addLayerToFirebase(section, layer) { const updated = [...(layersBySection[section]||[]), layer]; await database.ref(`layers/${section}`).set(updated); }
-  async function deleteLayerFromFirebase(section, layerId) { await database.ref(`layers/${section}`).set((layersBySection[section]||[]).filter(l=>String(l.id)!==String(layerId))); }
-  
-  async function updateLayerLimit(section, layerId, newLimit) {
-     let pool = layersBySection[section] || [];
-     let index = pool.findIndex(l => String(l.id) === String(layerId));
-     if(index !== -1) {
-        let num = parseInt(newLimit) || 0; if(num > 22000) num = 22000;
-        pool[index].maxCount = num;
-        await database.ref(`layers/${section}`).set(pool);
-        showToast('Limit Synced to Database Successfully.');
-     }
-  }
-
-  function renderSectionsLayers() {
-    const container = document.getElementById('sections-container'); if(!container) return;
-    let html = ''; let currentUsage = getActiveLayerUsageCounts();
-    for(let section of SECTIONS) {
-      const layers = layersBySection[section] || []; const isOpen = openSectionLayers === section;
-      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleSectionLayers('${section}')" class="flex justify-between items-center p-3 bg-slate-800/40 cursor-pointer"><span class="font-raj font-bold text-slate-200">${section} (${layers.length})</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''}"></i></div>`;
-      if(isOpen) {
-        html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
-        layers.forEach(layer => {
-          html += `<div class="layer-item p-2 flex flex-col justify-between"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-slate-950"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)}</p>
-          <div class="text-[11px] text-indigo-300 mt-1">Used: ${currentUsage[layer.id]||0} / Max: ${layer.maxCount||22000}</div>
-          <button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-400 text-[10px] w-full mt-2 bg-red-950/40 border border-red-900 rounded py-1">Delete</button></div>`;
-        });
-        html += `</div>`;
-      }
-      html += `</div>`;
-    }
-    container.innerHTML = html; lucide.createIcons();
-  }
-
-  // MINT NFT TAB: RENDER SYSTEM WITH MULTI SELECTION HIGHLIGHT LOGIC
-  function renderCreateSections() {
-    const container = document.getElementById('create-sections-container'); if(!container) return;
-    let html = ''; let currentUsage = getActiveLayerUsageCounts();
-
-    for(let section of SECTIONS) {
-      const layers = layersBySection[section] || []; if(!layers.length) continue;
-      const isOpen = openSectionCreate === section;
-      
-      const countSelectedInSec = selectedLayersArray.filter(l => l.section === section).length;
-      
-      html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleCreateSection('${section}')" class="flex justify-between items-center p-3 bg-slate-800/40 cursor-pointer"><span class="font-raj font-bold text-slate-200">${section} ${countSelectedInSec > 0 ? `(${countSelectedInSec} Selected)` : ''}</span><i data-lucide="chevron-down" style="width:18px"></i></div>`;
-      if(isOpen) {
-        html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
-        layers.forEach(layer => {
-          const isSel = selectedLayersArray.some(l => l.layerId === layer.id);
-          let countUsed = currentUsage[layer.id] || 0;
-          let limitMax = layer.maxCount || 500;
-          let isExceeded = countUsed >= limitMax;
-
-          html += `<div class="layer-item p-2 flex flex-col justify-between border-2 transition-all duration-150 ${isSel?'border-indigo-400 bg-indigo-950/40 shadow-md shadow-indigo-500/20 scale-[0.98]':'border-slate-800'}">
-            <div onclick="${isExceeded ? '' : `App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}','${limitMax}')`}" class="cursor-pointer">
-              <div class="relative">
-                 <img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-slate-950">
-                 ${isSel ? '<span class="absolute top-1 right-1 bg-indigo-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black">✓</span>':''}
-              </div>
-              <p class="text-xs font-bold mt-1 truncate text-slate-200 text-center">${escapeHtml(layer.value)}</p>
-              <div class="text-[11px] text-center text-slate-400 mt-0.5">Used: ${countUsed} / Max: <span class="text-emerald-400 font-bold">${limitMax}</span></div>
-            </div>
-            
-            <div class="mt-2 pt-1 border-t border-slate-800 flex flex-col gap-0.5">
-              <span class="text-[9px] font-bold text-slate-400 uppercase">Limit Vector:</span>
-              <input type="number" value="${limitMax}" min="1" max="22000" onchange="App.updateLayerLimit('${section}','${layer.id}', this.value)" class="w-full text-xs bg-slate-950 text-emerald-400 p-1 border border-indigo-900/60 rounded text-center outline-none font-bold">
-            </div>
-            
-            ${isExceeded ? '<div class="text-[10px] text-red-400 font-bold text-center mt-1">LIMIT FULL</div>':''}
-          </div>`;
-        });
-        html += `</div>`;
-      }
-      html += `</div>`;
-    }
-    container.innerHTML = html; lucide.createIcons(); updateOrderPreview();
-  }
-
-  function updateOrderPreview() {
-    const div = document.getElementById('order-preview-list'); if(!div) return;
-    if(!selectedLayersArray.length) { div.innerHTML = '<span class="text-slate-500">No custom vectors checked. Default engine will auto roll random slots.</span>'; return; }
-    div.innerHTML = selectedLayersArray.map(l => `<span class="bg-indigo-950 border border-indigo-500/40 px-3 py-1 rounded-full text-xs font-semibold text-indigo-300">${l.section}: ${escapeHtml(l.value)}</span>`).join('');
-  }
-
-  async function updateLivePreview() {
-    if(!previewCtx) { const can = document.getElementById('live-preview-canvas'); if(can) previewCtx = can.getContext('2d'); else return; }
-    previewCtx.clearRect(0,0,240,240);
-    let sorted = [...selectedLayersArray].sort((a,b)=>SECTIONS.indexOf(a.section)-SECTIONS.indexOf(b.section));
-    for(let item of sorted) {
-      await new Promise(r => { const img = new Image(); img.crossOrigin="Anonymous"; img.onload=()=>{ previewCtx.drawImage(img,0,0,240,240); r(); }; img.onerror=()=>r(); img.src=item.imageUrl; });
-    }
-  }
-
-  function renderCollection() {
-    const container = document.getElementById('nft-list'); const empty = document.getElementById('nft-empty'); 
-    const countDiv = document.getElementById('nft-count'); const loadMoreBtnContainer = document.getElementById('load-more-container');
-    
-    if(!container) return; if(!nfts.length) { container.innerHTML=''; empty.classList.remove('hidden'); countDiv.innerHTML=''; loadMoreBtnContainer.classList.add('hidden'); return; }
-    empty.classList.add('hidden');
-    
-    const viewItems = nfts.slice(0, currentDisplayLimit);
-    container.innerHTML = viewItems.map(nft => {
-      const isCryptoPunkMatch = matchWithMaster(nft.attributes).matched;
-      const label = isCryptoPunkMatch ? `<span class="match-badge">⚠️ CryptoPunk Clone Blocked</span>` : `<span class="nomatch-badge">✅ Unique Design</span>`;
-      return `<div class="nft-card rounded-2xl overflow-hidden shadow-md flex flex-col"><div class="aspect-square bg-slate-950" onclick="App.viewMetadata('${nft.id}')"><img src="${nft.image}" class="w-full h-full object-contain cursor-pointer"></div><div class="p-3 bg-slate-900/90 flex-1 flex flex-col justify-between"><div class="flex justify-between items-center mb-2"><h3 class="font-bold text-slate-200 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-slate-400">#${nft.number}</span></div><div>${label}</div><div class="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2"><button onclick="App.openEditModal('${nft.id}')" class="bg-indigo-950 hover:bg-indigo-900 border border-indigo-700 text-indigo-300 font-bold text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1">✏️ Edit Layer</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs text-red-400 px-2 py-1.5 rounded-xl hover:bg-red-900/40 transition">🗑</button></div></div></div>`;
-    }).join('');
-    
-    countDiv.innerHTML = `<span class="bg-indigo-950 text-indigo-300 font-bold px-4 py-1 rounded-full text-sm">Collection: ${nfts.length} Vectors Registered</span>`;
-    if(nfts.length > currentDisplayLimit) loadMoreBtnContainer.classList.remove('hidden'); else loadMoreBtnContainer.classList.add('hidden');
-  }
-
-  function loadMoreNFTs() { currentDisplayLimit += 500; renderCollection(); }
-
-  function openEditModal(id) {
-    currentEditingNftId = id; const targetNft = nfts.find(n => n.id === id); if (!targetNft) return;
-    editingLayersArray = targetNft.layers ? [...targetNft.layers] : [];
-    document.getElementById('edit-nft-name').value = targetNft.name || '';
-    document.getElementById('edit-nft-description').value = targetNft.description || '';
-    document.getElementById('edit-modal').classList.remove('hidden');
-    renderEditorLayersUI(); updateEditorLivePreview();
-  }
-
-  function closeEditModal() { document.getElementById('edit-modal').classList.add('hidden'); currentEditingNftId = null; editingLayersArray = []; }
-
-  function renderEditorLayersUI() {
-    const currentContainer = document.getElementById('edit-current-layers');
-    if (editingLayersArray.length === 0) currentContainer.innerHTML = `<span class="text-xs text-slate-500">No vector layers bound.</span>`;
-    else {
-      currentContainer.innerHTML = editingLayersArray.map((l, idx) => {
-        return `<span onclick="App.removeLayerFromEditor(${idx})" class="bg-indigo-900/50 hover:bg-red-900/60 border border-indigo-700 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-200 cursor-pointer transition flex items-center gap-1">${l.section}: ${escapeHtml(l.value)} <b class="text-red-400 ml-1">×</b></span>`;
-      }).join('');
     }
 
-    const injectorContainer = document.getElementById('edit-global-injector-container'); let html = '';
-    for (let section of SECTIONS) {
-      const pool = layersBySection[section] || []; const isOpen = openSectionEditor === section;
-      html += `<div class="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden"><div onclick="App.toggleEditorSection('${section}')" class="flex justify-between items-center p-2 text-xs font-bold cursor-pointer bg-slate-800/40 text-slate-300"><span>${section} Library (${pool.length})</span><i data-lucide="chevron-down" style="width:14px"></i></div>`;
-      if (isOpen) {
-        html += `<div class="p-2 grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-950/60">`;
-        pool.forEach(layer => {
-          html += `<div onclick="App.addLayerToEditor('${section}', '${layer.id}', '${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-1.5 cursor-pointer text-center hover:border-indigo-500 transition"><img src="${layer.imageUrl}" class="w-12 h-12 mx-auto object-contain bg-slate-900 rounded"><p class="text-[10px] text-slate-400 mt-1 truncate">${escapeHtml(layer.value)}</p></div>`;
-        });
-        html += `</div>`;
-      }
-      html += `</div>`;
-    }
-    injectorContainer.innerHTML = html; lucide.createIcons();
-  }
-
-  function toggleEditorSection(section) { openSectionEditor = openSectionEditor === section ? null : section; renderEditorLayersUI(); }
-  function removeLayerFromEditor(index) { editingLayersArray.splice(index, 1); renderEditorLayersUI(); updateEditorLivePreview(); }
-
-  function addLayerToEditor(section, id, value, imageUrl, gender) {
-    const existingIndex = editingLayersArray.findIndex(l => l.section === section);
-    const layerObject = { section, layerId: id, value, imageUrl, gender };
-    if (existingIndex !== -1) editingLayersArray[existingIndex] = layerObject; else editingLayersArray.push(layerObject);
-    renderEditorLayersUI(); updateEditorLivePreview();
-  }
-
-  async function updateEditorLivePreview() {
-    const canvas = document.getElementById('edit-preview-canvas'); if (!canvas) return;
-    const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, 240, 240);
-    let sorted = [...editingLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    for (let item of sorted) {
-      await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 240, 240); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
-    }
-  }
-
-  async function saveEditedNFT() {
-    const targetNftIndex = nfts.findIndex(n => n.id === currentEditingNftId); if (targetNftIndex === -1) return;
-    const computedAttributes = buildAttributes(editingLayersArray);
-    if(matchWithMaster(computedAttributes).matched) { showToast('❌ Identity Match Found! Blocked.'); return; }
-
-    showToast('⚡ Recompiling Visual Vectors...');
-    const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d');
-    let sorted = [...editingLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    for (let item of sorted) {
-      await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 512, 512); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
+    const done = Math.min(idx + BATCH, order.length);
+    const percent = Math.round((done / order.length) * 100);
+    progText.innerText = `MINTING... ${percent}%`;
+    progCounter.innerText = `${done}/${order.length}`;
+    progFill.style.width = `${percent}%`;
+    if (idx > 0) {
+      let elapsed = (Date.now() - startTime) / 1000;
+      let rate = done / elapsed;
+      let remaining = (order.length - done) / rate;
+      progEta.innerText = `⏱ ETA: ${Math.round(remaining)}s`;
     }
 
-    nfts[targetNftIndex].name = document.getElementById('edit-nft-name').value.trim();
-    nfts[targetNftIndex].description = document.getElementById('edit-nft-description').value.trim();
-    nfts[targetNftIndex].layers = [...editingLayersArray];
-    nfts[targetNftIndex].attributes = computedAttributes;
-    nfts[targetNftIndex].image = canvas.toDataURL('image/jpeg', 0.65);
-
-    saveUserNFTs(); renderCollection(); closeEditModal(); showToast('🎉 NFT Layers Successfully Updated.');
+    await new Promise(r => setTimeout(r, 1));
   }
 
-  async function downloadCollectionAsZip() {
-    if(!nfts.length) return;
-    const btn = document.getElementById('download-zip-btn'); btn.disabled = true; btn.innerHTML = 'Bundling...';
-    try {
-      const zip = new JSZip();
-      for(let nft of nfts) {
-        const folder = zip.folder(`Punk_${nft.number}`);
-        folder.file(`${nft.number}.json`, JSON.stringify({ name: nft.name, description: nft.description, attributes: nft.attributes }, null, 2));
-        folder.file(`${nft.number}.png`, nft.image.split(',')[1], {base64: true});
-      }
-      const b = await zip.generateAsync({type:"blob"});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download="404_Punks_Collection.zip"; a.click();
-    } catch(e){} finally { btn.disabled = false; btn.innerHTML = '📦 Download All (ZIP)'; }
+  nfts.push(...newNFTs);
+  await updateNFTsInFirebase();
+  renderCollection();
+  showToast(`✅ ${order.length} NFTs MINTED!`);
+  btn.disabled = false;
+  progWrap.classList.add('hidden');
+  if (isIndexLoaded) updateAllMatchBadges();
+}
+
+function renderCollection() {
+  let container = document.getElementById('nft-list');
+  let empty = document.getElementById('nft-empty');
+  let countDiv = document.getElementById('nft-count');
+  if (!container) return;
+  let displayNFTs = filteredNFTs || nfts;
+  empty.classList.toggle('hidden', displayNFTs.length > 0);
+  countDiv.innerHTML = displayNFTs.length
+    ? `<div class="order-tag">📊 SHOWING ${displayNFTs.length} / ${nfts.length} PUNKS</div>`
+    : '';
+  if (!displayNFTs.length) { container.innerHTML = ''; return; }
+  container.innerHTML = displayNFTs.map((nft, idx) => `
+    <div class="nft-card" style="padding:12px;" id="card-${nft.id}">
+      <div style="aspect-ratio:1; background:#fff; margin-bottom:10px; border:2px inset #808080;">
+        <img src="${nft.image}" style="width:100%;height:100%;object-fit:contain;" loading="lazy">
+      </div>
+      <div class="text-pixel text-[8px] text-center">${escapeHtml(nft.name)}</div>
+      <div class="text-pixel text-[7px] text-center" style="color:#808080;">${nft.gender || ''}</div>
+      <div id="match-badge-${nft.id}">${isIndexLoaded ? '<div class="match-badge-loading">🔍 MATCHING...</div>' : '<div class="match-badge-loading">📡 LOAD INDEX...</div>'}</div>
+      <div style="display:flex; gap:5px; margin-top:8px;">
+        <button onclick="App.viewNFTDetails('${nft.id}')" class="win95-btn" style="padding:4px; font-size:7px; flex:1;">📝 EDIT</button>
+        <button onclick="App.downloadSingleImage('${nft.id}', ${idx+1})" class="win95-btn" style="padding:4px; font-size:7px; flex:1;">PNG</button>
+        <button onclick="App.downloadSingleJSON('${nft.id}', ${idx+1})" class="win95-btn" style="padding:4px; font-size:7px; flex:1;">JSON</button>
+        <button onclick="App.deleteSingleNFT('${nft.id}')" class="win95-btn" style="padding:4px; font-size:7px; flex:1; border-color:#ff4444;">DEL</button>
+      </div>
+    </div>`).join('');
+  if (isIndexLoaded) {
+    requestAnimationFrame(() => updateAllMatchBadges());
   }
+}
 
-  function clearAllCollection() { if(confirm('Wipe everything?')) { nfts=[]; localStorage.removeItem('404punks_mainnet_v5'); renderCollection(); renderCreateSections(); } }
-  function clearMatchedCollection() { nfts = nfts.filter(nft => !matchWithMaster(nft.attributes).matched); saveUserNFTs(); renderCollection(); renderCreateSections(); }
-  function deleteNFT(id) { if(confirm('Delete?')) { nfts=nfts.filter(n=>n.id!==id); saveUserNFTs(); renderCollection(); renderCreateSections(); } }
-  
-  function viewMetadata(id) {
-    const nft = nfts.find(n=>n.id===id); if(!nft) return;
-    const modal = document.createElement('div'); modal.className='fixed inset-0 bg-black/80 flex items-center justify-center z-[999] p-4';
-    modal.innerHTML=`<div class="modal-content p-5 rounded-2xl max-w-md w-full border border-slate-700 text-slate-200"><div class="flex justify-between font-bold mb-3"><h3>${escapeHtml(nft.name)} Map</h3><button onclick="this.closest('.fixed').remove()">✕</button></div><img src="${nft.image}" class="w-full bg-slate-950 rounded-xl mb-3"><div class="space-y-1 max-h-[20vh] overflow-auto">${nft.attributes.map(a=>`<div class="bg-slate-950 p-2 text-xs rounded flex justify-between"><span>${a.trait_type}:</span><span class="text-indigo-400 font-bold">${a.value}</span></div>`).join('')}</div></div>`;
-    document.body.appendChild(modal);
+function searchNFTs() {
+  let searchVal = document.getElementById('search-range').value.trim();
+  if (!searchVal) { filteredNFTs = null; renderCollection(); return; }
+  if (searchVal.includes('-')) {
+    let parts = searchVal.split('-');
+    let start = parseInt(parts[0]), end = parseInt(parts[1]);
+    if (!isNaN(start) && !isNaN(end)) filteredNFTs = nfts.filter((_, idx) => { let n = idx+1; return n >= start && n <= end; });
+    else { filteredNFTs = null; showToast('INVALID RANGE'); }
+  } else {
+    let single = parseInt(searchVal);
+    if (!isNaN(single)) filteredNFTs = nfts.filter((_, idx) => (idx+1) === single);
+    else filteredNFTs = null;
   }
+  renderCollection();
+}
 
-  async function addLayer() {
-    const url = document.getElementById('github-url').value.trim();
-    const val = document.getElementById('layer-value').value.trim();
-    const sec = document.getElementById('layer-section').value;
-    const gen = document.querySelector('input[name="layer-gender"]:checked').value;
-    let maxCount = parseInt(document.getElementById('layer-max-count').value) || 500;
-    
-    if(maxCount > 22000) maxCount = 22000;
-    if(!url || !val) { showToast('❌ Fields required!'); return; }
-    
-    await addLayerToFirebase(sec, { id: Date.now(), value: val, imageUrl: url, gender: gen, section: sec, maxCount: maxCount });
-    showToast('Layer Synced to Live Firebase.');
-    document.getElementById('github-url').value = ''; document.getElementById('layer-value').value = '';
+function clearSearch() { filteredNFTs = null; document.getElementById('search-range').value = ''; renderCollection(); }
+
+async function deleteAllNFTs() {
+  if (confirm('⚠️ Delete ALL NFTs?')) {
+    nfts = [];
+    await updateNFTsInFirebase();
+    renderCollection();
+    showToast('ALL NFTs DELETED');
   }
+}
 
-  function switchTab(tabId) {
-    ['layers', 'create', 'collection'].forEach(t => {
-      document.getElementById(`panel-${t}`)?.classList.add('hidden');
-      document.getElementById(`tab-${t}`)?.classList.remove('active');
-    });
-    document.getElementById(`panel-${tabId}`)?.classList.remove('hidden');
-    document.getElementById(`tab-${tabId}`)?.classList.add('active');
-    if(tabId === 'collection') renderCollection();
-    if(tabId === 'create') updateLivePreview();
+async function deleteSingleNFT(id) {
+  if (confirm('Delete this NFT?')) {
+    nfts = nfts.filter(x => x.id != id);
+    await updateNFTsInFirebase();
+    renderCollection();
+    showToast('NFT DELETED');
   }
+}
 
-  function toggleSectionLayers(section) { openSectionLayers = openSectionLayers === section ? null : section; renderSectionsLayers(); }
-  function toggleCreateSection(section) { openSectionCreate = openSectionCreate === section ? null : section; renderCreateSections(); }
+async function downloadAllPNG() {
+  if (!nfts.length) { showToast('No NFTs found!'); return; }
+  showToast(`⬇ Downloading ${nfts.length} PNGs...`);
+  for (let i = 0; i < nfts.length; i++) {
+    let a = document.createElement('a');
+    a.href = nfts[i].image;
+    a.download = `${i + 1}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    await new Promise(r => setTimeout(r, 80));
+  }
+  showToast(`✅ Download started!`);
+}
 
-  const App = {
-    switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer: (s, id)=>{ if(confirm('Delete?')) deleteLayerFromFirebase(s,id).then(()=>showToast('Removed')); },
-    toggleLayerSelection, clearSelectedLayers, startSmartAutoGeneration, mintSingleNFT, viewMetadata, deleteNFT, clearAllCollection, downloadCollectionAsZip, clearMatchedCollection, loadMoreNFTs,
-    openEditModal, closeEditModal, toggleEditorSection, removeLayerFromEditor, addLayerToEditor, saveEditedNFT, updateLayerLimit, validateQuantity, stepQuantity, validateMaxLimit
-  };
+async function downloadAllJSON() {
+  if (!nfts.length) { showToast('No NFTs found!'); return; }
+  showToast(`⬇ Downloading ${nfts.length} JSONs...`);
+  for (let i = 0; i < nfts.length; i++) {
+    let meta = { name: nfts[i].name, description: nfts[i].description, attributes: nfts[i].attributes };
+    let blob = new Blob([JSON.stringify(meta, null, 2)], { type: 'application/json' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = `${i + 1}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    await new Promise(r => setTimeout(r, 80));
+  }
+  showToast(`✅ Download started!`);
+}
 
-  window.onload = function() { loadUserNFTs(); listenToFirebaseLayers(); fetchMasterIndex(); switchTab('layers'); }
+async function downloadAllAsZip() {
+  if (!nfts.length) { showToast('No NFTs found!'); return; }
+  showToast(`⬇ Downloading PNG + JSON...`);
+  for (let i = 0; i < nfts.length; i++) {
+    let serial = i + 1;
+    let a = document.createElement('a');
+    a.href = nfts[i].image;
+    a.download = `${serial}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    await new Promise(r => setTimeout(r, 40));
+
+    let meta = { name: nfts[i].name, description: nfts[i].description, attributes: nfts[i].attributes };
+    let blob = new Blob([JSON.stringify(meta, null, 2)], { type: 'application/json' });
+    let url = URL.createObjectURL(blob);
+    let b = document.createElement('a');
+    b.href = url;
+    b.download = `${serial}.json`;
+    document.body.appendChild(b);
+    b.click();
+    document.body.removeChild(b);
+    URL.revokeObjectURL(url);
+    await new Promise(r => setTimeout(r, 40));
+  }
+  showToast('✅ Bulk processing complete!');
+}
+
+function downloadSingleImage(id, serial) {
+  let n = nfts.find(x => x.id == id);
+  if (n) { let a = document.createElement('a'); a.href = n.image; a.download = `${serial || n.name.replace(/[^a-z0-9]/gi,'_')}.png`; a.click(); showToast('PNG SAVED'); }
+}
+
+function downloadSingleJSON(id, serial) {
+  let n = nfts.find(x => x.id == id);
+  if (n) {
+    let meta = { name: n.name, description: n.description, attributes: n.attributes };
+    let blob = new Blob([JSON.stringify(meta, null, 2)], { type: 'application/json' });
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${serial || n.name.replace(/[^a-z0-9]/gi,'_')}.json`;
+    a.click();
+    showToast('JSON SAVED');
+  }
+}
+
+async function addLayer() {
+  let url = document.getElementById('github-url').value.trim();
+  let val = document.getElementById('layer-value').value.trim();
+  let section = document.getElementById('layer-section').value;
+  let gender = document.querySelector('input[name="layer-gender"]:checked').value;
+  if (!url || !val) { showToast('URL + VALUE NEEDED'); return; }
+  let imgUrl = url;
+  if (imgUrl.includes('github.com') && !imgUrl.includes('raw.githubusercontent.com'))
+    imgUrl = imgUrl.replace('github.com','raw.githubusercontent.com').replace('/blob/','/');
+  let newLayer = { id: Date.now()+'_'+Math.random().toString(36).substr(2,6), value: val, imageUrl: imgUrl, gender };
+  let test = new Image();
+  test.onload = () => addLayerToFirebase(section, newLayer);
+  test.onerror = () => showToast('BAD IMAGE URL');
+  test.src = imgUrl;
+}
+
+function switchTab(tab) {
+  ['layers','create','collection'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('hidden', t !== tab);
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+  });
+  if (tab === 'create') { renderCreateSections(); updateLivePreview(); }
+  if (tab === 'collection') renderCollection();
+}
+
+async function viewNFTDetails(id) {
+  let nft = nfts.find(n => n.id === id);
+  if (!nft) return;
+  let modal = document.createElement('div');
+  modal.id = 'nft-modal-' + id;
+  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:10000;overflow:auto;';
+  let layersHtml = nft.layers.map((l, idx) =>
+    `<div class="layer-row"><span>${idx+1}. ${l.section}: ${escapeHtml(l.value)}</span>
+    <div>
+      <button onclick="App.editNFTLayer('${id}',${idx},'up')" class="move-btn">▲</button>
+      <button onclick="App.editNFTLayer('${id}',${idx},'down')" class="move-btn">▼</button>
+      <button onclick="App.deleteNFTLayer('${id}',${idx})" class="move-btn" style="border-color:#ff4444;">✕</button>
+    </div></div>`
+  ).join('');
+  const matches = isIndexLoaded ? findMatchesForNFT(nft) : [];
+  const matchHtml = matches.length > 0
+    ? `<div style="background:#000080;color:#ffff00;border:2px solid #4444ff;padding:8px;margin-bottom:10px;font-family:'Press Start 2P',monospace;font-size:7px;">🎯 MATCH (${matches.length}): ${matches.slice(0,10).map(n=>'#'+n).join(', ')}${matches.length>10?' +more':''}</div>`
+    : (isIndexLoaded ? `<div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;margin-bottom:8px;">❌ NO MATCH</div>` : `<div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;margin-bottom:8px;">💡 Load index first</div>`);
+  modal.innerHTML = `<div class="win95-window" style="width:90%;max-width:500px;max-height:90vh;overflow:auto;">
+    <div class="win95-titlebar"><span>✏️ EDIT: ${escapeHtml(nft.name)}</span><button onclick="document.getElementById('nft-modal-${id}').remove()">✕</button></div>
+    <div class="win95-content">
+      <canvas id="modal-canvas-${id}" width="256" height="256" style="width:100%;margin-bottom:10px;border:3px outset #808080;display:block;"></canvas>
+      ${matchHtml}
+      <div class="text-pixel text-[8px] mb-2">LAYERS (bottom → top)</div>
+      <div style="max-height:200px;overflow:auto;">${layersHtml}</div>
+      <div class="flex gap-3 mt-3">
+        <button onclick="App.downloadSingleImage('${id}');document.getElementById('nft-modal-${id}').remove()" class="win95-btn flex-1">📸 PNG</button>
+        <button onclick="App.downloadSingleJSON('${id}');document.getElementById('nft-modal-${id}').remove()" class="win95-btn flex-1">📄 JSON</button>
+      </div>
+    </div></div>`;
+  document.body.appendChild(modal);
+  const mc = document.getElementById('modal-canvas-' + id);
+  if (mc) {
+    const mctx = mc.getContext('2d');
+    mctx.fillStyle = '#fff'; mctx.fillRect(0, 0, 256, 256);
+    for (let l of nft.layers) {
+      await new Promise(res => {
+        let img = new Image(); img.crossOrigin = "Anonymous";
+        img.onload = () => { mctx.drawImage(img, 0, 0, 256, 256); res(); };
+        img.onerror = () => res();
+        img.src = l.imageUrl;
+      });
+    }
+  }
+}
+
+async function editNFTLayer(nftId, layerIndex, direction) {
+  let nft = nfts.find(n => n.id === nftId);
+  if (!nft || !nft.layers) return;
+  let newLayers = [...nft.layers];
+  if (direction === 'up' && layerIndex > 0) [newLayers[layerIndex], newLayers[layerIndex-1]] = [newLayers[layerIndex-1], newLayers[layerIndex]];
+  else if (direction === 'down' && layerIndex < newLayers.length-1) [newLayers[layerIndex], newLayers[layerIndex+1]] = [newLayers[layerIndex+1], newLayers[layerIndex]];
+  else return;
+  newLayers.forEach((l, idx) => l.selectionOrder = idx);
+  nft.layers = newLayers;
+  let imgData = await compositeFromLayers(newLayers);
+  nft.image = imgData;
+  nft.attributes = buildNFTAttributes(newLayers);
+  const cardImg = document.querySelector(`#card-${nftId} img`);
+  if (cardImg) cardImg.src = imgData;
+  updateNFTsInFirebase();
+  showToast('LAYER MOVED');
+  document.getElementById('nft-modal-' + nftId)?.remove();
+  viewNFTDetails(nftId);
+}
+
+async function deleteNFTLayer(nftId, layerIndex) {
+  let nft = nfts.find(n => n.id === nftId);
+  if (!nft || !nft.layers) return;
+  let removed = nft.layers[layerIndex];
+  if (confirm(`DELETE "${removed.section}: ${removed.value}"?`)) {
+    nft.layers.splice(layerIndex, 1);
+    nft.layers.forEach((l, idx) => l.selectionOrder = idx);
+    let imgData = await compositeFromLayers(nft.layers);
+    nft.image = imgData;
+    nft.attributes = buildNFTAttributes(nft.layers);
+    const cardImg = document.querySelector(`#card-${nftId} img`);
+    if (cardImg) cardImg.src = imgData;
+    updateNFTsInFirebase();
+    showToast('REMOVED');
+    document.getElementById('nft-modal-' + nftId)?.remove();
+    viewNFTDetails(nftId);
+  }
+}
+
+window.App = {
+  switchTab, loadIndexJSON, deleteAllMatched,
+  toggleSectionLayers: (s) => { openSectionLayers = openSectionLayers === s ? null : s; renderSections(); },
+  toggleSectionCreate: (s) => { openSectionCreate = openSectionCreate === s ? null : s; renderCreateSections(); },
+  addLayer,
+  deleteLayer: deleteLayerFromFirebase,
+  toggleLayerSelection,
+  setQty: setLayerQty,
+  refreshSectionStats,
+  onTotalChange,
+  startMint, deleteAllNFTs,
+  mintSingleSelected,
+  downloadAllPNG, downloadAllJSON, downloadAllAsZip,
+  viewNFTDetails, downloadSingleImage, downloadSingleJSON, deleteSingleNFT,
+  searchNFTs, clearSearch, editNFTLayer, deleteNFTLayer
+};
+
+async function init() {
+  await loadNFTsFromFirebase();
+  previewCtx = document.getElementById('live-preview-canvas')?.getContext('2d');
+  listenFirebase();
+  renderCreateSections();
+  await loadIndexJSON();
+}
+init();
 </script>
 </body>
 </html>
