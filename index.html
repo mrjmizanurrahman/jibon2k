@@ -80,7 +80,7 @@
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">🌐 Firebase Live</span>
-      <span class="text-xs px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-bold">Gender Dual System v4.1</span>
+      <span class="text-xs px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-bold">Gender Mandatory BG/Base v4.2</span>
     </div>
   </header>
 
@@ -138,12 +138,12 @@
   <!-- PANEL 2: MINT ENGINE -->
   <div id="panel-create" class="space-y-5 hidden">
     <div class="glass-card p-4 rounded-xl text-sm text-gray-700 bg-blue-50/50">
-      💡 <strong>Smart Multi-Skin Engine:</strong> টেক্সট ফাইলে <code>Male 1</code>, <code>Male 2</code>, <code>Female 3</code> বা যেকোনো সুনির্দিষ্ট নাম থাকলে সিস্টেম নিখুঁত উপায়ে সঠিক বেস ইমেজ এবং ট্রেইটস পজিশন ডিটেক্ট করবে।
+      🛡️ <strong>Mandatory Engine Protection Active:</strong> টেক্সট ফাইলে ব্যাকগ্রাউন্ড বা বেস স্কিন টোন মিসিং থাকলেও সিস্টেম লাইব্রেরি থেকে অটোমেটিক অবাধ্যভাবে (Mandatory) লোড করে ইমেজ কমপ্লিট করবে।
     </div>
 
     <!-- AUTO BATCH GENERATOR -->
     <div class="glass-card p-5 rounded-2xl border-2 border-purple-400 bg-purple-50/30">
-      <h3 class="font-raj font-bold text-purple-900 mb-2 flex items-center gap-2 text-lg"><i data-lucide="file-text"></i> Intelligent Batch Text Generator (Supports ♂ & ♀)</h3>
+      <h3 class="font-raj font-bold text-purple-900 mb-2 flex items-center gap-2 text-lg"><i data-lucide="file-text"></i> Intelligent Batch Text Generator (BG & Base Mandatory)</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end mb-4">
         <div>
           <label class="block text-xs font-bold text-gray-700 mb-1">Select Text File (.txt)</label>
@@ -357,7 +357,7 @@
     return `${m}m ${s}s`;
   }
 
-  // --- SMART SKIN-TONE BATCH GENERATOR (FIXED) ---
+  // --- MANDATORY BG & BASE AUTO GENERATOR ---
   async function startBatchTextGeneration() {
     const fileInput = document.getElementById('batch-text-file');
     const btn = document.getElementById('mintButtonBatch');
@@ -372,7 +372,7 @@
     if(!fileInput.files[0]) { showToast('❌ Please upload a .txt file first!'); return; }
     
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Multi-Skin Batch...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Enforcing Mandatory Rules...';
 
     const file = fileInput.files[0];
     const reader = new FileReader();
@@ -393,7 +393,7 @@
         elapsedEl.textContent = `Elapsed: ${Math.floor(elapsedSec)}s`;
       }, 1000);
 
-      // Create Fast Global Trait Map
+      // Fast Global Trait Map Setup
       const globalTraitsLookup = {};
       for (let section of SECTIONS) {
         if (layersBySection[section]) {
@@ -416,37 +416,43 @@
       for (let i = 0; i < totalLines; i++) {
         const lineText = textLines[i];
         
-        // 1. Line-Based Gender Detection
+        // Line-Based Gender Detection
         let lineGender = 'male'; 
         if (lineText.includes('♀') || lineText.toLowerCase().includes('female')) {
           lineGender = 'female';
         }
 
-        // Clean tokens from string line
         const tokens = lineText.split(',').map(t => t.replace(/♂|♀/g, '').replace(/\s+/g, ' ').trim()).filter(t => t.length > 0);
         
         if(tokens.length > 0) {
           let calculatedBatchLayers = [];
 
-          // 2. Insert Random Background Layer
+          // 🛡️ RULE 1: MANDATORY BACKGROUND ENFORCEMENT
           const bgList = layersBySection['Background'] || [];
-          if(bgList.length > 0) {
-            const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
-            calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
+          let selectedBg = null;
+
+          // First try to look if any token matches Background names from library
+          for(let token of tokens) {
+            const tkClean = token.toLowerCase();
+            let foundBg = bgList.find(b => b.value.toLowerCase() === tkClean || b.value.toLowerCase().includes(tkClean));
+            if(foundBg) { selectedBg = foundBg; break; }
+          }
+          // If no background match found in token string, pick a random background forcefully
+          if(!selectedBg && bgList.length > 0) {
+            selectedBg = bgList[Math.floor(Math.random() * bgList.length)];
+          }
+          if(selectedBg) {
+            calculatedBatchLayers.push({ section: 'Background', value: selectedBg.value, imageUrl: selectedBg.imageUrl, layerId: selectedBg.id, gender: selectedBg.gender });
           }
 
-          // 3. Advanced Base/Skin Tone Identification (Male 1, Male 2, Alien, Zombie)
-          let baseFound = false;
+          // 🛡️ RULE 2: MANDATORY BASE SKIN ENFORCEMENT
           let matchedBaseLayer = null;
           let baseTokenIndex = -1;
-
-          // Scan tokens to match exactly with any available Base in library
           const allBasesInLibrary = layersBySection['Base'] || [];
           
           for(let tIdx = 0; tIdx < tokens.length; tIdx++) {
             const currentTokenClean = tokens[tIdx].toLowerCase();
             
-            // Exact full text match or partial match on Base traits (e.g. "male 1")
             let match = allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === currentTokenClean && b.gender === lineGender) ||
                         allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase() === currentTokenClean) ||
                         allBasesInLibrary.find(b => b.value.replace(/\s+/g, ' ').trim().toLowerCase().includes(currentTokenClean) && b.gender === lineGender);
@@ -454,33 +460,28 @@
             if(match) {
               matchedBaseLayer = match;
               baseTokenIndex = tIdx;
-              baseFound = true;
               break;
             }
           }
 
-          // Fallback if no base name specified in token row
-          if(!baseFound && allBasesInLibrary.length > 0) {
+          // If no Base found in text row, forcefully pick first matching base for that gender
+          if(!matchedBaseLayer && allBasesInLibrary.length > 0) {
             const genderFilteredBases = allBasesInLibrary.filter(b => b.gender === lineGender);
             matchedBaseLayer = genderFilteredBases.length > 0 ? genderFilteredBases[0] : allBasesInLibrary[0];
           }
 
           if(matchedBaseLayer) {
-            calculatedBatchLayers.push({ 
-              section: 'Base', 
-              value: matchedBaseLayer.value, 
-              imageUrl: matchedBaseLayer.imageUrl, 
-              layerId: matchedBaseLayer.id, 
-              gender: matchedBaseLayer.gender 
-            });
+            calculatedBatchLayers.push({ section: 'Base', value: matchedBaseLayer.value, imageUrl: matchedBaseLayer.imageUrl, layerId: matchedBaseLayer.id, gender: matchedBaseLayer.gender });
           }
 
-          // 4. Map remaining Accessory/Traits tokens
+          // Process the remaining accessories/traits tokens
           for (let j = 0; j < tokens.length; j++) {
-            // Skip the token that was already used as Base Skin
-            if (j === baseTokenIndex) continue; 
+            if (j === baseTokenIndex) continue; // Skip already used base skin token
             
             const traitToken = tokens[j].toLowerCase();
+            // Verify if it is not accidentally parsed as background name
+            if(selectedBg && selectedBg.value.toLowerCase() === traitToken) continue;
+
             if (globalTraitsLookup[traitToken]) {
               let foundLayer = globalTraitsLookup[traitToken][lineGender] || globalTraitsLookup[traitToken]['male'] || globalTraitsLookup[traitToken]['female'];
               
@@ -497,7 +498,7 @@
           }
 
           try {
-            // Enforce proper z-index composite sorting
+            // Sort canvas assembly layout sequence
             calculatedBatchLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
 
             const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
@@ -507,7 +508,7 @@
             const batchNFTObject = {
               id: Date.now() + '_batch_' + Math.random().toString(36).substr(2,6),
               name: `Artifact #${currentIndexNo}`,
-              description: `Smart multi-skin generated ${lineGender} punk.`,
+              description: `Mandatory composite engine generated unit.`,
               image: generatedImg,
               attributes: computedAttributes,
               layers: calculatedBatchLayers,
@@ -520,11 +521,11 @@
             nfts.push(batchNFTObject);
             successCount++;
           } catch(err) {
-            console.error("Batch image process fail:", err);
+            console.error("Assembly crash:", err);
           }
         }
 
-        // 5. Track Progression Calculations UI
+        // Live Render Dashboard Metrics
         const processedCount = i + 1;
         const pct = Math.round((processedCount / totalLines) * 100);
         textCountEl.textContent = `Processing: ${processedCount} / ${totalLines} (${lineGender.toUpperCase()})`;
@@ -545,7 +546,7 @@
       
       btn.disabled = false;
       btn.innerHTML = '🚀 Run Intelligent Auto Generation';
-      showToast(`🎉 Generated ${successCount} Multi-Skin NFTs successfully!`);
+      showToast(`🎉 Mandatory rules complete. Generated ${successCount} items!`);
       setTimeout(() => { progressContainer.classList.add('hidden'); }, 3000);
       switchTab('collection');
     };
@@ -557,9 +558,7 @@
     libraryGenderFilter = mode;
     ['all', 'male', 'female'].forEach(m => {
       const b = document.getElementById(`filter-${m}`);
-      if(b) {
-        b.className = (m === mode) ? "text-xs font-bold px-3 py-1.5 bg-blue-600 text-white rounded-lg" : "text-xs font-bold px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg";
-      }
+      if(b) { b.className = (m === mode) ? "text-xs font-bold px-3 py-1.5 bg-blue-600 text-white rounded-lg" : "text-xs font-bold px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg"; }
     });
     renderSectionsLayers();
   }
@@ -568,7 +567,6 @@
     creatorGenderMode = gender;
     const maleBtn = document.getElementById('creator-gender-male');
     const femaleBtn = document.getElementById('creator-gender-female');
-    
     if(gender === 'male') {
       maleBtn.className = "text-xs font-bold px-4 py-2 bg-blue-600 text-white rounded-xl";
       femaleBtn.className = "text-xs font-bold px-4 py-2 bg-slate-100 text-slate-700 rounded-xl";
@@ -579,30 +577,9 @@
     renderCreateSections();
   }
 
-  function clearAllSelections() {
-    selectedLayersArray = [];
-    renderCreateSections();
-    updateOrderPreview();
-    updateLivePreview();
-    showToast('Selections cleared');
-  }
-
-  function clearAllCollection() {
-    if(!nfts.length) { showToast('❌ Collection empty'); return; }
-    if(confirm(`Wipe entire collection?`)) {
-      nfts = []; saveUserNFTs(); renderCollection();
-      showToast('Collection wiped');
-    }
-  }
-
-  function clearMatchedCollection() {
-    if(!nfts.length) { showToast('❌ No items found.'); return; }
-    const beforeCount = nfts.length;
-    nfts = nfts.filter(nft => !matchWithMaster(nft.attributes).matched);
-    const removedCount = beforeCount - nfts.length;
-    saveUserNFTs(); renderCollection();
-    showToast(`🗑️ Removed ${removedCount} Matched NFTs!`);
-  }
+  function clearAllSelections() { selectedLayersArray = []; renderCreateSections(); updateOrderPreview(); updateLivePreview(); showToast('Selections cleared'); }
+  function clearAllCollection() { if(!nfts.length) { showToast('❌ Collection empty'); return; } if(confirm(`Wipe entire collection?`)) { nfts = []; saveUserNFTs(); renderCollection(); showToast('Collection wiped'); } }
+  function clearMatchedCollection() { if(!nfts.length) { showToast('❌ No items found.'); return; } const beforeCount = nfts.length; nfts = nfts.filter(nft => !matchWithMaster(nft.attributes).matched); const removedCount = beforeCount - nfts.length; saveUserNFTs(); renderCollection(); showToast(`🗑️ Removed ${removedCount} Matched NFTs!`); }
 
   async function mintSingleNFT() {
     if(selectedLayersArray.length === 0) { showToast('❌ Select layers'); return; }
@@ -644,30 +621,14 @@
     finally { btn.disabled = false; }
   }
 
-  function listenToFirebaseLayers() {
-    database.ref('layers').on('value', (snap) => {
-      const data = snap.val();
-      for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : [];
-      renderSectionsLayers();
-      renderCreateSections();
-    });
-  }
-
+  function listenToFirebaseLayers() { database.ref('layers').on('value', (snap) => { const data = snap.val(); for(let s of SECTIONS) layersBySection[s] = (data && data[s]) ? data[s] : []; renderSectionsLayers(); renderCreateSections(); }); }
   async function addLayerToFirebase(section, layer) { const updated = [...(layersBySection[section]||[]), layer]; await database.ref(`layers/${section}`).set(updated); }
-  async function deleteLayerFromFirebase(section, layerId) { 
-    const filtered = (layersBySection[section]||[]).filter(l=>String(l.id)!==String(layerId)); 
-    await database.ref(`layers/${section}`).set(filtered); 
-    selectedLayersArray = selectedLayersArray.filter(l => l.layerId != layerId);
-    renderCreateSections(); updateLivePreview(); 
-  }
+  async function deleteLayerFromFirebase(section, layerId) { const filtered = (layersBySection[section]||[]).filter(l=>String(l.id)!==String(layerId)); await database.ref(`layers/${section}`).set(filtered); selectedLayersArray = selectedLayersArray.filter(l => l.layerId != layerId); renderCreateSections(); updateLivePreview(); }
 
   function renderSectionsLayers() {
-    const container = document.getElementById('sections-container');
-    if(!container) return;
-    let html = '';
+    const container = document.getElementById('sections-container'); if(!container) return; let html = '';
     for(let section of SECTIONS) {
-      let layers = layersBySection[section] || [];
-      if(libraryGenderFilter !== 'all') { layers = layers.filter(l => l.gender === libraryGenderFilter); }
+      let layers = layersBySection[section] || []; if(libraryGenderFilter !== 'all') { layers = layers.filter(l => l.gender === libraryGenderFilter); }
       const isOpen = openSectionLayers === section;
       html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleSectionLayers('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-raj font-bold text-blue-900">${section} (${layers.length})</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
       if(isOpen) {
@@ -680,134 +641,61 @@
       }
       html += `</div>`;
     }
-    container.innerHTML = html;
-    lucide.createIcons();
+    container.innerHTML = html; lucide.createIcons();
   }
 
   function renderCreateSections() {
-    const container = document.getElementById('create-sections-container');
-    if(!container) return;
-    let html = '';
+    const container = document.getElementById('create-sections-container'); if(!container) return; let html = '';
     for(let section of SECTIONS) {
-      let layers = layersBySection[section] || [];
-      if(section !== "Background") { layers = layers.filter(l => l.gender === creatorGenderMode); }
+      let layers = layersBySection[section] || []; if(section !== "Background") { layers = layers.filter(l => l.gender === creatorGenderMode); }
       if(!layers.length) continue;
-      const isOpen = openSectionCreate === section;
-      const selectedLayer = selectedLayersArray.find(l => l.section === section);
+      const isOpen = openSectionCreate === section; const selectedLayer = selectedLayersArray.find(l => l.section === section);
       html += `<div class="section-card rounded-xl overflow-hidden mb-3"><div onclick="App.toggleCreateSection('${section}')" class="flex justify-between items-center p-3 bg-white/50 cursor-pointer"><span class="font-raj font-bold text-blue-900">${section} ${selectedLayer ? '✓' : ''}</span><i data-lucide="chevron-down" style="width:18px" class="${isOpen?'rotate-180':''} transition"></i></div>`;
       if(isOpen) {
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
-          const isSel = selectedLayer && selectedLayer.layerId === layer.id;
-          const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
+          const isSel = selectedLayer && selectedLayer.layerId === layer.id; const genSymbol = layer.gender === 'female' ? '<span class="text-pink-600 font-bold ml-1">♀</span>' : '<span class="text-blue-600 font-bold ml-1">♂</span>';
           html += `<div onclick="App.toggleLayerSelection('${section}','${layer.id}','${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-2 cursor-pointer ${isSel?'selected':''}"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-gray-100">${isSel ? '<div class="text-blue-600 text-center text-xs font-bold mt-1">✓ Selected</div>' : ''}<p class="text-xs text-center mt-1 font-medium">${escapeHtml(layer.value)} ${genSymbol}</p></div>`;
         });
         html += `</div>`;
       }
       html += `</div>`;
     }
-    container.innerHTML = html || '<div class="text-center p-6 text-gray-500">No layers matched.</div>';
-    lucide.createIcons();
-    updateOrderPreview();
+    container.innerHTML = html || '<div class="text-center p-6 text-gray-500">No layers matched.</div>'; lucide.createIcons(); updateOrderPreview();
   }
 
-  function updateOrderPreview() { 
-    const div = document.getElementById('order-preview-list'); if(!div) return; 
-    if(selectedLayersArray.length === 0) { div.innerHTML = '<span class="text-gray-500">No layers selected</span>'; return; }
-    let sortedPreview = [...selectedLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    div.innerHTML = sortedPreview.map((l, idx) => `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)}</span>`).join(''); 
-  }
-  
-  async function updateLivePreview() { 
-    if(!previewCtx) { const can = document.getElementById('live-preview-canvas'); if(can) previewCtx = can.getContext('2d'); else return; } 
-    previewCtx.clearRect(0,0,240,240); previewCtx.fillStyle = '#0f172a'; previewCtx.fillRect(0,0,240,240); 
-    let sortedLayers = [...selectedLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    for(let item of sortedLayers) { 
-      await new Promise(resolve => { 
-        const img = new Image(); img.crossOrigin = "Anonymous"; 
-        img.onload = () => { previewCtx.drawImage(img, 0, 0, 240, 240); resolve(); }; 
-        img.onerror = () => resolve(); img.src = item.imageUrl; 
-      }); 
-    } 
-  }
+  function updateOrderPreview() { const div = document.getElementById('order-preview-list'); if(!div) return; if(selectedLayersArray.length === 0) { div.innerHTML = '<span class="text-gray-500">No layers selected</span>'; return; } let sortedPreview = [...selectedLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section)); div.innerHTML = sortedPreview.map((l, idx) => `<span class="order-tag">${idx+1}. ${l.section}: ${escapeHtml(l.value)}</span>`).join(''); }
+  async function updateLivePreview() { if(!previewCtx) { const can = document.getElementById('live-preview-canvas'); if(can) previewCtx = can.getContext('2d'); else return; } previewCtx.clearRect(0,0,240,240); previewCtx.fillStyle = '#0f172a'; previewCtx.fillRect(0,0,240,240); let sortedLayers = [...selectedLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section)); for(let item of sortedLayers) { await new Promise(resolve => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { previewCtx.drawImage(img, 0, 0, 240, 240); resolve(); }; img.onerror = () => resolve(); img.src = item.imageUrl; }); } }
 
   function renderCollection() {
     const container = document.getElementById('nft-list'); const empty = document.getElementById('nft-empty'); const countDiv = document.getElementById('nft-count');
     if(!container) return; if(!nfts.length) { container.innerHTML=''; empty.classList.remove('hidden'); countDiv.innerHTML=''; return; }
-    empty.classList.add('hidden');
-
-    let totalMatchedCount = 0;
+    empty.classList.add('hidden'); let totalMatchedCount = 0;
     container.innerHTML = nfts.map(nft => {
       const match = matchWithMaster(nft.attributes); if (match.matched) totalMatchedCount++;
       const matchHtml = match.matched ? `<span class="match-badge">✅ Match #${match.matchId}</span>` : `<span class="nomatch-badge">❌ No Match</span>`;
       return `<div class="nft-card rounded-2xl overflow-hidden shadow-md cursor-pointer" onclick="App.viewMetadata('${nft.id}')"><div class="aspect-square bg-slate-800"><img src="${nft.image}" class="w-full h-full object-contain"></div><div class="p-3 bg-white/80"><div class="flex justify-between items-center"><h3 class="font-raj font-bold text-blue-900 truncate max-w-[140px]">${escapeHtml(nft.name)}</h3><span class="text-xs text-gray-600">#${nft.number}</span></div><div class="flex justify-between items-center mt-2">${matchHtml}<div class="flex gap-1" onclick="event.stopPropagation()"><button onclick="App.downloadImage('${nft.id}')" class="text-xs bg-gray-200 p-1 rounded">📸</button><button onclick="App.downloadJSON('${nft.id}')" class="text-xs bg-gray-200 p-1 rounded">📄</button><button onclick="App.deleteNFT('${nft.id}')" class="text-xs bg-red-100 text-red-600 p-1 rounded">🗑</button></div></div></div></div>`;
     }).join('');
-
     countDiv.innerHTML = `<div class="flex gap-2"><span class="bg-blue-100 px-3 py-1 rounded-full text-blue-800 text-xs font-bold">Total: ${nfts.length}</span><span class="bg-green-100 px-3 py-1 rounded-full text-green-800 text-xs font-bold">Matched: ${totalMatchedCount}</span></div>`;
   }
 
   function downloadImage(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(nft) { const a=document.createElement('a'); a.href=nft.image; a.download=`${nft.number}.png`; a.click(); } }
-  function downloadJSON(id) { 
-    const nft = nfts.find(n=>String(n.id)===String(id)); 
-    if(nft) { 
-      const metadata = { name: nft.name, description: nft.description, image: `ipfs://placeholder/${nft.number}.png`, attributes: nft.attributes }; 
-      const blob=new Blob([JSON.stringify(metadata,null,2)],{type:'application/json'}); 
-      const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${nft.number}.json`; a.click();
-    } 
-  }
-
-  async function downloadCollectionAsZip() {
-    if (!nfts.length) return; const btn = event.target; const oText = btn.innerHTML; btn.innerHTML = 'Zipping...';
-    try {
-      const zip = new JSZip();
-      for (let nft of nfts) {
-        const nftFolder = zip.folder(`Punk_${nft.number}`);
-        const metadata = { name: nft.name, description: nft.description, image: `ipfs://${nft.number}.png`, attributes: nft.attributes };
-        nftFolder.file(`${nft.number}.json`, JSON.stringify(metadata, null, 2));
-        nftFolder.file(`${nft.number}.png`, nft.image.split(',')[1], {base64: true});
-      }
-      const content = await zip.generateAsync({type: "blob"});
-      const link = document.createElement('a'); link.href = URL.createObjectURL(content); link.download = `Collection_${Date.now()}.zip`; link.click();
-      showToast('🎉 Saved Zip Successfully!');
-    } catch (err) { showToast('ZIP failed'); } btn.innerHTML = oText;
-  }
-  
+  function downloadJSON(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(nft) { const metadata = { name: nft.name, description: nft.description, image: `ipfs://placeholder/${nft.number}.png`, attributes: nft.attributes }; const blob=new Blob([JSON.stringify(metadata,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${nft.number}.json`; a.click(); } }
+  async function downloadCollectionAsZip() { if (!nfts.length) return; const btn = event.target; const oText = btn.innerHTML; btn.innerHTML = 'Zipping...'; try { const zip = new JSZip(); for (let nft of nfts) { const nftFolder = zip.folder(`Punk_${nft.number}`); const metadata = { name: nft.name, description: nft.description, image: `ipfs://${nft.number}.png`, attributes: nft.attributes }; nftFolder.file(`${nft.number}.json`, JSON.stringify(metadata, null, 2)); nftFolder.file(`${nft.number}.png`, nft.image.split(',')[1], {base64: true}); } const content = await zip.generateAsync({type: "blob"}); const link = document.createElement('a'); link.href = URL.createObjectURL(content); link.download = `Collection_${Date.now()}.zip`; link.click(); showToast('🎉 Saved Zip Successfully!'); } catch (err) { showToast('ZIP failed'); } btn.innerHTML = oText; }
   function deleteNFT(id) { if(confirm('Delete?')) { nfts = nfts.filter(n=>String(n.id)!==String(id)); saveUserNFTs(); renderCollection(); } }
-  
-  function viewMetadata(id) { 
-    const nft = nfts.find(n=>String(n.id)===String(id)); if(!nft) return; 
-    const match = matchWithMaster(nft.attributes); 
-    const matchLine = match.matched ? `<p class="text-green-700 text-sm mt-2 font-bold">✅ Match Found: Official Punk #${match.matchId}</p>` : `<p class="text-red-700 text-sm mt-2 font-bold">❌ No Match</p>`; 
-    const modal=document.createElement('div'); modal.className='fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-[999] p-4'; 
-    modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto"><div class="flex justify-between"><h2 class="font-orb text-xl text-blue-900">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-gray-600">✕</button></div><img src="${nft.image}" class="w-full rounded-xl my-3 border-2 border-blue-300"><div class="space-y-2">${nft.attributes.map(a=>`<div class="attribute-badge"><span class="font-medium">${a.trait_type === "," ? "','" : a.trait_type}</span><span>${escapeHtml(a.value)}</span></div>`).join('')}${matchLine}</div></div>`; 
-    document.body.appendChild(modal); modal.onclick=e=>{if(e.target===modal)modal.remove();};
-  }
+  function viewMetadata(id) { const nft = nfts.find(n=>String(n.id)===String(id)); if(!nft) return; const match = matchWithMaster(nft.attributes); const matchLine = match.matched ? `<p class="text-green-700 text-sm mt-2 font-bold">✅ Match Found: Official Punk #${match.matchId}</p>` : `<p class="text-red-700 text-sm mt-2 font-bold">❌ No Match</p>`; const modal=document.createElement('div'); modal.className='fixed inset-0 bg-black/70 backdrop-blur flex items-center justify-center z-[999] p-4'; modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto"><div class="flex justify-between"><h2 class="font-orb text-xl text-blue-900">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-gray-600">✕</button></div><img src="${nft.image}" class="w-full rounded-xl my-3 border-2 border-blue-300"><div class="space-y-2">${nft.attributes.map(a=>`<div class="attribute-badge"><span class="font-medium">${a.trait_type === "," ? "','" : a.trait_type}</span><span>${escapeHtml(a.value)}</span></div>`).join('')}${matchLine}</div></div>`; document.body.appendChild(modal); modal.onclick=e=>{if(e.target===modal)modal.remove();}; }
 
   async function addLayer() { 
-    const url=document.getElementById('github-url').value.trim(); const val=document.getElementById('layer-value').value.trim(); const sec=document.getElementById('layer-section').value; const gen=document.querySelector('input[name="layer-gender"]:checked').value; 
-    if(!url || !val) { showToast('❌ Fill all fields'); return; } 
+    const url=document.getElementById('github-url').value.trim(); const val=document.getElementById('layer-value').value.trim(); const sec=document.getElementById('layer-section').value; const gen=document.querySelector('input[name="layer-gender"]:checked').value; if(!url || !val) { showToast('❌ Fill all fields'); return; } 
     let finalUrl = url.includes('github.com') && !url.includes('raw.githubusercontent.com') ? url.replace('github.com','raw.githubusercontent.com').replace('/blob/','/') : url; 
-    const img = new Image(); img.crossOrigin = "Anonymous"; 
-    img.onload = async () => { 
-      await addLayerToFirebase(sec, { id: Date.now(), value: val, imageUrl: finalUrl, gender: gen, section: sec }); 
-      document.getElementById('github-url').value=''; document.getElementById('layer-value').value=''; showToast(`✅ Added ${val}`); 
-    }; img.onerror=()=>showToast('Invalid image'); img.src=finalUrl; 
+    const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = async () => { await addLayerToFirebase(sec, { id: Date.now(), value: val, imageUrl: finalUrl, gender: gen, section: sec }); document.getElementById('github-url').value=''; document.getElementById('layer-value').value=''; showToast(`✅ Added ${val}`); }; img.onerror=()=>showToast('Invalid image'); img.src=finalUrl; 
   }
-  
   function deleteLayer(section, id) { if(confirm('Delete layer?')) { deleteLayerFromFirebase(section, id); } }
-
-  function switchTab(tabId) {
-    ['layers', 'create', 'collection'].forEach(t => { document.getElementById(`panel-${t}`).classList.add('hidden'); document.getElementById(`tab-${t}`).classList.remove('active'); });
-    document.getElementById(`panel-${tabId}`).classList.remove('hidden'); document.getElementById(`tab-${tabId}`).classList.add('active'); if(tabId === 'create') updateLivePreview();
-  }
-
+  function switchTab(tabId) { ['layers', 'create', 'collection'].forEach(t => { document.getElementById(`panel-${t}`).classList.add('hidden'); document.getElementById(`tab-${t}`).classList.remove('active'); }); document.getElementById(`panel-${tabId}`).classList.remove('hidden'); document.getElementById(`tab-${tabId}`).classList.add('active'); if(tabId === 'create') updateLivePreview(); }
   function toggleSectionLayers(section) { openSectionLayers = (openSectionLayers === section) ? null : section; renderSectionsLayers(); }
   function toggleCreateSection(section) { openSectionCreate = (openSectionCreate === section) ? null : section; renderCreateSections(); }
 
-  const App = {
-    switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer, toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections, viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection, downloadCollectionAsZip, clearMatchedCollection, setLibraryFilter, setCreatorGender
-  };
-
+  const App = { switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer, toggleLayerSelection, startBatchTextGeneration, mintSingleNFT, clearAllSelections, viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection, downloadCollectionAsZip, clearMatchedCollection, setLibraryFilter, setCreatorGender };
   window.onload = function() { loadUserNFTs(); listenToFirebaseLayers(); fetchMasterIndex(); renderCollection(); switchTab('layers'); lucide.createIcons(); }
 </script>
 </body>
