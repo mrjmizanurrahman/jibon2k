@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>404 PUNKS | Ultra Max Genesis Mint & Universal Smart Match Engine</title>
   
+  <!-- EXTERNAL DEPENDENCIES & CORE FRAMEWORKS -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
+  <!-- PREMIUM FONTS SETUP -->
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -82,12 +84,15 @@
     select.nft-input option { background: #0f172a; color: white; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
+    .custom-badge-remove { cursor: pointer; color: #ef4444; margin-left: 8px; font-weight: bold; }
+    .custom-badge-remove:hover { color: #f87171; }
   </style>
 </head>
 <body>
 
 <div id="app" class="max-w-7xl mx-auto px-4 py-6">
   
+  <!-- MAIN HEADER CONTAINER -->
   <header class="flex justify-between items-center mb-6 bg-slate-900/80 backdrop-blur-md rounded-2xl p-5 shadow-lg border border-indigo-900/50">
     <div class="flex items-center gap-3">
       <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
@@ -96,16 +101,18 @@
     <div class="flex gap-3 items-center">
       <div id="ram-load-display" class="text-xs px-3 py-1 bg-purple-950/80 text-purple-300 rounded-full border border-purple-800 font-mono">RAM Load: Initializing...</div>
       <span id="sync-status" class="text-xs px-3 py-1 bg-emerald-950/80 text-emerald-300 rounded-full font-bold border border-emerald-800">🌐 Connecting Firebase...</span>
-      <span class="text-xs px-3 py-1 bg-indigo-950/80 text-indigo-300 rounded-full border border-indigo-800">Engine v4.0 Ultimate</span>
+      <span class="text-xs px-3 py-1 bg-indigo-950/80 text-indigo-300 rounded-full border border-indigo-800">Engine v4.5 Pro Max</span>
     </div>
   </header>
 
+  <!-- NAVIGATION TABS MULTI-PANEL -->
   <div class="flex gap-3 mb-6 flex-wrap bg-slate-950/40 p-2 rounded-2xl border border-slate-800/60 max-w-max">
     <button onclick="App.switchTab('layers')" id="tab-layers" class="tab-btn active font-semibold flex items-center gap-2"><i data-lucide="layers" style="width:16px"></i> Global Layer Asset Matrix</button>
     <button onclick="App.switchTab('create')" id="tab-create" class="tab-btn font-semibold flex items-center gap-2"><i data-lucide="sparkles" style="width:16px"></i> Production Roll & Mint</button>
     <button onclick="App.switchTab('collection')" id="tab-collection" class="tab-btn font-semibold flex items-center gap-2"><i data-lucide="gallery-horizontal" style="width:16px"></i> Secure Matrix Vault</button>
   </div>
 
+  <!-- PANEL 1: GLOBAL LAYERS MANAGEMENT SYSTEM -->
   <div id="panel-layers" class="space-y-5">
     <div class="glass-card p-6 rounded-2xl">
       <h3 class="font-semibold text-lg text-indigo-300 mb-4 flex items-center gap-2"><i data-lucide="plus-circle"></i> Inject Layer Configuration Asset (Realtime Firebase Database Synced)</h3>
@@ -153,8 +160,10 @@
     <div id="sections-container" class="space-y-4"></div>
   </div>
 
+  <!-- PANEL 2: PRODUCTION BUILD & MINTING ENGINE -->
   <div id="panel-create" class="space-y-5 hidden">
     
+    <!-- ENGINE RULES COMPLIANCE ALERT BOX -->
     <div class="glass-card p-4 rounded-xl text-sm text-slate-300 border-l-4 border-indigo-500 bg-indigo-950/20">
       <span class="font-bold text-indigo-400">⚙️ Tokenomics Structural Parsing Architecture:</span> 
       The system executes strict parsing rules. Base type assignments are encoded into the 
@@ -163,6 +172,7 @@
       Background attributes are isolated during standard indexing checks.
     </div>
 
+    <!-- MODULE A: GENERATIVE BATCH ROLL ENGINE -->
     <div class="glass-card p-6 rounded-2xl border-2 border-indigo-500/40 bg-gradient-to-b from-indigo-950/30 to-slate-900/50">
       <h3 class="font-semibold text-xl text-indigo-300 mb-2 flex items-center gap-2"><i data-lucide="cpu"></i> Generative Batch Roll Engine (NFT Build Workflow)</h3>
       <p class="text-xs text-slate-400 mb-4">Configure algorithmic batch mint configurations executing random programmatic attribute variations. Compatible with high-density sequencing.</p>
@@ -200,6 +210,7 @@
       </div>
     </div>
 
+    <!-- MODULE B: MANUAL ASSEMBLY MIX LAYER MATRIX PREVIEW & CUSTOM MULTI-SELECT ENGINE -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div class="glass-card p-5 flex flex-col items-center justify-center rounded-2xl md:col-span-1">
         <p class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">Canvas Live Buffer Viewport</p>
@@ -209,14 +220,34 @@
         </button>
       </div>
       
+      <!-- COMPREHENSIVE LAYER ARRANGEMENT PREVIEW & CUSTOM INPUT MATRIX -->
       <div class="glass-card p-5 rounded-2xl md:col-span-2 flex flex-col justify-between">
         <div>
           <p class="font-semibold text-indigo-300 mb-2 flex items-center gap-2"><i data-lucide="list-ordered"></i> Topographical Composite Stack Order (Bottom-Up Index)</p>
-          <div id="order-preview-list" class="flex flex-wrap gap-2 p-3 bg-slate-950/40 rounded-xl border border-slate-800 min-h-[60px] items-center">
+          <div id="order-preview-list" class="flex flex-wrap gap-2 p-3 bg-slate-950/40 rounded-xl border border-slate-800 min-h-[60px] items-center mb-4">
             <span class="text-slate-500 text-xs font-medium">Awaiting manual composite node injections...</span>
           </div>
+
+          <!-- NEW: CUSTOM MULTI-SELECTED ACCESSORIES INJECTION MODULE -->
+          <div class="bg-slate-900/90 border border-indigo-500/30 p-4 rounded-xl space-y-3 mb-4">
+            <p class="text-xs font-bold text-purple-400 uppercase tracking-wider flex items-center gap-1">
+              <i data-lucide="sliders-horizontal" style="width:14px"></i> Multi-Selected Custom Attribute/Accessories Generator
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <input type="text" id="custom-trait-type" placeholder="Trait Type (e.g., Accessory, Hat)" class="nft-input text-xs">
+              <input type="text" id="custom-trait-value" placeholder="Value (e.g., Diamond Earring, Gold Chain)" class="nft-input text-xs">
+              <button onclick="App.addCustomAttributeNode()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-3 rounded-xl transition flex items-center justify-center gap-1">
+                <i data-lucide="plus" style="width:14px"></i> Inject Custom Trait
+              </button>
+            </div>
+            <!-- Live Active Custom Attributes Container Stack -->
+            <div id="custom-badges-container" class="flex flex-wrap gap-2 pt-2">
+              <!-- Dynamically Appended Custom badging will mount here -->
+            </div>
+          </div>
         </div>
-        <div class="space-y-3 mt-4">
+
+        <div class="space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-[11px] font-bold text-slate-400 mb-1">Target Registry Metadata Token Name Alias</label>
@@ -234,9 +265,11 @@
       </div>
     </div>
 
+    <!-- RENDERING SECTIONS FOR LAYER MATRIX SELECTION -->
     <div id="create-sections-container" class="space-y-4 max-h-[45vh] overflow-auto pr-1"></div>
   </div>
 
+  <!-- PANEL 3: UNIVERSAL SECURE STORAGE MATRIX VAULT (COLLECTION VIEW) -->
   <div id="panel-collection" class="space-y-5 hidden">
     <div class="flex justify-between items-center bg-slate-900/60 p-4 rounded-xl border border-indigo-950/80 flex-wrap gap-3">
       <div id="nft-count"></div>
@@ -253,6 +286,7 @@
       </div>
     </div>
     
+    <!-- COLLECTION GRID SYSTEM -->
     <div id="nft-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     <div id="nft-empty" class="text-center text-slate-500 py-16 bg-slate-900/20 rounded-2xl border border-dashed border-slate-800">
       <i data-lucide="alert-circle" class="mx-auto text-slate-600 mb-2" style="width:36px; height:36px;"></i>
@@ -287,6 +321,7 @@
   // Storage Registry Cache Instantiations
   let layersBySection = {};
   let selectedLayersArray = [];  
+  let customAttributesArray = []; // BUFFER STORAGE FOR MANUALLY TYPED ACCESORIES
   let nfts = [];
   let masterIndexMap = [];
   let previewCtx = null;
@@ -318,24 +353,17 @@
   function updateRamUserLoadMetrics() {
     try {
       let allocatedMemoryBytes = 0;
+      const jsonWeightString = JSON.stringify(nfts) + JSON.stringify(layersBySection) + JSON.stringify(selectedLayersArray) + JSON.stringify(customAttributesArray);
+      allocatedMemoryBytes += (jsonWeightString.length * 2); 
       
-      // Calculate active layout state objects stack depth tracking allocation overhead sizes
-      const jsonWeightString = JSON.stringify(nfts) + JSON.stringify(layersBySection) + JSON.stringify(selectedLayersArray);
-      allocatedMemoryBytes += (jsonWeightString.length * 2); // 2 bytes per char estimation 
-      
-      // Base calculation simulation mapping overhead buffers
-      const baseSystemOverhead = 14350000; // Hardcoded structural framework base stack allocation reference
+      const baseSystemOverhead = 15420000; 
       const completeCalculatedLoad = allocatedMemoryBytes + baseSystemOverhead;
-      
-      // Conversion execution calculation
       const megabytesRepresentation = (completeCalculatedLoad / (1024 * 1024)).toFixed(2);
       
       const targetDisplayElement = document.getElementById('ram-load-display');
       if(targetDisplayElement) {
         targetDisplayElement.textContent = `RAM Load: ${megabytesRepresentation} MB`;
-        
-        // Diagnostic threshold alarm checks updates styling
-        if(parseFloat(megabytesRepresentation) > 32) {
+        if(parseFloat(megabytesRepresentation) > 35) {
           targetDisplayElement.className = "text-xs px-3 py-1 bg-rose-950/80 text-rose-300 rounded-full border border-rose-800 font-mono font-bold animate-pulse";
         } else {
           targetDisplayElement.className = "text-xs px-3 py-1 bg-purple-950/80 text-purple-300 rounded-full border border-purple-800 font-mono";
@@ -346,7 +374,6 @@
     }
   }
 
-  // Local Machine System Buffer Persisted Registries Engine Loaders Setup
   function loadUserNFTs() { 
     try { 
       const saved = localStorage.getItem('404punks_mainnet_v5'); 
@@ -396,11 +423,6 @@
     updateRamUserLoadMetrics();
   }
 
-  /**
-   * Universal DNA Sequence Evaluation Comparator Match Logic Controller Engine
-   * @param {Array} attributes - Target Compiled Layer Token Attribute Configurations List Array
-   * @returns {Object} Analytical Evaluation Verification Identity Mapping Result Dataset
-   */
   function matchWithMaster(attributes) {
     if(!masterIndexMap.length) return { matched: false, matchId: null, sequenceIntegrityPercent: 0 };
     
@@ -413,14 +435,12 @@
 
     const targetJsonStringifiedComparisonLine = JSON.stringify(nftValues);
 
-    // Iterative algorithmic verification cycle scans official decentralized identity indexes
     for(let master of masterIndexMap) {
       if(targetJsonStringifiedComparisonLine === JSON.stringify(master.traitValues)) {
         return { matched: true, matchId: master.id, sequenceIntegrityPercent: 100 };
       }
     }
     
-    // Explicit hard override verification protocols for Punk #935 Structural Bypass Framework Checks
     const executionHas935Traits = nftValues.some(v => v.toLowerCase().includes('935') || v.includes('Artifact'));
     if(executionHas935Traits) {
       const targetBypassEntity935 = masterIndexMap.find(m => m.id === 935);
@@ -435,29 +455,24 @@
   // -------------------------------------------------------------------------
   // SYSTEM MODULE 3: METADATA PARSING INTERFACER (buildAttributes CONTEXT)
   // -------------------------------------------------------------------------
-  /**
-   * Generates ERC-721/ERC-1155 compliant metadata attribute models according to exact project architecture design rules.
-   * @param {Array} orderedLayers - Procedurally layered tracking objects array list ordered explicitly.
-   * @returns {Array} Formal Metadata Attribute Schema Structure
-   */
-  function buildAttributes(orderedLayers) {
+  function buildAttributes(orderedLayers, manuallyTypedAttributes = []) {
     const attributeManifestResponseCollection = [];
-    let discoveredPunk935ContextSignalFlag = false;
 
+    // Process graphical vector layers
     for(let layer of orderedLayers) {
-      if(layer.value && (layer.value.includes('935') || layer.value.includes('Special-935'))) {
-        discoveredPunk935ContextSignalFlag = true;
-      }
-      
-      // Background traits are omitted during direct compliance checks parsing schemas
       if(layer.section === "Background") continue;
-      
-      // Core rule deployment setting mapping: Base tier maps to "," syntax line. Everything else becomes Accessory types.
       let assignedTraitTypeHeader = (layer.section === "Base") ? "," : "Accessory";
-      
       attributeManifestResponseCollection.push({ 
         trait_type: assignedTraitTypeHeader, 
         value: layer.value 
+      });
+    }
+    
+    // NEW: Inject custom manually typed attributes directly into serialization compiler
+    for(let customAttr of manuallyTypedAttributes) {
+      attributeManifestResponseCollection.push({
+        trait_type: customAttr.trait_type || "Accessory",
+        value: customAttr.value
       });
     }
     
@@ -471,6 +486,58 @@
   }
 
   // -------------------------------------------------------------------------
+  // NEW SYSTEM FUNCTION: CUSTOM ATTRIBUTING MANAGEMENT HANDLERS
+  // -------------------------------------------------------------------------
+  function addCustomAttributeNode() {
+    const traitTypeInput = document.getElementById('custom-trait-type');
+    const traitValueInput = document.getElementById('custom-trait-value');
+    
+    const trait_type = traitTypeInput.value.trim();
+    const value = traitValueInput.value.trim();
+    
+    if(!value) { showToast('❌ Input Fault: Value string field cannot be blank!'); return; }
+    
+    // Mount to global tracking array buffer
+    customAttributesArray.push({
+      id: 'custom_' + Date.now() + Math.random().toString(36).substr(2,4),
+      trait_type: trait_type || "Accessory",
+      value: value
+    });
+    
+    traitTypeInput.value = '';
+    traitValueInput.value = '';
+    
+    renderCustomBadges();
+    updateRamUserLoadMetrics();
+    showToast(`✨ Custom attribute node injected successfully.`);
+  }
+
+  function removeCustomAttributeNode(id) {
+    customAttributesArray = customAttributesArray.filter(item => item.id !== id);
+    renderCustomBadges();
+    updateRamUserLoadMetrics();
+  }
+
+  function renderCustomBadges() {
+    const container = document.getElementById('custom-badges-container');
+    if(!container) return;
+    
+    if(customAttributesArray.length === 0) {
+      container.innerHTML = '<span class="text-slate-600 text-xs font-mono">No custom typed accessories inside active runtime buffer.</span>';
+      return;
+    }
+    
+    container.innerHTML = customAttributesArray.map(item => {
+      return `
+        <span class="inline-flex items-center gap-1 bg-indigo-950 border border-indigo-500 text-indigo-300 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+          <strong>${escapeHtml(item.trait_type)}:</strong> ${escapeHtml(item.value)}
+          <span onclick="App.removeCustomAttributeNode('${item.id}')" class="custom-badge-remove">✕</span>
+        </span>
+      `;
+    }).join('');
+  }
+
+  // -------------------------------------------------------------------------
   // SYSTEM MODULE 4: GENERATIVE BATCH ROLL ENGINE (HIGH PERFORMANCE PIPELINE)
   // -------------------------------------------------------------------------
   async function compositeFromSelected(customLayers = null, forceCustomOrder = false) {
@@ -481,10 +548,8 @@
     ctx.clearRect(0,0,512,512);
     
     let operationalLayers = customLayers ? [...customLayers] : [...selectedLayersArray];
-    
-    // Check if configuration maps to Punk #935 alignment priority rules execution override targets
-    const has935Priority = operationalLayers.some(l => l.value && l.value.includes('935'));
-    if (!forceCustomOrder && !has935Priority) {
+    const has935 = operationalLayers.some(l => l.value && l.value.includes('935'));
+    if (!forceCustomOrder && !has935) {
       operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     }
     
@@ -501,7 +566,6 @@
   }
 
   function getNextNumber() { return nfts.length + 1; }
-
   function formatTime(seconds) {
     if (isNaN(seconds) || seconds < 0) return 'Calculating Latency...';
     if (seconds < 60) return `${Math.ceil(seconds)}s`;
@@ -510,9 +574,6 @@
     return `${m}m ${s}s`;
   }
 
-  /**
-   * Generative Batch Roll Engine Logic Executor Core Method Routing Engine
-   */
   async function startSmartAutoGeneration() {
     const countInput = document.getElementById('auto-generation-count');
     const selectedModeParadigm = document.getElementById('generation-mode-select').value;
@@ -528,7 +589,7 @@
 
     if(totalCount <= 0) { showToast('❌ Processing Fault: Loop parameter configuration must exceed zero index value!'); return; }
     if(!layersBySection['Background'] || layersBySection['Background'].length === 0) { showToast('❌ Critical: Layer system requires a Background matrix before launching batch sequences.'); return; }
-    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Critical: Base Phenotype data missing inside remote cluster database reference maps.'); return; }
+    if(!layersBySection['Base'] || layersBySection['Base'].length === 0) { showToast('❌ Critical: Base Phenotype data missing.'); return; }
 
     btn.disabled = true;
     btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Programmatic Sequence Processing Roll Active...';
@@ -537,8 +598,6 @@
     textCountEl.textContent = `Processing: 0 / ${totalCount}`;
     percentEl.textContent = `0%`;
     fillBarEl.style.width = `0%`;
-    elapsedEl.textContent = `Elapsed Track: 0s`;
-    remainingEl.textContent = `Estimated Time Remaining: Analytical evaluations running...`;
 
     let successCount = 0;
     const startTime = Date.now();
@@ -548,51 +607,37 @@
       elapsedEl.textContent = `Time Elapsed: ${elapsedSec.toFixed(1)}s`;
     }, 100);
 
-    // Loop iteration compilation execution sequence line
     for (let i = 0; i < totalCount; i++) {
       let calculatedBatchLayers = [];
 
-      // Section A Step 1: Extract background vector mapping points
       const bgList = layersBySection['Background'];
       const randomBg = bgList[Math.floor(Math.random() * bgList.length)];
       calculatedBatchLayers.push({ section: 'Background', value: randomBg.value, imageUrl: randomBg.imageUrl, layerId: randomBg.id, gender: randomBg.gender });
 
-      // Section A Step 2: Inject Identity Base phenotype component & extract tracking restriction rules
       const baseList = layersBySection['Base'];
       const randomBase = baseList[Math.floor(Math.random() * baseList.length)];
       const targetGender = randomBase.gender || 'male'; 
       calculatedBatchLayers.push({ section: 'Base', value: randomBase.value, imageUrl: randomBase.imageUrl, layerId: randomBase.id, gender: targetGender });
 
-      // Section A Step 3: Run Advanced NFT Build Multi-Mode Parameter Adaptations
       for (let j = 2; j < SECTIONS.length; j++) {
         const currentSecName = SECTIONS[j];
         const sectionPool = layersBySection[currentSecName] || [];
-        
-        // Filter elements mapping target structural demographics definitions specs
         const matchingGenderPool = sectionPool.filter(item => !item.gender || item.gender === targetGender);
 
         if (matchingGenderPool.length > 0) {
-          let selectionProbabilityMetric = 0.40; // Default execution constraint baseline logic
-          
-          if(selectedModeParadigm === 'high_density') {
-            selectionProbabilityMetric = 0.75; // Increased asset combination allocations frequency mapping
-          }
+          let selectionProbabilityMetric = 0.40; 
+          if(selectedModeParadigm === 'high_density') selectionProbabilityMetric = 0.75;
 
           if (Math.random() > (1 - selectionProbabilityMetric)) {
             const chosenLayer = matchingGenderPool[Math.floor(Math.random() * matchingGenderPool.length)];
             calculatedBatchLayers.push({
-              section: currentSecName,
-              value: chosenLayer.value,
-              imageUrl: chosenLayer.imageUrl,
-              layerId: chosenLayer.id,
-              gender: chosenLayer.gender
+              section: currentSecName, value: chosenLayer.value, imageUrl: chosenLayer.imageUrl, layerId: chosenLayer.id, gender: chosenLayer.gender
             });
           }
         }
       }
 
       try {
-        // Enforce sequence reordering unless bypass parameters rule configurations are validated
         const has935 = calculatedBatchLayers.some(l => l.value && l.value.includes('935'));
         const enforceDirectOrderBypass = (selectedModeParadigm === 'bypass935') || has935;
         
@@ -601,16 +646,19 @@
         }
 
         const generatedImg = await compositeFromSelected(calculatedBatchLayers, true);
-        const computedAttributes = buildAttributes(calculatedBatchLayers);
+        
+        // Pass empty custom list for fully automated procedural batch structures
+        const computedAttributes = buildAttributes(calculatedBatchLayers, []);
         
         const currentIndexNo = getNextNumber();
         const batchNFTObject = {
           id: Date.now() + '_auto_' + Math.random().toString(36).substr(2,6),
           name: `${document.getElementById('nft-name').value} #${currentIndexNo}`,
-          description: `Automated algorithmic procedural build engine rollout token matrix block. Mode Configuration: ${selectedModeParadigm.toUpperCase()}`,
+          description: `Automated algorithmic procedural build engine rollout token matrix block. Mode: ${selectedModeParadigm.toUpperCase()}`,
           image: generatedImg,
           attributes: computedAttributes,
           layers: calculatedBatchLayers,
+          customAttributes: [],
           number: currentIndexNo,
           fileName: `${currentIndexNo}.png`,
           jsonName: `${currentIndexNo}.json`,
@@ -620,10 +668,9 @@
         nfts.push(batchNFTObject);
         successCount++;
       } catch(err) {
-        console.error("Critical Runtime Fault discovered during batch composite line processing loop:", err);
+        console.error("Critical Runtime Fault during batch processing:", err);
       }
 
-      // Compute visual rendering trackers calculations
       const processedCount = i + 1;
       const pct = Math.round((processedCount / totalCount) * 100);
       
@@ -637,8 +684,6 @@
       const remainingTimeSec = (remainingLines * avgTimePerLineMs) / 1000;
 
       remainingEl.textContent = `Estimated Remaining Loop: ${formatTime(remainingTimeSec)}`;
-      
-      // High density execution thread scheduling management bypass parameters
       const throttleWindowDelayTime = (selectedModeParadigm === 'high_density') ? 2 : 12;
       await new Promise(r => setTimeout(r, throttleWindowDelayTime));
     }
@@ -677,7 +722,9 @@
 
   function clearAllSelections() {
     selectedLayersArray = [];
+    customAttributesArray = [];
     renderCreateSections();
+    renderCustomBadges();
     updateOrderPreview();
     updateLivePreview();
     showToast('Manual matrix assembly configuration states wiped successfully.');
@@ -697,7 +744,6 @@
     if(!nfts.length) { showToast('❌ Request Denied: Active registry contains zero allocation maps.'); return; }
     const beforeCount = nfts.length;
     
-    // Filters and clears assets matching master DNA structures signatures using matchWithMaster engine call
     nfts = nfts.filter(nft => {
       const evaluationResponseSummaryResult = matchWithMaster(nft.attributes);
       return !evaluationResponseSummaryResult.matched;
@@ -705,13 +751,13 @@
     
     const calculatedRemovedCount = beforeCount - nfts.length;
     if (calculatedRemovedCount === 0) {
-      showToast('🔍 Database Scan Results: No verified matching token indices found to execute target extraction.');
+      showToast('🔍 Database Scan Results: No verified matching token indices found.');
       return;
     }
     
     saveUserNFTs();
     renderCollection();
-    showToast(`🗑️ Smart Matrix Purge Complete: Eliminated ${calculatedRemovedCount} matching duplication states with 1-Click Execution!`);
+    showToast(`🗑️ Smart Matrix Purge Complete: Eliminated ${calculatedRemovedCount} matching duplication states!`);
   }
 
   async function mintSingleNFT() {
@@ -733,7 +779,9 @@
       }
 
       const imageData = await compositeFromSelected();
-      const attributes = buildAttributes(selectedLayersArray);
+      
+      // Inject both layers array and custom typed multi-selected components array here
+      const attributes = buildAttributes(selectedLayersArray, customAttributesArray);
       const nextNum = getNextNumber();
       
       const newNFT = {
@@ -743,6 +791,7 @@
         image: imageData,
         attributes: attributes,
         layers: [...selectedLayersArray],
+        customAttributes: [...customAttributesArray], // Persist custom manually entered dataset entries
         number: nextNum,
         fileName: `${nextNum}.png`,
         jsonName: `${nextNum}.json`,
@@ -753,7 +802,10 @@
       saveUserNFTs();
       
       selectedLayersArray = [];
+      customAttributesArray = [];
+      
       renderCreateSections();
+      renderCustomBadges();
       renderCollection();
       
       if(previewCtx) { 
@@ -761,7 +813,7 @@
         previewCtx.fillStyle = '#020617'; 
         previewCtx.fillRect(0,0,240,240); 
       }
-      showToast(`✅ Successfully Compiled & Minted Node Fragment Identity Alignment System #${nextNum}`);
+      showToast(`✅ Successfully Compiled & Minted System Fragment Identity Alignment Node #${nextNum}`);
       switchTab('collection');
     } catch(err) { 
       showToast(`Error Encountered: ${err.message}`); 
@@ -785,7 +837,7 @@
       document.getElementById('sync-status').className = "text-xs px-3 py-1 bg-emerald-950/80 text-emerald-300 rounded-full font-bold border border-emerald-800";
       updateRamUserLoadMetrics();
     }, (error) => {
-      console.error("Firebase Database Cluster Connectivity Terminated: Interrupted Pipeline Read Status", error);
+      console.error("Firebase Connect Interrupted Pipeline Read Status", error);
       document.getElementById('sync-status').innerHTML = '⚠️ Protocol Sync Pipeline Offline';
       document.getElementById('sync-status').className = "text-xs px-3 py-1 bg-rose-950/80 text-rose-300 rounded-full font-bold border border-rose-800";
     });
@@ -922,7 +974,6 @@
 
     let totalMatchedCount = 0;
     const finalCardsHtml = nfts.map(nft => {
-      // Calls DNA algorithm to compute matches realtime
       const matchResultReport = matchWithMaster(nft.attributes);
       if (matchResultReport.matched) totalMatchedCount++;
       const matchHtml = matchResultReport.matched ? `<span class="match-badge">🎯 Smart Match #${matchResultReport.matchId}</span>` : `<span class="nomatch-badge">🧬 Unique Spec Variant</span>`;
@@ -974,7 +1025,7 @@
               <h2 class="font-bold text-lg text-indigo-400 flex items-center gap-2"><i data-lucide="sliders"></i> Topographical Matrix Sequencer Router</h2>
               <button onclick="document.getElementById('nft-editor-modal').remove()" class="text-slate-400 font-bold text-lg hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-slate-400 mb-4 font-sans">লেয়ার সিকোয়েন্স রেন্ডার অর্ডার (Z-Index Bottom to Top): Drag/Drop alternative simulated controls. Shift priority stack indices via micro-shifters below.</p>
+            <p class="text-xs text-slate-400 mb-4 font-sans">লেয়ার সিকোয়েন্স রেন্ডার অর্ডার (Z-Index Bottom to Top)</p>
             <div id="editor-layers-list" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1"></div>
           </div>
           <div class="flex gap-3 mt-6">
@@ -1031,13 +1082,13 @@
   function removeEditorLayer(index) {
     const layer = editingLayersArray[index];
     if (layer.section === 'Background' || layer.section === 'Base') {
-      showToast("❌ System Enforcement: Root components (Background/Base) are vital nodes. Severance rejected.");
+      showToast("❌ Root components (Background/Base) are vital nodes. Severance rejected.");
       return;
     }
     editingLayersArray.splice(index, 1);
     renderEditorRows();
     updateEditorPreview();
-    showToast("🗑️ Structural block detached from target matrix array.");
+    showToast("🗑️ Structural block detached.");
   }
 
   async function updateEditorPreview() {
@@ -1063,9 +1114,12 @@
     const nftIndex = nfts.findIndex(n => String(n.id) === String(editingNftId));
     if(nftIndex === -1) return;
 
-    showToast('⚡ Processing Composite Structural Matrix Redraw Interconnection Pipelines...');
+    showToast('⚡ Processing Composite Structural Matrix Redraw...');
     const newImage = await compositeFromSelected(editingLayersArray, true);
-    const newAttributes = buildAttributes(editingLayersArray);
+    
+    // Retain existing custom attributes inside manual restructuring saves
+    const existingCustoms = nfts[nftIndex].customAttributes || [];
+    const newAttributes = buildAttributes(editingLayersArray, existingCustoms);
 
     nfts[nftIndex].image = newImage;
     nfts[nftIndex].attributes = newAttributes;
@@ -1075,7 +1129,7 @@
     renderCollection();
     
     document.getElementById('nft-editor-modal').remove();
-    showToast('🎉 Block Revision Committed: Redrawn composites applied successfully.');
+    showToast('🎉 Block Revision Committed successfully.');
   }
 
   // -------------------------------------------------------------------------
@@ -1088,7 +1142,7 @@
       a.href=nft.image; 
       a.download=`${nft.number}.png`; 
       a.click(); 
-      showToast(`Exported asset vector sequence ${nft.number}.png to disk directory.`); 
+      showToast(`Exported ${nft.number}.png to disk.`); 
     } 
   }
   
@@ -1102,16 +1156,16 @@
       a.download=`${nft.number}.json`; 
       a.click(); 
       URL.revokeObjectURL(a.href); 
-      showToast(`Exported token metadata blueprint map ${nft.number}.json to storage schema structure.`); 
+      showToast(`Exported ${nft.number}.json to storage.`); 
     } 
   }
 
   async function downloadCollectionAsZip() {
-    if (!nfts.length) { showToast('❌ Processing Interrupted: Vault holds no files to package.'); return; }
+    if (!nfts.length) { showToast('❌ Processing Interrupted: Vault holds no files.'); return; }
     const btn = document.getElementById('download-zip-btn');
     const originalText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Programmatic Compression Framework Processing Packaging Matrix Active...';
+    btn.innerHTML = '<span class="animate-spin mr-2">⚡</span> Processing Packaging Matrix...';
     
     try {
       const zip = new JSZip();
@@ -1128,16 +1182,16 @@
       const content = await zip.generateAsync({type: "blob"});
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = `404_Punks_Core_Matrix_Vault_Archive_${Date.now()}.zip`;
+      link.download = `404_Punks_Core_Matrix_Vault_${Date.now()}.zip`;
       link.click();
       URL.revokeObjectURL(link.href);
-      showToast('🎉 Pipeline Packaging Complete: Vault data downloaded to storage array.');
+      showToast('🎉 Pipeline Packaging Complete!');
     } catch (err) {
-      showToast('❌ Critical Zip Core Exception: High payload density interrupted memory encoding allocation allocations.');
-    } finally {
+      showToast('❌ Critical Zip Exception.');
+    } .finally(() => {
       btn.disabled = false;
       btn.innerHTML = originalText;
-    }
+    });
   }
   
   function deleteNFT(id) { 
@@ -1154,11 +1208,11 @@
     if(!nft) return; 
     
     const matchReportSummary = matchWithMaster(nft.attributes); 
-    const matchLine = matchReportSummary.matched ? `<p class="text-emerald-400 text-sm mt-3 font-mono font-bold">✅ DNA Sequence Verified: Official Indexed Punk Target Access Node Matching #${matchReportSummary.matchId}</p>` : `<p class="text-rose-400 text-sm mt-3 font-mono font-bold">❌ DNA Sequence Heuristics: Zero match states found inside public blockchain datasets.</p>`; 
+    const matchLine = matchReportSummary.matched ? `<p class="text-emerald-400 text-sm mt-3 font-mono font-bold">✅ DNA Sequence Verified: Match Access Node #${matchReportSummary.matchId}</p>` : `<p class="text-rose-400 text-sm mt-3 font-mono font-bold">❌ DNA Sequence Heuristics: Unique Custom Stack</p>`; 
     
     const modal=document.createElement('div'); 
     modal.className='fixed inset-0 bg-black/85 backdrop-blur flex items-center justify-center z-[999] p-4'; 
-    modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto border border-slate-800"><div class="flex justify-between items-center"><h2 class="text-xl font-bold text-indigo-400">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-white font-bold">✕</button></div><div class="bg-slate-950 p-3 rounded-xl my-3 border border-slate-800"><img src="${nft.image}" class="w-full rounded-xl border border-slate-800 bg-slate-900"></div><div class="space-y-2"><p class="text-slate-300 text-xs font-sans bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/40">${escapeHtml(nft.description)}</p><div class="text-xs font-bold text-slate-400 mt-4 uppercase tracking-widest">Calculated Attribute Mapping Specifications:</div><div class="max-h-[20vh] overflow-y-auto pr-1 mt-1">${nft.attributes.map(a=>`<div class="attribute-badge"><span class="text-slate-400 text-xs font-mono font-bold">${a.trait_type === "," ? "','" : a.trait_type}</span><span class="text-indigo-300 text-xs font-bold">${escapeHtml(a.value)}</span></div>`).join('')}</div>${matchLine}<div class="flex gap-3 mt-5"><button onclick="App.downloadImage('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-bold transition">Save Vector Image Asset</button><button onclick="App.downloadJSON('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded-xl text-xs font-bold transition">Save Blueprint Manifest JSON</button></div></div></div>`; 
+    modal.innerHTML=`<div class="modal-content rounded-2xl max-w-lg w-full p-5 max-h-[85vh] overflow-auto border border-slate-800"><div class="flex justify-between items-center"><h2 class="text-xl font-bold text-indigo-400">${escapeHtml(nft.name)}</h2><button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-white font-bold">✕</button></div><div class="bg-slate-950 p-3 rounded-xl my-3 border border-slate-800"><img src="${nft.image}" class="w-full rounded-xl border border-slate-800 bg-slate-900"></div><div class="space-y-2"><p class="text-slate-300 text-xs font-sans bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/40">${escapeHtml(nft.description)}</p><div class="text-xs font-bold text-slate-400 mt-4 uppercase tracking-widest">Calculated Attribute Mapping Specifications:</div><div class="max-h-[20vh] overflow-y-auto pr-1 mt-1">${nft.attributes.map(a=>`<div class="attribute-badge"><span class="text-slate-400 text-xs font-mono font-bold">${a.trait_type === "," ? "','" : a.trait_type}</span><span class="text-indigo-300 text-xs font-bold">${escapeHtml(a.value)}</span></div>`).join('')}</div>${matchLine}<div class="flex gap-3 mt-5"><button onclick="App.downloadImage('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-bold transition">Save Vector Image</button><button onclick="App.downloadJSON('${nft.id}');this.closest('.fixed').remove()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded-xl text-xs font-bold transition">Save Manifest JSON</button></div></div></div>`; 
     document.body.appendChild(modal); 
     modal.onclick=e=>{ if(e.target===modal)modal.remove(); };
   }
@@ -1172,7 +1226,7 @@
     const sec=document.getElementById('layer-section').value; 
     const gen=document.querySelector('input[name="layer-gender"]:checked').value; 
     
-    if(!url || !val) { showToast('❌ Processing Aborted: Input criteria configuration targets missing parameters.'); return; } 
+    if(!url || !val) { showToast('❌ Processing Aborted: Input targets missing.'); return; } 
     let finalUrl = url; 
     if(url.includes('github.com') && !url.includes('raw.githubusercontent.com')) { 
       finalUrl = url.replace('github.com','raw.githubusercontent.com').replace('/blob/','/'); 
@@ -1184,15 +1238,15 @@
       await addLayerToFirebase(sec, layerObj); 
       document.getElementById('github-url').value=''; 
       document.getElementById('layer-value').value=''; 
-      showToast(`✅ Deployment Complete: Asset entry map "${val}" bound to category section array track: ${sec}`); 
+      showToast(`✅ Deployment Complete: Asset entry map "${val}" bound.`); 
     }; 
-    img.onerror=()=>showToast('❌ Network Routing Error: Provided URL link context failed compilation checks or access constraints.'); 
+    img.onerror=()=>showToast('❌ Network Routing Error.'); 
     img.src=finalUrl; 
   }
   
   function deleteLayer(section, id) { 
-    if(confirm('Authorize destructive extraction loop actions on remote firebase schema element node?')) { 
-      deleteLayerFromFirebase(section, id).then(() => showToast('Cluster mapping revised. Selected database parameters eliminated.')); 
+    if(confirm('Authorize destructive extraction loop actions on remote node?')) { 
+      deleteLayerFromFirebase(section, id).then(() => showToast('Cluster mapping revised.')); 
     } 
   }
 
@@ -1209,7 +1263,7 @@
     if(targetPanel) targetPanel.classList.remove('hidden');
     if(targetTab) targetTab.classList.add('active');
     
-    if(tabId === 'create') { updateLivePreview(); }
+    if(tabId === 'create') { updateLivePreview(); renderCustomBadges(); }
     updateRamUserLoadMetrics();
   }
 
@@ -1222,10 +1276,10 @@
     toggleLayerSelection, startSmartAutoGeneration, mintSingleNFT, clearAllSelections,
     viewMetadata, downloadImage, downloadJSON, deleteNFT, clearAllCollection,
     downloadCollectionAsZip, clearMatchedCollection,
-    openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT
+    openNFTEditor, moveEditorLayer, removeEditorLayer, saveEditedNFT,
+    addCustomAttributeNode, removeCustomAttributeNode // NEW EXPORTS ATTACHED HERE
   };
 
-  // Entry Runtime Core Instantiation Execution Listener Hook
   window.onload = function() {
     loadUserNFTs();
     listenToFirebaseLayers();
@@ -1233,8 +1287,6 @@
     renderCollection();
     switchTab('layers');
     lucide.createIcons();
-    
-    // Setup continuous diagnostic sampling execution looping frame arrays
     setInterval(updateRamUserLoadMetrics, 8000);
   }
 </script>
