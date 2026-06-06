@@ -247,6 +247,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col items-center justify-center bg-slate-950 p-3 rounded-xl border border-slate-800">
         <canvas id="edit-preview-canvas" width="240" height="240" class="preview-canvas w-[240px] h-[240px] mb-2"></canvas>
+        <span id="edit-gender-badge" class="text-xs px-3 py-1 font-bold rounded-full bg-slate-800 border">Detected: Base</span>
       </div>
       <div class="space-y-3">
         <div>
@@ -264,7 +265,7 @@
       <div id="edit-current-layers" class="flex flex-wrap gap-2 p-3 bg-slate-950 rounded-xl border border-slate-800 min-h-[60px]"></div>
     </div>
     <div>
-      <h4 class="text-xs font-bold text-purple-300 uppercase tracking-wider mb-2">Inject Matrix Database Layers</h4>
+      <h4 class="text-xs font-bold text-purple-300 uppercase tracking-wider mb-2">Inject Matrix Database Layers (<span class="text-emerald-400">জেন্ডার অনুযায়ী লকড</span>)</h4>
       <div id="edit-global-injector-container" class="space-y-2 max-h-[25vh] overflow-y-auto pr-1"></div>
     </div>
     <div class="flex gap-3 pt-2">
@@ -300,6 +301,7 @@
   let editingLayersArray = [];
   let openSectionEditor = null;
   let currentDisplayLimit = 500; 
+  let currentEditingNftGender = 'male'; // Track current gender logic dynamically
 
   // Drag state tracking variables
   let dragSourceIndex = null;
@@ -415,7 +417,6 @@
 
   async function compositeFromSelectedFast(operationalLayers, forceCustomOrder, imageCache, canvas, ctx) {
     ctx.clearRect(0, 0, 512, 512);
-    // If not forced custom drag order, align by global defaults
     if (!forceCustomOrder) operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     for(let item of operationalLayers) {
       const cachedImg = imageCache[item.imageUrl];
@@ -535,7 +536,6 @@
       if(selectedLayersArray[existingIndex].layerId === layerId) selectedLayersArray.splice(existingIndex, 1);
       else selectedLayersArray[existingIndex] = { section, layerId, value, imageUrl, gender, maxCount };
     } else {
-      // Manual creation inserts into normal order initially
       selectedLayersArray.push({ section, layerId, value, imageUrl, gender, maxCount });
       selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     }
@@ -554,7 +554,6 @@
     try {
       const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
       const ctx = canvas.getContext('2d');
-      // Render precisely in the order arranged via the Drag & Drop layout UI
       for(let item of selectedLayersArray) {
         await new Promise(r => { const img = new Image(); img.crossOrigin="Anonymous"; img.onload=()=>{ ctx.drawImage(img,0,0,512,512); r(); }; img.src=item.imageUrl; });
       }
@@ -605,7 +604,9 @@
       if(isOpen) {
         html += `<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-3">`;
         layers.forEach(layer => {
+          const genLabel = layer.gender === 'female' ? '♀ Female' : '♂ Male';
           html += `<div class="layer-item p-2 flex flex-col justify-between"><img src="${layer.imageUrl}" class="w-full aspect-square object-contain rounded-lg bg-slate-950"><p class="text-xs font-bold mt-1 truncate">${escapeHtml(layer.value)}</p>
+          <div class="text-[10px] text-slate-400 mt-0.5 font-semibold">Gender: ${genLabel}</div>
           <div class="text-[11px] text-indigo-300 mt-1">Used: ${currentUsage[layer.id]||0} / Max: ${layer.maxCount||22000}</div>
           <button onclick="App.deleteLayer('${section}','${layer.id}')" class="text-red-400 text-[10px] w-full mt-2 bg-red-950/40 border border-red-900 rounded py-1">Delete</button></div>`;
         });
@@ -655,7 +656,6 @@
     container.innerHTML = html; lucide.createIcons(); updateOrderPreview();
   }
 
-  // UPDATED ORDER PREVIEW SYSTEM EQUIPPED WITH NATIVE DRAG & DROP INTERFACES
   function updateOrderPreview() {
     const div = document.getElementById('order-preview-list'); if(!div) return;
     if(!selectedLayersArray.length) { div.innerHTML = '<span class="text-slate-500 text-xs">No active vector layers selected.</span>'; return; }
@@ -675,13 +675,11 @@
   async function updateLivePreview() {
     if(!previewCtx) { const can = document.getElementById('live-preview-canvas'); if(can) previewCtx = can.getContext('2d'); else return; }
     previewCtx.clearRect(0,0,240,240);
-    // Draw vectors directly in their structured order (No sorting override)
     for(let item of selectedLayersArray) {
       await new Promise(r => { const img = new Image(); img.crossOrigin="Anonymous"; img.onload=()=>{ previewCtx.drawImage(img,0,0,240,240); r(); }; img.onerror=()=>r(); img.src=item.imageUrl; });
     }
   }
 
-  // HANDLERS FOR THE DRAG AND DROP GRAPHICAL USER INTERACTION PIPELINES
   function handleLayerDragStart(e, index, type) {
     dragSourceIndex = index;
     dragSourceType = type;
@@ -775,13 +773,22 @@
 
   function loadMoreNFTs() { currentDisplayLimit += 500; renderCollection(); }
 
-  // METADATA INJECTOR STUDIO MODAL - EQUIPPED WITH CORRESPONDING ARRANGEMENT CAPABILITIES
+  // METADATA INJECTOR STUDIO MODAL - EQUIPPED WITH SECURE GENDER LOCK SYSTEM
   function openEditModal(id) {
     currentEditingNftId = id; const targetNft = nfts.find(n => n.id === id); if (!targetNft) return;
     
-    // Maintain custom user ordering inside existing sets securely
     editingLayersArray = targetNft.layers ? [...targetNft.layers] : [];
     
+    // Find gender inside Base layer config dynamically
+    const baseLayer = editingLayersArray.find(l => l.section === 'Base');
+    currentEditingNftGender = (baseLayer && baseLayer.gender) ? baseLayer.gender : 'male';
+
+    const badge = document.getElementById('edit-gender-badge');
+    if(badge) {
+       badge.textContent = `Target Locked: ${currentEditingNftGender.toUpperCase()}`;
+       badge.className = `text-xs px-3 py-1 font-bold rounded-full mt-2 ${currentEditingNftGender === 'female' ? 'bg-pink-950 text-pink-400 border-pink-800':'bg-indigo-950 text-indigo-400 border-indigo-800'}`;
+    }
+
     document.getElementById('edit-nft-name').value = targetNft.name || '';
     document.getElementById('edit-nft-description').value = targetNft.description || '';
     document.getElementById('edit-modal').classList.remove('hidden');
@@ -795,28 +802,42 @@
     if (editingLayersArray.length === 0) currentContainer.innerHTML = `<span class="text-xs text-slate-500">No vector layers bound.</span>`;
     else {
       currentContainer.innerHTML = editingLayersArray.map((l, idx) => {
-        return `<span draggable="true"
+        // Base layer is locked from delete/cross to secure whole structural engine flow
+        const crossBtn = l.section === 'Base' ? '' : `<b onclick="event.stopPropagation(); App.removeLayerFromEditor(${idx})" class="text-red-400 hover:text-red-200 ml-1 cursor-pointer">×</b>`;
+        return `<span draggable="${l.section !== 'Base'}"
                       ondragstart="App.handleLayerDragStart(event, ${idx}, 'edit')"
                       ondragover="App.handleLayerDragOver(event)"
                       ondragleave="App.handleLayerDragLeave(event)"
                       ondrop="App.handleLayerDrop(event, ${idx}, 'edit')"
-                      class="draggable-badge bg-indigo-900/50 hover:bg-indigo-900 border border-indigo-700 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-200 cursor-grab transition flex items-center gap-1 select-none">
-                  ☰ ${l.section}: ${escapeHtml(l.value)} 
-                  <b onclick="event.stopPropagation(); App.removeLayerFromEditor(${idx})" class="text-red-400 hover:text-red-200 ml-1 cursor-pointer">×</b>
+                      class="draggable-badge bg-indigo-900/50 hover:bg-indigo-900 border border-indigo-700 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-200 ${l.section !== 'Base' ? 'cursor-grab' : 'opacity-90'} transition flex items-center gap-1 select-none">
+                  ${l.section !== 'Base' ? '☰ ' : '🔒 '}${l.section}: ${escapeHtml(l.value)} 
+                  ${crossBtn}
                 </span>`;
       }).join('');
     }
 
     const injectorContainer = document.getElementById('edit-global-injector-container'); let html = '';
     for (let section of SECTIONS) {
-      const pool = layersBySection[section] || []; const isOpen = openSectionEditor === section;
-      html += `<div class="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden"><div onclick="App.toggleEditorSection('${section}')" class="flex justify-between items-center p-2 text-xs font-bold cursor-pointer bg-slate-800/40 text-slate-300"><span>${section} Library (${pool.length})</span><i data-lucide="chevron-down" style="width:14px"></i></div>`;
+      // Base layer adjustment completely blocked inside live editor to protect identity flow
+      if(section === 'Base') continue;
+
+      const pool = layersBySection[section] || [];
+      
+      // CRITICAL FIX: Filter item pools based on current NFT's base biological gender architecture
+      const filteredPool = pool.filter(layer => !layer.gender || layer.gender === currentEditingNftGender);
+      
+      const isOpen = openSectionEditor === section;
+      html += `<div class="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden"><div onclick="App.toggleEditorSection('${section}')" class="flex justify-between items-center p-2 text-xs font-bold cursor-pointer bg-slate-800/40 text-slate-300"><span>${section} Library (${filteredPool.length})</span><i data-lucide="chevron-down" style="width:14px"></i></div>`;
       if (isOpen) {
-        html += `<div class="p-2 grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-950/60">`;
-        pool.forEach(layer => {
-          html += `<div onclick="App.addLayerToEditor('${section}', '${layer.id}', '${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-1.5 cursor-pointer text-center hover:border-indigo-500 transition"><img src="${layer.imageUrl}" class="w-12 h-12 mx-auto object-contain bg-slate-900 rounded"><p class="text-[10px] text-slate-400 mt-1 truncate">${escapeHtml(layer.value)}</p></div>`;
-        });
-        html += `</div>`;
+        if(filteredPool.length === 0) {
+           html += `<div class="p-3 text-xs text-slate-500 text-center bg-slate-950/60">No compatible traits found for this gender profile.</div>`;
+        } else {
+           html += `<div class="p-2 grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-950/60">`;
+           filteredPool.forEach(layer => {
+             html += `<div onclick="App.addLayerToEditor('${section}', '${layer.id}', '${escapeHtml(layer.value).replace(/'/g,"\\'")}','${layer.imageUrl.replace(/'/g,"\\'")}','${layer.gender}')" class="layer-item p-1.5 cursor-pointer text-center hover:border-indigo-500 transition"><img src="${layer.imageUrl}" class="w-12 h-12 mx-auto object-contain bg-slate-900 rounded"><p class="text-[10px] text-slate-400 mt-1 truncate">${escapeHtml(layer.value)}</p></div>`;
+           });
+           html += `</div>`;
+        }
       }
       html += `</div>`;
     }
@@ -826,12 +847,18 @@
   function toggleEditorSection(section) { openSectionEditor = openSectionEditor === section ? null : section; renderEditorLayersUI(); }
   
   function removeLayerFromEditor(index) { 
+    if(editingLayersArray[index]?.section === 'Base') return; // Double protection guard
     editingLayersArray.splice(index, 1); 
     renderEditorLayersUI(); 
     updateEditorLivePreview(); 
   }
 
   function addLayerToEditor(section, id, value, imageUrl, gender) {
+    // Block foreign cross-gender items from inserting into arrays manually
+    if(gender && gender !== 'all' && gender !== currentEditingNftGender) {
+       showToast("❌ Gender Mismatch: Invalid operation vector.");
+       return;
+    }
     const existingIndex = editingLayersArray.findIndex(l => l.section === section);
     const layerObject = { section, layerId: id, value, imageUrl, gender };
     if (existingIndex !== -1) {
@@ -845,7 +872,6 @@
   async function updateEditorLivePreview() {
     const canvas = document.getElementById('edit-preview-canvas'); if (!canvas) return;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, 240, 240);
-    // Directly process custom drag coordinates 
     for (let item of editingLayersArray) {
       await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 240, 240); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
     }
@@ -870,7 +896,6 @@
     showToast('⚡ Recompiling Visual Vectors...');
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d');
     
-    // Save exactly according to custom user-dragged orientation layers
     for (let item of editingLayersArray) {
       await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 512, 512); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
     }
@@ -984,7 +1009,6 @@
     toggleLayerSelection, startSmartAutoGeneration, mintSingleNFT, viewMetadata, deleteNFT, clearAllCollection, downloadCollectionAsZip, clearMatchedCollection, loadMoreNFTs,
     openEditModal, closeEditModal, toggleEditorSection, removeLayerFromEditor, addLayerToEditor, saveEditedNFT, updateLayerLimit, validateQuantity, stepQuantity, validateMaxLimit,
     toggleNftSelect, toggleSelectAllNFTs, deleteSelectedNFTs,
-    // HTML5 Drag Event Bindings
     handleLayerDragStart, handleLayerDragOver, handleLayerDragLeave, handleLayerDrop
   };
 
