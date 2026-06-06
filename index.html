@@ -82,7 +82,6 @@
     </div>
     <div class="flex gap-3">
       <span id="sync-status" class="text-xs px-3 py-1 bg-green-950 text-green-400 rounded-full font-bold">🌐 Firebase Live</span>
-      <span id="cloud-status" class="text-xs px-3 py-1 bg-blue-950 text-blue-400 rounded-full font-bold">☁️ Cloud Backup: Ready</span>
       <span class="text-xs px-3 py-1 bg-indigo-950 text-indigo-400 rounded-full font-bold">⚡ Hyper RAM Engine Enabled</span>
     </div>
   </header>
@@ -302,81 +301,40 @@
   let editingLayersArray = [];
   let openSectionEditor = null;
   let currentDisplayLimit = 500; 
-  let currentEditingNftGender = 'male'; 
+  let currentEditingNftGender = 'male'; // Track current gender logic dynamically
 
+  // Drag state tracking variables
   let dragSourceIndex = null;
-  let dragSourceType = null; 
+  let dragSourceType = null; // 'create' or 'edit'
 
   for(let s of SECTIONS) layersBySection[s] = [];
 
   function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 3000); }
   function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
-  // CLOUD IMPLEMENTATION: Firebase Auto Save Engine
-  function saveToFirebaseCloud() {
-    const cloudStatus = document.getElementById('cloud-status');
-    if(cloudStatus) cloudStatus.innerHTML = "☁️ Cloud Backup: Syncing...";
-    
-    database.ref('user_collections').set(nfts)
-      .then(() => {
-        if(cloudStatus) cloudStatus.innerHTML = "☁️ Cloud Backup: 100% Secured";
-      })
-      .catch((err) => {
-        if(cloudStatus) cloudStatus.innerHTML = "❌ Cloud Backup: Sync Failed";
-      });
-  }
-
   function loadUserNFTs() { 
-    const cloudStatus = document.getElementById('cloud-status');
-    if(cloudStatus) cloudStatus.innerHTML = "☁️ Cloud Backup: Loading Matrix...";
-    
-    // First, fall back to localStorage instantly so user doesn't see blank page
     try { 
       const saved = localStorage.getItem('404punks_mainnet_v5'); 
       if(saved) {
          nfts = JSON.parse(saved); 
          rebuildIndexesAndSerials(); 
-         renderCollection();
-         renderCreateSections();
+      } else {
+         nfts = []; 
       }
-    } catch(e){}
-
-    // Secondary Check: Fetch absolute latest stream from Firebase Realtime Cloud Core
-    database.ref('user_collections').once('value')
-      .then((snapshot) => {
-        const cloudData = snapshot.val();
-        if(cloudData && Array.isArray(cloudData)) {
-          nfts = cloudData;
-          rebuildIndexesAndSerials();
-          saveUserNFTsOnly(); // sync back locally
-          renderCollection();
-          renderCreateSections();
-          if(cloudStatus) cloudStatus.innerHTML = "☁️ Cloud Backup: 100% Secured";
-        } else {
-          if(cloudStatus) cloudStatus.innerHTML = "☁️ Cloud Backup: No Remote Saved Data";
-        }
-      })
-      .catch(() => {
-         if(cloudStatus) cloudStatus.innerHTML = "⚠️ Cloud Offline (Using Local Matrix)";
-      });
+    } catch(e){} 
   }
   
-  function saveUserNFTsOnly() {
+  function saveUserNFTs() { 
     try { 
       localStorage.setItem('404punks_mainnet_v5', JSON.stringify(nfts)); 
     } catch(e) {} 
-  }
-
-  function saveUserNFTs() { 
-    saveUserNFTsOnly();
-    saveToFirebaseCloud(); // Instantly push backup to Cloud Database on any state mutation
   }
 
   function rebuildIndexesAndSerials() {
      nfts.forEach((nft, idx) => {
         const correctNumber = idx + 1;
         nft.number = correctNumber;
-        if(nft.name && nft.name.includes('#')) {
+        if(nft.name.includes('#')) {
            const baseName = nft.name.split('#')[0].trim();
            nft.name = `${baseName} #${correctNumber}`;
         }
@@ -495,7 +453,7 @@
     progressContainer.classList.remove('hidden');
     
     let existingDNASet = new Set();
-    nfts.forEach(nft => { if(nft.layers) existingDNASet.add(nft.layers.map(l => l.layerId).sort().join('-')); });
+    nfts.forEach(nft => { existingDNASet.add(nft.layers.map(l => l.layerId).sort().join('-')); });
 
     let dynamicUsageTrack = getActiveLayerUsageCounts();
     let successCount = 0; let duplicateSkips = 0;
@@ -815,11 +773,13 @@
 
   function loadMoreNFTs() { currentDisplayLimit += 500; renderCollection(); }
 
+  // METADATA INJECTOR STUDIO MODAL - EQUIPPED WITH SECURE GENDER LOCK SYSTEM
   function openEditModal(id) {
     currentEditingNftId = id; const targetNft = nfts.find(n => n.id === id); if (!targetNft) return;
     
     editingLayersArray = targetNft.layers ? [...targetNft.layers] : [];
     
+    // Find gender inside Base layer config dynamically
     const baseLayer = editingLayersArray.find(l => l.section === 'Base');
     currentEditingNftGender = (baseLayer && baseLayer.gender) ? baseLayer.gender : 'male';
 
@@ -842,6 +802,7 @@
     if (editingLayersArray.length === 0) currentContainer.innerHTML = `<span class="text-xs text-slate-500">No vector layers bound.</span>`;
     else {
       currentContainer.innerHTML = editingLayersArray.map((l, idx) => {
+        // Base layer is locked from delete/cross to secure whole structural engine flow
         const crossBtn = l.section === 'Base' ? '' : `<b onclick="event.stopPropagation(); App.removeLayerFromEditor(${idx})" class="text-red-400 hover:text-red-200 ml-1 cursor-pointer">×</b>`;
         return `<span draggable="${l.section !== 'Base'}"
                       ondragstart="App.handleLayerDragStart(event, ${idx}, 'edit')"
@@ -857,9 +818,14 @@
 
     const injectorContainer = document.getElementById('edit-global-injector-container'); let html = '';
     for (let section of SECTIONS) {
+      // Base layer adjustment completely blocked inside live editor to protect identity flow
       if(section === 'Base') continue;
+
       const pool = layersBySection[section] || [];
+      
+      // CRITICAL FIX: Filter item pools based on current NFT's base biological gender architecture
       const filteredPool = pool.filter(layer => !layer.gender || layer.gender === currentEditingNftGender);
+      
       const isOpen = openSectionEditor === section;
       html += `<div class="bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden"><div onclick="App.toggleEditorSection('${section}')" class="flex justify-between items-center p-2 text-xs font-bold cursor-pointer bg-slate-800/40 text-slate-300"><span>${section} Library (${filteredPool.length})</span><i data-lucide="chevron-down" style="width:14px"></i></div>`;
       if (isOpen) {
@@ -881,13 +847,14 @@
   function toggleEditorSection(section) { openSectionEditor = openSectionEditor === section ? null : section; renderEditorLayersUI(); }
   
   function removeLayerFromEditor(index) { 
-    if(editingLayersArray[index]?.section === 'Base') return; 
+    if(editingLayersArray[index]?.section === 'Base') return; // Double protection guard
     editingLayersArray.splice(index, 1); 
     renderEditorLayersUI(); 
     updateEditorLivePreview(); 
   }
 
   function addLayerToEditor(section, id, value, imageUrl, gender) {
+    // Block foreign cross-gender items from inserting into arrays manually
     if(gender && gender !== 'all' && gender !== currentEditingNftGender) {
        showToast("❌ Gender Mismatch: Invalid operation vector.");
        return;
@@ -986,7 +953,7 @@
     }
   }
 
-  function clearAllCollection() { if(confirm('Wipe everything?')) { nfts=[]; selectedNftIds.clear(); localStorage.removeItem('404punks_mainnet_v5'); database.ref('user_collections').remove(); renderCollection(); renderCreateSections(); } }
+  function clearAllCollection() { if(confirm('Wipe everything?')) { nfts=[]; selectedNftIds.clear(); localStorage.removeItem('404punks_mainnet_v5'); renderCollection(); renderCreateSections(); } }
   function clearMatchedCollection() { nfts = nfts.filter(nft => !matchWithMaster(nft.attributes).matched); rebuildIndexesAndSerials(); saveUserNFTs(); renderCollection(); renderCreateSections(); }
   
   function deleteNFT(id) { 
@@ -996,6 +963,7 @@
         rebuildIndexesAndSerials();
         saveUserNFTs(); 
         renderCollection(); 
+        renderChange = true;
         renderCreateSections(); 
      } 
   }
