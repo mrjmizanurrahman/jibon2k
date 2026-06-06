@@ -65,6 +65,11 @@
     .nft-input:focus { border-color: #6366f1; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
+    
+    /* Drag and drop styling */
+    .draggable-badge { cursor: grab; user-select: none; transition: background 0.2s; }
+    .draggable-badge:active { cursor: grabbing; background: #4f46e5 !important; }
+    .drag-over { border: 2px dashed #6366f1 !important; background: rgba(99, 102, 241, 0.3) !important; }
   </style>
 </head>
 <body>
@@ -188,7 +193,10 @@
 
     <!-- MINT NFT SECTION WITH INTEGRATED TYPING LAYER SYSTEM -->
     <div id="create-sections-container" class="space-y-4 max-h-[60vh] overflow-auto pr-1"></div>
-    <div class="glass-card p-4 rounded-xl"><p class="font-raj font-bold text-indigo-300 mb-2">Selected layers order (bottom to top)</p><div id="order-preview-list" class="flex flex-wrap gap-2"></div></div>
+    <div class="glass-card p-4 rounded-xl">
+      <p class="text-xs font-bold text-indigo-300 mb-1 uppercase tracking-wider">🛠️ Layer Render Order (টেনে উপরে-নিচে নিয়ে সাজাও - নিচে থাকা লেয়ার ক্যানভাসে সবার উপরে বসবে)</p>
+      <div id="order-preview-list" class="flex flex-wrap gap-2 p-2 bg-slate-950 rounded-xl min-h-[50px]"></div>
+    </div>
   </div>
 
   <!-- PANEL 3: MY COLLECTION -->
@@ -252,8 +260,8 @@
       </div>
     </div>
     <div>
-      <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2">Current Bound Vectors (Click to Remove)</h4>
-      <div id="edit-current-layers" class="flex flex-wrap gap-2 p-3 bg-slate-950 rounded-xl border border-slate-800"></div>
+      <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-2">Current Bound Vectors (টেনে আগে-পরে সাজাও - ডানে থাকা লেয়ার ক্যানভাসে উপরে ভাসবে)</h4>
+      <div id="edit-current-layers" class="flex flex-wrap gap-2 p-3 bg-slate-950 rounded-xl border border-slate-800 min-h-[60px]"></div>
     </div>
     <div>
       <h4 class="text-xs font-bold text-purple-300 uppercase tracking-wider mb-2">Inject Matrix Database Layers</h4>
@@ -293,6 +301,10 @@
   let openSectionEditor = null;
   let currentDisplayLimit = 500; 
 
+  // Drag state tracking variables
+  let dragSourceIndex = null;
+  let dragSourceType = null; // 'create' or 'edit'
+
   for(let s of SECTIONS) layersBySection[s] = [];
 
   function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 3000); }
@@ -316,7 +328,6 @@
     } catch(e) {} 
   }
 
-  // RE-INDEX SERIAL ORDER MECHANISM FOR CONSECUTIVE SEQUENCE #1, #2, #3
   function rebuildIndexesAndSerials() {
      nfts.forEach((nft, idx) => {
         const correctNumber = idx + 1;
@@ -404,6 +415,7 @@
 
   async function compositeFromSelectedFast(operationalLayers, forceCustomOrder, imageCache, canvas, ctx) {
     ctx.clearRect(0, 0, 512, 512);
+    // If not forced custom drag order, align by global defaults
     if (!forceCustomOrder) operationalLayers.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     for(let item of operationalLayers) {
       const cachedImg = imageCache[item.imageUrl];
@@ -483,7 +495,7 @@
       if(!isUniqueFound) { duplicateSkips++; continue; }
 
       try {
-        const generatedImg = await compositeFromSelectedFast(calculatedBatchLayers, true, imageCache, offscreenCanvas, offscreenCtx);
+        const generatedImg = await compositeFromSelectedFast(calculatedBatchLayers, false, imageCache, offscreenCanvas, offscreenCtx);
         const computedAttributes = buildAttributes(calculatedBatchLayers);
         const currentIndexNo = getNextNumber();
 
@@ -523,7 +535,9 @@
       if(selectedLayersArray[existingIndex].layerId === layerId) selectedLayersArray.splice(existingIndex, 1);
       else selectedLayersArray[existingIndex] = { section, layerId, value, imageUrl, gender, maxCount };
     } else {
+      // Manual creation inserts into normal order initially
       selectedLayersArray.push({ section, layerId, value, imageUrl, gender, maxCount });
+      selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
     }
     renderCreateSections(); updateLivePreview();
   }
@@ -540,7 +554,7 @@
     try {
       const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512;
       const ctx = canvas.getContext('2d');
-      selectedLayersArray.sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
+      // Render precisely in the order arranged via the Drag & Drop layout UI
       for(let item of selectedLayersArray) {
         await new Promise(r => { const img = new Image(); img.crossOrigin="Anonymous"; img.onload=()=>{ ctx.drawImage(img,0,0,512,512); r(); }; img.src=item.imageUrl; });
       }
@@ -641,22 +655,69 @@
     container.innerHTML = html; lucide.createIcons(); updateOrderPreview();
   }
 
+  // UPDATED ORDER PREVIEW SYSTEM EQUIPPED WITH NATIVE DRAG & DROP INTERFACES
   function updateOrderPreview() {
     const div = document.getElementById('order-preview-list'); if(!div) return;
-    if(!selectedLayersArray.length) { div.innerHTML = '<span class="text-slate-500">None</span>'; return; }
-    div.innerHTML = selectedLayersArray.map(l => `<span class="bg-slate-800 px-3 py-1 rounded-full text-xs font-semibold text-slate-300">${l.section}: ${escapeHtml(l.value)}</span>`).join('');
+    if(!selectedLayersArray.length) { div.innerHTML = '<span class="text-slate-500 text-xs">No active vector layers selected.</span>'; return; }
+    
+    div.innerHTML = selectedLayersArray.map((l, idx) => {
+      return `<span draggable="true" 
+                    ondragstart="App.handleLayerDragStart(event, ${idx}, 'create')"
+                    ondragover="App.handleLayerDragOver(event)"
+                    ondragleave="App.handleLayerDragLeave(event)"
+                    ondrop="App.handleLayerDrop(event, ${idx}, 'create')"
+                    class="draggable-badge bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/50 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-200 flex items-center gap-1 shadow-sm">
+                ☰ <span class="text-indigo-400 font-bold">${l.section}:</span> ${escapeHtml(l.value)}
+              </span>`;
+    }).join('');
   }
 
   async function updateLivePreview() {
     if(!previewCtx) { const can = document.getElementById('live-preview-canvas'); if(can) previewCtx = can.getContext('2d'); else return; }
     previewCtx.clearRect(0,0,240,240);
-    let sorted = [...selectedLayersArray].sort((a,b)=>SECTIONS.indexOf(a.section)-SECTIONS.indexOf(b.section));
-    for(let item of sorted) {
+    // Draw vectors directly in their structured order (No sorting override)
+    for(let item of selectedLayersArray) {
       await new Promise(r => { const img = new Image(); img.crossOrigin="Anonymous"; img.onload=()=>{ previewCtx.drawImage(img,0,0,240,240); r(); }; img.onerror=()=>r(); img.src=item.imageUrl; });
     }
   }
 
-  // MULTIPLE SELECTION MANAGEMENT CONTROLS
+  // HANDLERS FOR THE DRAG AND DROP GRAPHICAL USER INTERACTION PIPELINES
+  function handleLayerDragStart(e, index, type) {
+    dragSourceIndex = index;
+    dragSourceType = type;
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function handleLayerDragOver(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+  }
+
+  function handleLayerDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  function handleLayerDrop(e, targetIndex, type) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    
+    if (dragSourceType !== type || dragSourceIndex === null || dragSourceIndex === targetIndex) return;
+    
+    if (type === 'create') {
+      const movingItem = selectedLayersArray.splice(dragSourceIndex, 1)[0];
+      selectedLayersArray.splice(targetIndex, 0, movingItem);
+      updateOrderPreview();
+      updateLivePreview();
+    } else if (type === 'edit') {
+      const movingItem = editingLayersArray.splice(dragSourceIndex, 1)[0];
+      editingLayersArray.splice(targetIndex, 0, movingItem);
+      renderEditorLayersUI();
+      updateEditorLivePreview();
+    }
+    
+    dragSourceIndex = null;
+  }
+
   function toggleNftSelect(id, checked) {
      if(checked) selectedNftIds.add(id);
      else selectedNftIds.delete(id);
@@ -701,7 +762,6 @@
       const isChecked = selectedNftIds.has(nft.id) ? 'checked' : '';
 
       return `<div class="nft-card rounded-2xl overflow-hidden shadow-md flex flex-col relative">
-        <!-- ITEM CHECKBOX CONTROLLER -->
         <div class="absolute top-3 left-3 z-30 bg-slate-900/90 p-2 rounded-xl border border-indigo-500/40 flex items-center justify-center">
            <input type="checkbox" id="check-nft-${nft.id}" onchange="App.toggleNftSelect('${nft.id}', this.checked)" ${isChecked} class="w-5 h-5 text-indigo-600 bg-slate-950 border-slate-700 rounded focus:ring-indigo-500 cursor-pointer">
         </div>
@@ -715,10 +775,13 @@
 
   function loadMoreNFTs() { currentDisplayLimit += 500; renderCollection(); }
 
-  // MY COLLECTION STUDIO EDITOR SYSTEM WITH INTERNAL COLLECTION CLONE CHECK
+  // METADATA INJECTOR STUDIO MODAL - EQUIPPED WITH CORRESPONDING ARRANGEMENT CAPABILITIES
   function openEditModal(id) {
     currentEditingNftId = id; const targetNft = nfts.find(n => n.id === id); if (!targetNft) return;
+    
+    // Maintain custom user ordering inside existing sets securely
     editingLayersArray = targetNft.layers ? [...targetNft.layers] : [];
+    
     document.getElementById('edit-nft-name').value = targetNft.name || '';
     document.getElementById('edit-nft-description').value = targetNft.description || '';
     document.getElementById('edit-modal').classList.remove('hidden');
@@ -732,7 +795,15 @@
     if (editingLayersArray.length === 0) currentContainer.innerHTML = `<span class="text-xs text-slate-500">No vector layers bound.</span>`;
     else {
       currentContainer.innerHTML = editingLayersArray.map((l, idx) => {
-        return `<span onclick="App.removeLayerFromEditor(${idx})" class="bg-indigo-900/50 hover:bg-red-900/60 border border-indigo-700 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-200 cursor-pointer transition flex items-center gap-1">${l.section}: ${escapeHtml(l.value)} <b class="text-red-400 ml-1">×</b></span>`;
+        return `<span draggable="true"
+                      ondragstart="App.handleLayerDragStart(event, ${idx}, 'edit')"
+                      ondragover="App.handleLayerDragOver(event)"
+                      ondragleave="App.handleLayerDragLeave(event)"
+                      ondrop="App.handleLayerDrop(event, ${idx}, 'edit')"
+                      class="draggable-badge bg-indigo-900/50 hover:bg-indigo-900 border border-indigo-700 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-200 cursor-grab transition flex items-center gap-1 select-none">
+                  ☰ ${l.section}: ${escapeHtml(l.value)} 
+                  <b onclick="event.stopPropagation(); App.removeLayerFromEditor(${idx})" class="text-red-400 hover:text-red-200 ml-1 cursor-pointer">×</b>
+                </span>`;
       }).join('');
     }
 
@@ -753,20 +824,29 @@
   }
 
   function toggleEditorSection(section) { openSectionEditor = openSectionEditor === section ? null : section; renderEditorLayersUI(); }
-  function removeLayerFromEditor(index) { editingLayersArray.splice(index, 1); renderEditorLayersUI(); updateEditorLivePreview(); }
+  
+  function removeLayerFromEditor(index) { 
+    editingLayersArray.splice(index, 1); 
+    renderEditorLayersUI(); 
+    updateEditorLivePreview(); 
+  }
 
   function addLayerToEditor(section, id, value, imageUrl, gender) {
     const existingIndex = editingLayersArray.findIndex(l => l.section === section);
     const layerObject = { section, layerId: id, value, imageUrl, gender };
-    if (existingIndex !== -1) editingLayersArray[existingIndex] = layerObject; else editingLayersArray.push(layerObject);
+    if (existingIndex !== -1) {
+      editingLayersArray[existingIndex] = layerObject;
+    } else {
+      editingLayersArray.push(layerObject);
+    }
     renderEditorLayersUI(); updateEditorLivePreview();
   }
 
   async function updateEditorLivePreview() {
     const canvas = document.getElementById('edit-preview-canvas'); if (!canvas) return;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, 240, 240);
-    let sorted = [...editingLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    for (let item of sorted) {
+    // Directly process custom drag coordinates 
+    for (let item of editingLayersArray) {
       await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 240, 240); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
     }
   }
@@ -775,10 +855,8 @@
     const targetNftIndex = nfts.findIndex(n => n.id === currentEditingNftId); if (targetNftIndex === -1) return;
     const computedAttributes = buildAttributes(editingLayersArray);
     
-    // 1. DUAL ANTI-CLONE VERIFIER ENGINE: CRYPTOPUNK DETECTOR
     if(matchWithMaster(computedAttributes).matched) { showToast('❌ Identity Match Found with CryptoPunks! Blocked.'); return; }
 
-    // 2. INTERNAL MY COLLECTION DUPLICATE INTERLOCK DETECTOR FOR OPENSEA LISTING SAFETY
     const incomingDnaKey = editingLayersArray.map(l => l.layerId).sort().join('-');
     for(let index = 0; index < nfts.length; index++) {
         if(nfts[index].id === currentEditingNftId) continue; 
@@ -791,8 +869,9 @@
 
     showToast('⚡ Recompiling Visual Vectors...');
     const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 512; const ctx = canvas.getContext('2d');
-    let sorted = [...editingLayersArray].sort((a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section));
-    for (let item of sorted) {
+    
+    // Save exactly according to custom user-dragged orientation layers
+    for (let item of editingLayersArray) {
       await new Promise(r => { const img = new Image(); img.crossOrigin = "Anonymous"; img.onload = () => { ctx.drawImage(img, 0, 0, 512, 512); r(); }; img.onerror = () => r(); img.src = item.imageUrl; });
     }
 
@@ -805,7 +884,6 @@
     saveUserNFTs(); renderCollection(); closeEditModal(); showToast('🎉 NFT Layers Successfully Updated.');
   }
 
-  // ADVANCED FLEXIBLE ZIP ARCHIVER DOWNLOAD DISPATCHER (ALL / PNG / JSON OPTIONS)
   async function downloadCollectionAsZip(mode = 'all') {
     if(!nfts.length) return;
     
@@ -813,7 +891,6 @@
     const btnPng = document.getElementById('download-png-btn');
     const btnJson = document.getElementById('download-json-btn');
     
-    // Lock controls UI
     if(btnAll) btnAll.disabled = true; if(btnPng) btnPng.disabled = true; if(btnJson) btnJson.disabled = true;
     showToast('⚡ Formulating Request Structural Matrices...');
 
@@ -861,6 +938,7 @@
         rebuildIndexesAndSerials();
         saveUserNFTs(); 
         renderCollection(); 
+        renderChange = true;
         renderCreateSections(); 
      } 
   }
@@ -905,7 +983,9 @@
     switchTab, toggleSectionLayers, toggleCreateSection, addLayer, deleteLayer: (s, id)=>{ if(confirm('Delete?')) deleteLayerFromFirebase(s,id).then(()=>showToast('Removed')); },
     toggleLayerSelection, startSmartAutoGeneration, mintSingleNFT, viewMetadata, deleteNFT, clearAllCollection, downloadCollectionAsZip, clearMatchedCollection, loadMoreNFTs,
     openEditModal, closeEditModal, toggleEditorSection, removeLayerFromEditor, addLayerToEditor, saveEditedNFT, updateLayerLimit, validateQuantity, stepQuantity, validateMaxLimit,
-    toggleNftSelect, toggleSelectAllNFTs, deleteSelectedNFTs
+    toggleNftSelect, toggleSelectAllNFTs, deleteSelectedNFTs,
+    // HTML5 Drag Event Bindings
+    handleLayerDragStart, handleLayerDragOver, handleLayerDragLeave, handleLayerDrop
   };
 
   window.onload = function() { loadUserNFTs(); listenToFirebaseLayers(); fetchMasterIndex(); switchTab('layers'); }
