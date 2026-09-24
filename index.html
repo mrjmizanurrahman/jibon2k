@@ -73,22 +73,6 @@
         <style id="wp-img-auto-sizes-contain-inline-css">
             img:is([sizes=auto i],[sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }
         </style>
-        <style id="wp-block-library-inline-css">
-            :root { --wp-block-synced-color: #7a00df; --wp-block-synced-color--rgb: 122,0,223; --wp-bound-block-color: var(--wp-block-synced-color); --wp-editor-canvas-background: #ddd; --wp-admin-theme-color: #007cba; --wp-admin-theme-color--rgb: 0,124,186; --wp-admin-theme-color-darker-10: #006ba1; --wp-admin-theme-color-darker-10--rgb: 0,107,160.5; --wp-admin-theme-color-darker-20: #005a87; --wp-admin-theme-color-darker-20--rgb: 0,90,135; --wp-admin-border-width-focus: 2px }
-            @media (min-resolution: 192dpi) { :root { --wp-admin-border-width-focus:1.5px } }
-            .wp-element-button { cursor: pointer }
-            :root .has-very-light-gray-background-color { background-color: #eee }
-            :root .has-very-dark-gray-background-color { background-color: #313131 }
-            :root .has-very-light-gray-color { color: #eee }
-            :root .has-very-dark-gray-color { color: #313131 }
-            .screen-reader-text { word-wrap: normal!important; border: 0; clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; word-break: normal!important }
-            html:where(.has-border-color) { border-style: solid }
-            html:where(img[class*=wp-image-]) { height: auto; max-width: 100% }
-        </style>
-        <style id="classic-theme-styles-inline-css">
-            .wp-block-button__link { color: #fff; background-color: #32373c; border-radius: 9999px; box-shadow: none; text-decoration: none; padding: calc(.667em + 2px) calc(1.333em + 2px); font-size: 1.125em }
-            .wp-block-file__button { background: #32373c; color: #fff; text-decoration: none }
-        </style>
         <link rel='stylesheet' id='wp-bottom-menu-css' href='https://mrbobd.site/wp-content/plugins/wp-bottom-menu/assets/css/style.css?ver=2.3.0' media='all'/>
         <link rel='stylesheet' id='font-awesome-css' href='https://mrbobd.site/wp-content/plugins/wp-bottom-menu/inc/customizer/customizer-repeater/css/font-awesome.min.css?ver=1.1.0' media='all'/>
         <link rel='stylesheet' id='parent-style-css' href='https://mrbobd.site/wp-content/themes/dooplay/style.css?ver=7.1.2' media='all'/>
@@ -109,9 +93,8 @@
         <script id="dtRepeat-js" src="https://mrbobd.site/wp-content/themes/dooplay/assets/js/lib/isrepeater.js?ver=2.5.5"></script>
         <script id="dt_main_ajax-js-extra">
             var dtAjax = {
-                "url": "/wp-admin/admin-ajax.php",
+                "url": "https://mrbobd.site/wp-admin/admin-ajax.php",
                 "player_api": "https://mrbobd.site/wp-json/dooplayer/v2/",
-                "play_ajaxmd": null, "play_method": "wp_json", "googlercptc": null, "classitem": "6",
                 "loading": "Loading..", "afavorites": "Add to favorites", "rfavorites": "Remove of favorites",
                 "views": "Views", "remove": "Remove", "isawit": "I saw it", "send": "Data send..",
                 "updating": "Updating data..", "error": "Error", "pending": "Pending review",
@@ -123,9 +106,7 @@
         </script>
         <script id="dt_main_ajax-js" src="https://mrbobd.site/wp-content/themes/dooplay/assets/js/front.ajax.min.js?ver=2.5.5"></script>
         <link rel="https://api.w.org/" href="https://mrbobd.site/wp-json/"/>
-        <link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://mrbobd.site/xmlrpc.php?rsd"/>
         <meta name="generator" content="WordPress 7.1.2"/>
-        <meta name="onesignal-plugin" content="wordpress-3.9.3">
         <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
         <script>
             window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -139,20 +120,12 @@
                 });
             });
         </script>
-        <script type="text/javascript">
-            jQuery(document).ready(function(a) {
-                "false" == dtGonza.mobile && a(window).load(function() {
-                    a(".scrolling").mCustomScrollbar({ theme: "minimal-dark", scrollInertia: 200, scrollButtons: { enable: !0 }, callbacks: { onTotalScrollOffset: 100, alwaysTriggerOffsets: !1 } })
-                })
-            });
-        </script>
         <style type='text/css'>
             body { font-family: "Roboto",sans-serif; background-color: #0a0000 }
             header.main .hbox,#contenedor,footer.main .fbox { max-width: 1500px }
             a,.home-blog-post .entry-date .date,.top-imdb-item:hover>.title a,.module .content .items .item .data h3 a:hover,.head-main-nav ul.main-header li:hover>a,.login_box .box a.register { color: #0266ea }
-            .nav_items_module a.btn:hover,.pagination span.current,.w_item_b a:hover>.data .wextra b:before,.comment-respond h3:before,footer.main .fbox .fmenu ul li a:hover { color: #0266ea }
-            .linktabs ul li a.selected,ul.smenu li a.selected,a.liked,.module .content header span a.see-all,.page_user nav.user ul li a.selected,.dt_mainmeta nav.releases ul li a:hover { background: #0266ea }
-            a.see_all,p.form-submit input[type=submit]:hover,.report-video-form fieldset input[type=submit],a.mtoc,.contact .wrapper fieldset input[type=submit],span.item_type,a.main { background: #0266ea }
+            .linktabs ul li a.selected,ul.smenu li a.selected,a.liked,.module .content header span a.see-all,.page_user nav.user ul li a.selected { background: #0266ea }
+            a.see_all,p.form-submit input[type=submit]:hover,a.mtoc,a.main { background: #0266ea }
             #dt_contenedor { background-color: #0a0000 }
             td img { display: none }
             td a { color: #ffffff; padding: 10px 14px; background: green; border-radius: 3px }
@@ -174,7 +147,7 @@
         <link rel="apple-touch-icon" href="https://mrbobd.site/wp-content/uploads/2024/10/cropped-MRBOBD.COM-1-180x180.png"/>
         <meta name="msapplication-TileImage" content="https://mrbobd.site/wp-content/uploads/2024/10/cropped-MRBOBD.COM-1-270x270.png"/>
 
-        <!-- ================= SIGNUP MODAL STYLES ================= -->
+        <!-- ========== SIGNUP MODAL STYLES ========== -->
         <style id="mlbd-signup-css">
             .mlbd-signup-modal{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;}
             .mlbd-signup-modal.is-open{display:flex;}
@@ -1239,17 +1212,16 @@
                                 </article>
 
                             </div>
-                        <nav class="mlbd-home-pagination" aria-label="Homepage movie pagination">
-    <span class="page-numbers current">1</span>
-    <a class="page-numbers" href="https://mrbobd.site/?mpage=2">2</a>
-    <a class="page-numbers" href="https://mrbobd.site/?mpage=3">3</a>
-    <a class="page-numbers" href="https://mrbobd.site/?mpage=4">4</a>
-    <a class="page-numbers" href="https://mrbobd.site/?mpage=5">5</a>
-    <a class="page-numbers" href="https://mrbobd.site/?mpage=6">6</a>
-    <span class="page-numbers dots">...</span>
-    <a class="page-numbers" href="https://mrbobd.site/?mpage=163">163</a>
-    <a class="page-numbers next" href="https://mrbobd.site/?mpage=2" aria-label="Next page">&rsaquo;</a>
-</nav>
+                            <nav class="mlbd-home-pagination" aria-label="Homepage movie pagination">
+                                <span class="page-numbers current">1</span>
+                                <a class="page-numbers" href="https://mrbobd.site/?mpage=2">2</a>
+                                <a class="page-numbers" href="https://mrbobd.site/?mpage=3">3</a>
+                                <a class="page-numbers" href="https://mrbobd.site/?mpage=4">4</a>
+                                <a class="page-numbers" href="https://mrbobd.site/?mpage=5">5</a>
+                                <a class="page-numbers" href="https://mrbobd.site/?mpage=6">6</a>
+                                <span class="page-numbers dots">...</span>
+                                <a class="page-numbers" href="https://mrbobd.site/?mpage=163">163</a>
+                                <a class="page-numbers next" href="https://mrbobd.site/?mpage=2" aria-label="Next page">&rsaquo;</a>
                             </nav>
                         </section>
                     </div>
@@ -1480,360 +1452,21 @@
             var dtGonza = {
                 "api": "https://mrbobd.site/wp-json/dooplay/search/",
                 "glossary": "https://mrbobd.site/wp-json/dooplay/glossary/",
-                "nonce": "b310ac4d18",
-                "area": ".live-search",
-                "button": ".search-button",
-                "more": "View all results",
-                "mobile": "false",
+                "nonce": "b310ac4d18", "area": ".live-search", "button": ".search-button",
+                "more": "View all results", "mobile": "false",
                 "reset_all": "Really you want to restart all data?",
                 "manually_content": "They sure have added content manually?",
-                "loading": "Loading..",
-                "loadingplayer": "Loading player..",
-                "selectaplayer": "Select a video player",
-                "playeradstime": null,
-                "autoplayer": null,
-                "livesearchactive": "1"
+                "loading": "Loading..", "loadingplayer": "Loading player..",
+                "selectaplayer": "Select a video player", "playeradstime": null,
+                "autoplayer": null, "livesearchactive": "1"
             };
         </script>
         <script id="live_search-js" src="https://mrbobd.site/wp-content/themes/dooplay/assets/js/front.livesearch.min.js?ver=2.5.5"></script>
 
-        <!-- ============ HEADER INJECTOR (WhatsApp removed + SIGN UP added) ============ -->
+        <!-- ============ HEADER INJECTOR (WhatsApp REMOVED + SIGN UP ADDED) ============ -->
         <script id="mlbd-stable-header-injector">
             (function() {
-                var cssText = "\n:root{--mlbd-stable-bg:#25292e;--mlbd-stable-text:#f4f7fb;--mlbd-stable-muted:#a5adb9;--mlbd-stable-logo:#ff061b;--mlbd-stable-red:#d71920;--mlbd-stable-cyan:#06c2d8;--mlbd-stable-green:#00d68f;--mlbd-stable-gold:#a97a39;--mlbd-stable-card-border:#f4c900;--mlbd-stable-card-title:#00eaff;--mlbd-stable-card-meta:#b5ff3a;--mlbd-stable-radius:6px;}\nhtml.mlbd-stable-loaded body, html.mlbd-stable-loaded #dt_contenedor, html.mlbd-stable-loaded #contenedor{background:var(--mlbd-stable-bg)!important;color:var(--mlbd-stable-text)!important;}\nhtml.mlbd-stable-loaded #contenedor{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;}\n#mlbd-stable-header{background:var(--mlbd-stable-bg)!important;padding:14px 14px 16px!important;text-align:center!important;box-sizing:border-box!important;width:100%!important;display:block!important;clear:both!important;}\n#mlbd-stable-header .mlbd-header-inner{max-width:900px!important;margin:0 auto!important;}\n#mlbd-stable-header .mlbd-logo-text{display:inline-block!important;color:var(--mlbd-stable-logo)!important;font-size:48px!important;font-weight:900!important;line-height:1!important;letter-spacing:2px!important;text-decoration:none!important;text-transform:uppercase!important;text-shadow:0 2px 0 rgba(0,0,0,.45),0 0 10px rgba(255,0,20,.25)!important;}\n#mlbd-stable-header .mlbd-active-link{margin-top:5px!important;color:var(--mlbd-stable-green)!important;font-size:12px!important;font-weight:800!important;}#mlbd-stable-header .mlbd-active-link strong{color:#ffe353!important;}\n#mlbd-stable-header .mlbd-warning{margin-top:3px!important;color:var(--mlbd-stable-muted)!important;font-size:12px!important;}\n#mlbd-stable-header .mlbd-menu-row,#mlbd-stable-header .mlbd-action-row{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:7px!important;}\n#mlbd-stable-header .mlbd-menu-row{margin-top:14px!important;}#mlbd-stable-header .mlbd-action-row{margin-top:14px!important;align-items:center!important;}\n#mlbd-stable-header .mlbd-menu-pill,#mlbd-stable-header .mlbd-action-pill{display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:var(--mlbd-stable-radius)!important;color:#fff!important;text-decoration:none!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16)!important;box-sizing:border-box!important;}\n@keyframes mlbdActionRgbText{0%{color:#ff1f1f;}16%{color:#ff8a00;}32%{color:#fff200;}48%{color:#00ff4c;}64%{color:#00d9ff;}80%{color:#265cff;}100%{color:#ff1fdb;}}#mlbd-stable-header .mlbd-action-pill .mlbd-action-text{display:inline-block!important;animation:mlbdActionRgbText 2.2s linear infinite!important;text-shadow:none!important;}\n#mlbd-stable-header .mlbd-menu-pill{min-height:31px!important;padding:0 13px!important;font-size:16px!important;gap:5px!important;}#mlbd-stable-header .mlbd-action-pill{min-height:36px!important;padding:0 13px!important;font-size:16px!important;text-transform:none!important;}\n#mlbd-stable-header .mlbd-search-wrap{margin:15px auto 0!important;max-width:878px!important;}#mlbd-stable-header .mlbd-search-form{display:flex!important;width:100%!important;border:2px solid var(--mlbd-stable-cyan)!important;border-radius:var(--mlbd-stable-radius)!important;overflow:hidden!important;background:#1d2a3d!important;box-sizing:border-box!important;}\n#mlbd-stable-header .mlbd-search-form input[type=text]{flex:1 1 auto!important;height:58px!important;border:0!important;background:transparent!important;color:#fff!important;font-size:22px!important;padding:0 18px!important;outline:none!important;box-sizing:border-box!important;}#mlbd-stable-header .mlbd-search-form button{flex:0 0 60px!important;border:0!important;background:var(--mlbd-stable-cyan)!important;color:#fff!important;font-size:22px!important;cursor:pointer!important;}\n#mlbd-stable-header .mlbd-section-intro{margin-top:8px!important;text-align:center!important;}#mlbd-stable-header .mlbd-recent-title{color:var(--mlbd-stable-green)!important;font-size:26px!important;font-weight:500!important;letter-spacing:2px!important;text-transform:uppercase!important;}#mlbd-stable-header .mlbd-stats{margin-top:5px!important;color:#aab4bd!important;font-size:12px!important;}\nhtml.mlbd-stable-loaded .module{width:100%!important;margin:0!important;padding:0!important;background:var(--mlbd-stable-bg)!important;}html.mlbd-stable-loaded .module .content,html.mlbd-stable-loaded .module .content.full,html.mlbd-stable-loaded .module .content.full_width_layout{float:none!important;width:100%!important;max-width:1128px!important;margin:0 auto!important;padding:20px 8px 50px!important;background:var(--mlbd-stable-bg)!important;}html.mlbd-stable-loaded .module .sidebar{display:none!important;}\n@media(max-width:900px){#mlbd-stable-header .mlbd-logo-text{font-size:38px!important;}#mlbd-stable-header .mlbd-menu-pill{font-size:14px!important;padding:0 10px!important;}}\n@media(max-width:640px){#mlbd-stable-header{padding:11px 7px 14px!important;}#mlbd-stable-header .mlbd-logo-text{font-size:31px!important;letter-spacing:1px!important;}#mlbd-stable-header .mlbd-menu-row,#mlbd-stable-header .mlbd-action-row{gap:5px!important;margin-top:9px!important;}#mlbd-stable-header .mlbd-menu-pill{min-height:25px!important;padding:0 8px!important;font-size:11px!important;}#mlbd-stable-header .mlbd-action-pill{min-height:28px!important;padding:0 9px!important;font-size:12px!important;}#mlbd-stable-header .mlbd-search-wrap{margin-top:11px!important;}#mlbd-stable-header .mlbd-search-form input[type=text]{height:46px!important;padding:0 12px!important;font-size:16px!important;}#mlbd-stable-header .mlbd-search-form button{flex-basis:46px!important;font-size:18px!important;}}\n";
-                var headerHtml = "<section id=\"mlbd-stable-header\" class=\"mlbd-header mlbd-header-home\">\n    <div class=\"mlbd-header-inner\">\n        <a class=\"mlbd-logo-text\" href=\"https:\/\/mrbobd.site\/\">MRBROBD.COM<\/a>\n                    <div class=\"mlbd-active-link\">Official &amp; Always Active Link: <strong>MRBROBD.COM<\/strong> \u2705<\/div>\n                            <div class=\"mlbd-warning\">\u26a0\ufe0f \u09ac\u09be\u0982\u09b2\u09be \u09b8\u09be\u0987\u099f \u09b2\u09cb\u09a1 \u09a8\u09be \u09b9\u09b2\u09c7, 1.1.1.1 VPN \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c7 \u09b8\u09be\u0987\u099f \u09ad\u09bf\u099c\u09bf\u099f \u0995\u09b0\u09c1\u09a8\u0964<\/div>\n                        <div class=\"mlbd-menu-row\"><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/\">\ud83c\udfe0 HOME<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/bangla\/\">\ud83c\udde7\ud83c\udde9 BANGLA<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/bangla-dubbed\/\">\ud83c\udf99 BANGLA DUBBED<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/hindi\/\">\ud83c\uddee\ud83c\uddf3 HINDI<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/hindi-dubbed\/\">\ud83c\udfa4 HINDI DUBBED<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/south-india\/\">\ud83d\udd25 SOUTH INDIAN \ud83d\udef8<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/dual-audio\/\">\ud83c\udfa7 DUAL AUDIO<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/adult\/\">\ud83d\udd1e 18+ ADULT<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/english\/\">\ud83c\uddfa\ud83c\uddf8 ENGLISH<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/korean\/\">\ud83c\uddf0\ud83c\uddf7 KOREAN<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/action\/\">\u2694\ufe0f ACTION<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/thriller\/\">\ud83e\udde9 THRILLER<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/horror\/\">\ud83d\udc7b HORROR<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/romance\/\">\ud83d\udc9e ROMANCE<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/tvshows\/\">\ud83d\udcfa ALL WEB SERIES<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/movies\/\">\ud83c\udfac ALL MOVIES<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/anime\/\">\ud83c\udf38 ANIME ZONE<\/a><\/div>        <div class=\"mlbd-search-wrap\">\n            <form class=\"mlbd-search-form\" method=\"get\" action=\"https:\/\/mrbobd.site\/\">\n                <input type=\"text\" name=\"s\" value=\"\" placeholder=\"\u09b8\u09be\u09b0\u09cd\u099a \u0995\u09b0\u09c7 \u0996\u09c1\u0981\u099c\u09c7 \u09a8\u09bf\u09a8 \u09aa\u099b\u09a8\u09cd\u09a6\u09c7\u09b0 \u09ae\u09c1\u09ad\u09bf\" autocomplete=\"off\">\n                <button type=\"submit\" aria-label=\"Search\">\ud83d\udd0d<\/button>\n            <\/form>\n        <\/div>\n                                <div class=\"mlbd-action-row mlbd-home-action-row\"><a class=\"mlbd-action-pill mlbd-toggle-button mlbd-toggle-only-new\" style=\"background:#247402!important\" href=\"#\" data-mlbd-toggle=\"only_new\"><span class=\"mlbd-action-text\">Only New : No<\/span><\/a><a class=\"mlbd-action-pill mlbd-signup-trigger\" style=\"background:#0266ea!important\" href=\"#signup\" data-signup-trigger><span class=\"mlbd-action-text\">\u270d\ufe0f SIGN UP<\/span><\/a><\/div>\n                            <div class=\"mlbd-section-intro\">\n                    <div class=\"mlbd-recent-title\">Recently Updated<\/div>\n                    <div class=\"mlbd-stats\"><span class=\"mlbd-total-count\">\ud83c\udfac 8,149+ MOVIES\/SERIES<\/span><span class=\"mlbd-stat-sep\">\u00b7<\/span><span class=\"mlbd-quote-rotator\" data-quotes=\"[&quot;\\u0995\\u09cb\\u09a8\\u09cb \\u099d\\u09be\\u09ae\\u09c7\\u09b2\\u09be \\u09a8\\u09c7\\u0987 WATCH &amp; CHILL&quot;,&quot;\\u09a8\\u09a4\\u09c1\\u09a8 \\u0986\\u09aa\\u09a1\\u09c7\\u099f, \\u09a8\\u09a4\\u09c1\\u09a8 \\u09ac\\u09bf\\u09a8\\u09cb\\u09a6\\u09a8&quot;]\">\u0995\u09cb\u09a8\u09cb \u099d\u09be\u09ae\u09c7\u09b2\u09be \u09a8\u09c7\u0987 WATCH &amp; CHILL<\/span><\/div>\n                <\/div>\n                        <\/div>\n<\/section>";
-                var hideThemeHeader = 1;
-                var hideHardcodedHeader = 1;
-                var onlyNewActive = 0;
-                function qsa(s){try{return document.querySelectorAll(s);}catch(e){return[];}}
-                function hideElements(s){var n=qsa(s);for(var i=0;i<n.length;i++){try{n[i].style.setProperty('display','none','important');}catch(e){n[i].style.display='none';}}}
-                function insertStyle(){if(document.getElementById('mlbd-stable-header-css'))return;var s=document.createElement('style');s.id='mlbd-stable-header-css';s.type='text/css';s.appendChild(document.createTextNode(cssText));(document.head||document.getElementsByTagName('head')[0]).appendChild(s);}
-                function insertHeader(){if(document.getElementById('mlbd-stable-header'))return true;if(!document.body)return false;var w=document.createElement('div');w.innerHTML=headerHtml;var h=w.firstElementChild||w.children[0];if(!h)return false;var t=document.getElementById('dt_contenedor')||document.getElementById('contenedor')||document.body.firstChild;if(t&&t.parentNode){t.parentNode.insertBefore(h,t);}else{document.body.insertBefore(h,document.body.firstChild);}return!!document.getElementById('mlbd-stable-header');}
-                function setCookie(n,v,d){var m=d?'; max-age='+(d*24*60*60):'';document.cookie=n+'='+encodeURIComponent(v)+m+'; path=/; SameSite=Lax';}
-                function updateToggleButtons(){var b=qsa('[data-mlbd-toggle="only_new"]');for(var i=0;i<b.length;i++){b[i].textContent='Only New : '+(onlyNewActive?'Yes':'No');if(onlyNewActive)b[i].classList.add('mlbd-toggle-on');else b[i].classList.remove('mlbd-toggle-on');}}
-                function bindToggleButtons(){var b=qsa('[data-mlbd-toggle]');for(var i=0;i<b.length;i++){if(b[i].getAttribute('data-bound')==='1')continue;b[i].setAttribute('data-bound','1');b[i].addEventListener('click',function(e){e.preventDefault();var t=this.getAttribute('data-mlbd-toggle');if(t==='only_new'){onlyNewActive=onlyNewActive?0:1;setCookie('mlbd_only_new',onlyNewActive?'1':'0',30);try{var u=new URL(window.location.href);if(onlyNewActive)u.searchParams.set('mlbd_only_new','1');else u.searchParams.delete('mlbd_only_new');u.searchParams.delete('mpage');window.location.href=u.toString();}catch(ex){window.location.reload();}}});}}
-                function run(){try{insertStyle();if(insertHeader()){if(hideThemeHeader)hideElements('#header.main, .fixheadresp');document.documentElement.className+=' mlbd-stable-loaded';updateToggleButtons();bindToggleButtons();}}catch(e){if(window.console&&window.console.warn)window.console.warn('MLBD Header failed:',e);}}
-                run();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);setTimeout(run,300);setTimeout(run,1200);
-            })();
-        </script>
-
-        <!-- ================= SIGNUP MODAL ================= -->
-        <div id="mlbd-signup-modal" class="mlbd-signup-modal" aria-hidden="true" role="dialog">
-            <div class="mlbd-signup-backdrop" data-signup-close></div>
-            <div class="mlbd-signup-box">
-                <button type="button" class="mlbd-signup-close" data-signup-close aria-label="Close">&times;</button>
-                <h3 class="mlbd-signup-title">Create Your Account</h3>
-                <p class="mlbd-signup-sub">Join MRBROBD.COM — it's free!</p>
-                <form id="mlbd-signup-form" novalidate>
-                    <div class="mlbd-field"><i class="fas fa-user"></i><input type="text" name="fullname" placeholder="Full Name" required></div>
-                    <div class="mlbd-field"><i class="fas fa-at"></i><input type="text" name="username" placeholder="Username" required></div>
-                    <div class="mlbd-field"><i class="fas fa-envelope"></i><input type="email" name="email" placeholder="Email Address" required></div>
-                    <div class="mlbd-field"><i class="fas fa-lock"></i><input type="password" name="password" placeholder="Password (min 6 chars)" required minlength="6"></div>
-                    <div class="mlbd-field"><i class="fas fa-lock"></i><input type="password" name="confirm" placeholder="Confirm Password" required minlength="6"></div>
-                    <button type="submit" class="mlbd-signup-submit">Sign Up</button>
-                    <div id="mlbd-signup-msg" class="mlbd-signup-msg"></div>
-                </form>
-            </div>
-        </div>
-
-        <script id="mlbd-signup-js">
-            (function() {
-                function initSignup() {
-                    var modal = document.getElementById('mlbd-signup-modal');
-                    if (!modal) return;
-                    var form = document.getElementById('mlbd-signup-form');
-                    var msg = document.getElementById('mlbd-signup-msg');
-                    function openModal(e) { if (e) e.preventDefault(); modal.classList.add('is-open'); document.body.style.overflow = 'hidden'; var f = form.querySelector('input'); if (f) setTimeout(function(){f.focus();}, 100); }
-                    function closeModal() { modal.classList.remove('is-open'); document.body.style.overflow = ''; msg.textContent = ''; msg.className = 'mlbd-signup-msg'; form.reset(); }
-                    document.addEventListener('click', function(e) {
-                        var t = e.target;
-                        while (t && t !== document) {
-                            if (t.matches && t.matches('[data-signup-trigger], .mlbd-signup-trigger, a[href="#signup"], a.register')) { openModal(e); return; }
-                            if (t.matches && t.matches('[data-signup-close]')) { closeModal(); return; }
-                            t = t.parentNode;
-                        }
-                    });
-                    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal(); });
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        var fd = new FormData(form);
-                        var fullname = (fd.get('fullname')||'').toString().trim();
-                        var username = (fd.get('username')||'').toString().trim();
-                        var email = (fd.get('email')||'').toString().trim();
-                        var password = (fd.get('password')||'').toString();
-                        var confirm = (fd.get('confirm')||'').toString();
-                        msg.className = 'mlbd-signup-msg';
-                        if (!fullname || !username || !email || !password) { msg.textContent = 'Please fill all fields.'; msg.classList.add('err'); return; }
-                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = 'Invalid email.'; msg.classList.add('err'); return; }
-                        if (password.length < 6) { msg.textContent = 'Password min 6 chars.'; msg.classList.add('err'); return; }
-                        if (password !== confirm) { msg.textContent = 'Passwords do not match.'; msg.classList.add('err'); return; }
-                        try {
-                            var users = JSON.parse(localStorage.getItem('mrbrobd_users') || '[]');
-                            if (users.some(function(u){ return u.username.toLowerCase()===username.toLowerCase() || u.email.toLowerCase()===email.toLowerCase(); })) { msg.textContent = 'Already registered.'; msg.classList.add('err'); return; }
-                            users.push({ fullname: fullname, username: username, email: email, password: password, at: Date.now() });
-                            localStorage.setItem('mrbrobd_users', JSON.stringify(users));
-                            msg.textContent = '✅ Account created! Welcome to MRBROBD.COM';
-                            msg.classList.add('ok');
-                            setTimeout(closeModal, 2200);
-                        } catch (err) { msg.textContent = 'Something went wrong.'; msg.classList.add('err'); }
-                    });
-                }
-                if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initSignup);
-                else initSignup();
-            })();
-        </script>
-
-        <div id="oscuridad"></div>
-        <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"3e8feee6470249ccb39da233e3c10afe","r":1,"spa":2}' crossorigin="anonymous"></script>
-    </body>
-</html>
-                <section id="mlbd-lts-505870" class="mlbd-lts-wrap">
-                    <style>
-                        #mlbd-lts-505870{--mlbd-lts-panel-bg:#111827;--mlbd-lts-panel-border:#263a59;--mlbd-lts-divider:#2d3b4f;--mlbd-lts-button-bg:#33485c;--mlbd-lts-language-text:#ffd500;--mlbd-lts-genre-text:#ff7a2f;--mlbd-lts-title:#ffffff;--mlbd-lts-search-bg:#050917;--mlbd-lts-search-text:#ffffff;max-width:1330px;margin:30px auto;padding:0 8px;box-sizing:border-box}
-                        #mlbd-lts-505870 .mlbd-lts-box{background:var(--mlbd-lts-panel-bg);border:1px solid var(--mlbd-lts-panel-border);border-radius:7px;padding:12px 12px 18px;margin-bottom:30px;box-shadow:0 14px 30px rgba(0,0,0,.28)}
-                        #mlbd-lts-505870 .mlbd-lts-title{margin:4px 0 14px;padding-bottom:13px;border-bottom:1px solid var(--mlbd-lts-divider);color:var(--mlbd-lts-title);text-align:center;font-size:18px;line-height:1.1;font-weight:900;text-transform:uppercase;letter-spacing:1.3px}
-                        #mlbd-lts-505870 .mlbd-lts-search-holder{display:flex;justify-content:center;margin:0 auto 14px}
-                        #mlbd-lts-505870 .mlbd-lts-search{width:100%;max-width:288px;height:36px;padding:0 14px;border-radius:999px;border:1px solid #34425e;background:var(--mlbd-lts-search-bg);color:var(--mlbd-lts-search-text);font-size:12px;font-weight:800;outline:none;box-sizing:border-box}
-                        #mlbd-lts-505870 .mlbd-lts-grid{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:10px 9px}
-                        #mlbd-lts-505870 .mlbd-lts-btn{min-height:37px;display:flex;align-items:center;justify-content:center;padding:8px 10px;border-radius:4px;background:var(--mlbd-lts-button-bg);color:var(--mlbd-lts-language-text)!important;text-decoration:none!important;text-align:center;font-size:12px;font-weight:900;line-height:1.1;box-sizing:border-box;transition:transform .15s ease,filter .15s ease}
-                        #mlbd-lts-505870 .mlbd-lts-box-genres .mlbd-lts-btn{color:var(--mlbd-lts-genre-text)!important}
-                        #mlbd-lts-505870 .mlbd-lts-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
-                        #mlbd-lts-505870 .mlbd-home-cta{width:100%;margin:0 auto 24px}
-                        #mlbd-lts-505870 .mlbd-home-notice{background:#050917;border:1px solid rgba(38,58,89,.75);border-radius:4px;padding:14px 20px;color:#00ff9d;font-size:13px;font-weight:900;line-height:1.6;box-sizing:border-box}
-                        #mlbd-lts-505870 .mlbd-home-notice-line:first-child{color:#ffd500}
-                        #mlbd-lts-505870 .mlbd-home-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin:10px auto 0;text-align:center}
-                        #mlbd-lts-505870 .mlbd-home-action-main{width:100%;display:flex;justify-content:center;margin-top:8px}
-                        #mlbd-lts-505870 .mlbd-home-btn{min-height:42px;display:inline-flex;align-items:center;justify-content:center;padding:0 20px;border-radius:5px;color:#fff!important;text-decoration:none!important;font-size:16px;font-weight:900;box-shadow:0 2px 0 rgba(0,0,0,.15)}
-                        #mlbd-lts-505870 .mlbd-home-btn-download{background:#f05245;min-width:210px}
-                        #mlbd-lts-505870 .mlbd-home-btn-facebook{background:#4267b2}
-                        #mlbd-lts-505870 .mlbd-home-btn-telegram{background:#39bde7;color:#073248!important}
-                        @media (max-width:1100px){#mlbd-lts-505870 .mlbd-lts-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
-                        @media (max-width:700px){#mlbd-lts-505870{margin:22px auto;padding:0 8px}#mlbd-lts-505870 .mlbd-lts-box{padding:11px 8px 15px}#mlbd-lts-505870 .mlbd-lts-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#mlbd-lts-505870 .mlbd-lts-title{font-size:17px}#mlbd-lts-505870 .mlbd-lts-search{max-width:100%}}
-                    </style>
-                    <div class="mlbd-home-cta">
-                        <div class="mlbd-home-notice">
-                            <div class="mlbd-home-notice-line">🇧🇩 বিনোদনের জনপ্রিয় বাংলাদেশী কনটেন্টের হোস্টিং বা লিংকড সার্ভিস MRBROBD-তে আপনাকে স্বাগতম !</div>
-                            <div class="mlbd-home-notice-line">🔍 মুভি/সিরিজের সঠিক বাংলা/ইংরেজি নাম সার্চ করুন।</div>
-                            <div class="mlbd-home-notice-line">📱 কোনো এক্সটার্নাল লিংক ব্যবহার করলে ভালো ইন্টারনেট কানেকশন রাখুন।</div>
-                            <div class="mlbd-home-notice-line">🎬 মুভি/সিরিজ নাম বা পোস্টারে ক্লিক করে পছন্দের কোয়ালিটি সিলেক্ট করে ডাউনলোড করুন।</div>
-                        </div>
-                        <div class="mlbd-home-actions">
-                            <div class="mlbd-home-action-main">
-                                <a class="mlbd-home-btn mlbd-home-btn-download" href="https://t.me/filmyaddagroupmain">📥 ডাউনলোড করার নিয়ম 🔧</a>
-                            </div>
-                            <a class="mlbd-home-btn mlbd-home-btn-facebook" href="https://t.me/filmyaddagroupmain">▣ Join Group</a>
-                            <a class="mlbd-home-btn mlbd-home-btn-telegram" href="https://t.me/filmyaddagroupmain">➤ Join Us On Telegram</a>
-                        </div>
-                    </div>
-                    <div class="mlbd-lts-box mlbd-lts-box-languages">
-                        <h2 class="mlbd-lts-title">LANGUAGES</h2>
-                        <div class="mlbd-lts-search-holder">
-                            <input class="mlbd-lts-search" type="search" placeholder="Search Languages..." autocomplete="off">
-                        </div>
-                        <div class="mlbd-lts-grid">
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bangla" href="https://mrbobd.site/language/bangla/">Bangla</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bangla Dubbed" href="https://mrbobd.site/language/bangla-dubbed/">Bangla Dubbed</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Chinese" href="https://mrbobd.site/language/chinese/">Chinese</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Dual Audio" href="https://mrbobd.site/language/dual-audio/">Dual Audio</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="English" href="https://mrbobd.site/language/english/">English</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="French" href="https://mrbobd.site/language/french/">French</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Gujrati" href="https://mrbobd.site/language/gujrati/">Gujrati</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Hindi" href="https://mrbobd.site/language/hindi/">Hindi</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Hindi Dubbed" href="https://mrbobd.site/language/hindi-dubbed/">Hindi Dubbed</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Indonesian" href="https://mrbobd.site/language/indonesian/">Indonesian</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Italian" href="https://mrbobd.site/language/italian/">Italian</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Japanese" href="https://mrbobd.site/language/japanese/">Japanese</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Kannada" href="https://mrbobd.site/language/kannada/">Kannada</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Korean" href="https://mrbobd.site/language/korean/">Korean</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Malayalam" href="https://mrbobd.site/language/malayalam/">Malayalam</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Malaysian" href="https://mrbobd.site/language/malaysian/">Malaysian</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Marathi" href="https://mrbobd.site/language/marathi/">Marathi</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Others" href="https://mrbobd.site/language/others/">Others</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Portuguese" href="https://mrbobd.site/language/portuguese/">Portuguese</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Punjabi" href="https://mrbobd.site/language/punjabi/">Punjabi</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Spanish" href="https://mrbobd.site/language/spanish/">Spanish</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Tamil" href="https://mrbobd.site/language/tamil/">Tamil</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Telegu" href="https://mrbobd.site/language/telegu/">Telegu</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Telugu" href="https://mrbobd.site/language/telugu/">Telugu</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Turkish" href="https://mrbobd.site/language/turkish/">Turkish</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Vietnamese" href="https://mrbobd.site/language/vietnamese/">Vietnamese</a>
-                        </div>
-                    </div>
-                    <div class="mlbd-lts-box mlbd-lts-box-genres">
-                        <h2 class="mlbd-lts-title">GENRES</h2>
-                        <div class="mlbd-lts-search-holder">
-                            <input class="mlbd-lts-search" type="search" placeholder="Search Genres..." autocomplete="off">
-                        </div>
-                        <div class="mlbd-lts-grid">
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="4K" href="https://mrbobd.site/genre/4k/">4K</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Action" href="https://mrbobd.site/genre/action/">Action</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Action &amp; Adventure" href="https://mrbobd.site/genre/action-adventure/">Action &amp; Adventure</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Adventure" href="https://mrbobd.site/genre/adventure/">Adventure</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Animation" href="https://mrbobd.site/genre/animation/">Animation</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Anime" href="https://mrbobd.site/genre/anime/">Anime</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bachelor Point Season 5" href="https://mrbobd.site/genre/bachelor-point/">Bachelor Point Season 5</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bangla" href="https://mrbobd.site/genre/bangla/">Bangla</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bangla Dubbed" href="https://mrbobd.site/genre/bangla-dubbed/">Bangla Dubbed</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bangla Web Series" href="https://mrbobd.site/genre/bangla-web-series/">Bangla Web Series</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bangladeshi" href="https://mrbobd.site/genre/bangladeshi/">Bangladeshi</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bhojpuri" href="https://mrbobd.site/genre/bhojpuri/">Bhojpuri</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Biography" href="https://mrbobd.site/genre/biography/">Biography</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Bollywood" href="https://mrbobd.site/genre/bollywood/">Bollywood</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Chinese" href="https://mrbobd.site/genre/chinese/">Chinese</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Comedy" href="https://mrbobd.site/genre/comedy/">Comedy</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Crime" href="https://mrbobd.site/genre/crime/">Crime</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="DC Comics" href="https://mrbobd.site/genre/dc-comics/">DC Comics</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Documentary" href="https://mrbobd.site/genre/documentary/">Documentary</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Drama" href="https://mrbobd.site/genre/drama/">Drama</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Dual Audio" href="https://mrbobd.site/genre/dual-audio/">Dual Audio</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="English Dubbed" href="https://mrbobd.site/genre/english-dubbed/">English Dubbed</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="English Web Series" href="https://mrbobd.site/genre/english-web-series/">English Web Series</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Family" href="https://mrbobd.site/genre/family/">Family</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Fantasy" href="https://mrbobd.site/genre/fantasy/">Fantasy</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Gujarati" href="https://mrbobd.site/genre/gujarati/">Gujarati</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Hindi Dubbed" href="https://mrbobd.site/genre/hindi-dubbed/">Hindi Dubbed</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Hindi Web Series" href="https://mrbobd.site/genre/hindi-web-series/">Hindi Web Series</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="History" href="https://mrbobd.site/genre/history/">History</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Hollywood" href="https://mrbobd.site/genre/hollywood/">Hollywood</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Horror" href="https://mrbobd.site/genre/horror/">Horror</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="IMDb Top 250" href="https://mrbobd.site/genre/imdb-top-250/">IMDb Top 250</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Indonsian" href="https://mrbobd.site/genre/indonsian/">Indonsian</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Japanese" href="https://mrbobd.site/genre/japanese/">Japanese</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Kids" href="https://mrbobd.site/genre/kids/">Kids</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Kolkata" href="https://mrbobd.site/genre/kolkata/">Kolkata</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Korean" href="https://mrbobd.site/genre/korean/">Korean</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Marathi" href="https://mrbobd.site/genre/marathi/">Marathi</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Marvel Studio" href="https://mrbobd.site/genre/marvel-studio/">Marvel Studio</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Music" href="https://mrbobd.site/genre/music/">Music</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Mystery" href="https://mrbobd.site/genre/mystery/">Mystery</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Odia" href="https://mrbobd.site/genre/odia/">Odia</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Pakistani" href="https://mrbobd.site/genre/pakistani/">Pakistani</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Philippines" href="https://mrbobd.site/genre/philippines/">Philippines</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Polish" href="https://mrbobd.site/genre/polish/">Polish</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Punjabi" href="https://mrbobd.site/genre/punjabi/">Punjabi</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Reality" href="https://mrbobd.site/genre/reality/">Reality</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Romance" href="https://mrbobd.site/genre/romance/">Romance</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Sci-Fi &amp; Fantasy" href="https://mrbobd.site/genre/sci-fi-fantasy/">Sci-Fi &amp; Fantasy</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Science Fiction" href="https://mrbobd.site/genre/science-fiction/">Science Fiction</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Soap" href="https://mrbobd.site/genre/soap/">Soap</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="South India" href="https://mrbobd.site/genre/south-india/">South India</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Sports" href="https://mrbobd.site/genre/sports/">Sports</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Superhero" href="https://mrbobd.site/genre/superhero/">Superhero</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Survival" href="https://mrbobd.site/genre/survival/">Survival</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Talk" href="https://mrbobd.site/genre/talk/">Talk</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Thai" href="https://mrbobd.site/genre/thai/">Thai</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Thriller" href="https://mrbobd.site/genre/thriller/">Thriller</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Top Rated" href="https://mrbobd.site/genre/top-rated/">Top Rated</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="True Story" href="https://mrbobd.site/genre/true-story/">True Story</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Turkish" href="https://mrbobd.site/genre/turkish/">Turkish</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="TV Movie" href="https://mrbobd.site/genre/tv-movie/">TV Movie</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Upcoming" href="https://mrbobd.site/genre/upcoming/">Upcoming</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="War" href="https://mrbobd.site/genre/war/">War</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="War &amp; Politics" href="https://mrbobd.site/genre/war-politics/">War &amp; Politics</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Web Series" href="https://mrbobd.site/genre/web-series/">Web Series</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Western" href="https://mrbobd.site/genre/western/">Western</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="Wrestling" href="https://mrbobd.site/genre/wrestling/">Wrestling</a>
-                            <a class="mlbd-lts-btn mlbd-lts-item" data-label="🔥 Hot – Unrated" href="https://mrbobd.site/genre/adult/">🔥 Hot – Unrated</a>
-                        </div>
-                    </div>
-                    <script>
-                        (function() {
-                            var root = document.getElementById('mlbd-lts-505870');
-                            if (!root) return;
-                            var inputs = root.querySelectorAll('.mlbd-lts-search');
-                            for (var i = 0; i < inputs.length; i++) {
-                                inputs[i].addEventListener('input', function() {
-                                    var box = this.closest ? this.closest('.mlbd-lts-box') : null;
-                                    if (!box) return;
-                                    var q = this.value.toLowerCase();
-                                    var buttons = box.querySelectorAll('.mlbd-lts-item');
-                                    for (var b = 0; b < buttons.length; b++) {
-                                        var label = buttons[b].getAttribute('data-label') || '';
-                                        buttons[b].style.display = (label.toLowerCase().indexOf(q) !== -1) ? '' : 'none';
-                                    }
-                                });
-                            }
-                        })();
-                    </script>
-                </section>
-            </div>
-            <footer class="main">
-                <div class="fbox">
-                    <div class="fcmpbox">
-                        <div class="copy">© 2024 by MRBROBD.COM. All Rights Reserved.</div>
-                        <span class="top-page"><a id="top-page"><i class="fas fa-angle-up"></i></a></span>
-                    </div>
-                </div>
-            </footer>
-        </div>
-        <script type="speculationrules">
-            { "prefetch": [ { "source": "document", "where": { "and": [ { "href_matches": "/*" }, { "not": { "href_matches": ["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/dooplay-child/*","/wp-content/themes/dooplay/*","/*\\?(.+)"] } }, { "not": { "selector_matches": "a[rel~=\"nofollow\"]" } }, { "not": { "selector_matches": ".no-prefetch, .no-prefetch a" } } ] }, "eagerness": "conservative" } ] }
-        </script>
-        <style type="text/css">
-            @media (max-width: 1024px) { .wp-bottom-menu { display:flex } .wp-bottom-menu-search-form-wrapper { display: block } }
-            :root { --wpbottommenu-font-size: 12px; --wpbottommenu-icon-size: 20px; --wpbottommenu-text-color: #555555; --wpbottommenu-h-text-color: #000000; --wpbottommenu-icon-color: #1e73be; --wpbottommenu-h-icon-color: #000000; --wpbottommenu-bgcolor: #ffffff; --wpbottommenu-zindex: 9999; --wpbottommenu-cart-count-bgcolor: #ff0000; --wpbottommenu-wrapper-padding: 8px 0 }
-        </style>
-        <div class="wp-bottom-menu" id="wp-bottom-menu">
-            <a href="https://mrbobd.site" class="wp-bottom-menu-item active">
-                <div class="wp-bottom-menu-icon-wrapper"><i class="wp-bottom-menu-item-icons fa fa-home"></i></div>
-                <span>Home</span>
-            </a>
-            <a href="https://t.me/filmyaddagroupmain" class="wp-bottom-menu-item">
-                <div class="wp-bottom-menu-icon-wrapper"><i class="wp-bottom-menu-item-icons fa fa-telegram"></i></div>
-                <span>Join Telegram</span>
-            </a>
-            <a href="https://drive.google.com/file/d/1p4S3KinOJMdq4KLz_luGDn-r7j3vS9cF/view?usp=sharing" class="wp-bottom-menu-item">
-                <div class="wp-bottom-menu-icon-wrapper"><i class="wp-bottom-menu-item-icons fa fa-android"></i></div>
-                <span>App</span>
-            </a>
-        </div>
-        <script type="text/javascript">
-            jQuery(document).ready(function($) {
-                $("#featured-titles").owlCarousel({ autoPlay: 3500, items: 7, stopOnHover: true, pagination: false, itemsDesktop: [1199, 4], itemsDesktopSmall: [980, 4], itemsTablet: [768, 3], itemsTabletSmall: false, itemsMobile: [479, 3] });
-                $(".nextf").click(function() { $("#featured-titles").trigger("owl.next") });
-                $(".prevf").click(function() { $("#featured-titles").trigger("owl.prev") });
-                $("#dt-tvshows").owlCarousel({ autoPlay: 3500, items: 7, stopOnHover: true, pagination: false, itemsDesktop: [1199, 5], itemsDesktopSmall: [980, 5], itemsTablet: [768, 4], itemsTabletSmall: false, itemsMobile: [479, 3] });
-                $("#dt-episodes").owlCarousel({ autoPlay: false, pagination: false, items: 5, stopOnHover: true, itemsDesktop: [900, 3], itemsDesktopSmall: [750, 3], itemsTablet: [500, 2], itemsMobile: [320, 1] });
-                $(".next").click(function() { $("#dt-episodes").trigger("owl.next") });
-                $(".prev").click(function() { $("#dt-episodes").trigger("owl.prev") });
-                $("#dt-seasons").owlCarousel({ autoPlay: 3500, items: 7, stopOnHover: true, pagination: false, itemsDesktop: [1199, 5], itemsDesktopSmall: [980, 5], itemsTablet: [768, 4], itemsTabletSmall: false, itemsMobile: [479, 3] });
-                $("#slider-movies").owlCarousel({ autoPlay: 2000, items: 3, stopOnHover: true, pagination: true, itemsDesktop: [1199, 2], itemsDesktopSmall: [980, 2], itemsTablet: [768, 2], itemsTabletSmall: [600, 1], itemsMobile: [479, 1] });
-                $("#slider-tvshows").owlCarousel({ autoPlay: false, items: 3, stopOnHover: true, pagination: true, itemsDesktop: [1199, 2], itemsDesktopSmall: [980, 2], itemsTablet: [768, 2], itemsTabletSmall: [600, 1], itemsMobile: [479, 1] });
-                $("#slider-movies-tvshows").owlCarousel({ autoPlay: 2000, items: 3, stopOnHover: true, pagination: true, itemsDesktop: [1199, 2], itemsDesktopSmall: [980, 2], itemsTablet: [768, 2], itemsTabletSmall: [600, 1], itemsMobile: [479, 1] });
-                $(".reset").click(function(event) { if (!confirm(dtGonza.reset_all)) { event.preventDefault() } });
-                $(".addcontent").click(function(event) { if (!confirm(dtGonza.manually_content)) { event.preventDefault() } });
-            });
-        </script>
-        <script id="wp-bottom-menu-js-extra">
-            var WPBM = { "ajaxurl": "https://mrbobd.site/wp-admin/admin-ajax.php", "siteurl": "https://mrbobd.site" };
-        </script>
-        <script id="wp-bottom-menu-js" src="https://mrbobd.site/wp-content/plugins/wp-bottom-menu/assets/js/main.js?ver=2.3.0"></script>
-        <script id="scripts-js" src="https://mrbobd.site/wp-content/themes/dooplay/assets/js/front.scripts.min.js?ver=2.5.5"></script>
-        <script id="live_search-js-extra">
-            var dtGonza = {
-                "api": "https://mrbobd.site/wp-json/dooplay/search/",
-                "glossary": "https://mrbobd.site/wp-json/dooplay/glossary/",
-                "nonce": "b310ac4d18",
-                "area": ".live-search",
-                "button": ".search-button",
-                "more": "View all results",
-                "mobile": "false",
-                "reset_all": "Really you want to restart all data?",
-                "manually_content": "They sure have added content manually?",
-                "loading": "Loading..",
-                "loadingplayer": "Loading player..",
-                "selectaplayer": "Select a video player",
-                "playeradstime": null,
-                "autoplayer": null,
-                "livesearchactive": "1"
-            };
-        </script>
-        <script id="live_search-js" src="https://mrbobd.site/wp-content/themes/dooplay/assets/js/front.livesearch.min.js?ver=2.5.5"></script>
-
-        <!-- ============ HEADER INJECTOR (WhatsApp removed + SIGN UP added) ============ -->
-        <script id="mlbd-stable-header-injector">
-            (function() {
-                var cssText = "\n:root{--mlbd-stable-bg:#25292e;--mlbd-stable-text:#f4f7fb;--mlbd-stable-muted:#a5adb9;--mlbd-stable-logo:#ff061b;--mlbd-stable-red:#d71920;--mlbd-stable-cyan:#06c2d8;--mlbd-stable-green:#00d68f;--mlbd-stable-gold:#a97a39;--mlbd-stable-card-border:#f4c900;--mlbd-stable-card-title:#00eaff;--mlbd-stable-card-meta:#b5ff3a;--mlbd-stable-radius:6px;}\nhtml.mlbd-stable-loaded body, html.mlbd-stable-loaded #dt_contenedor, html.mlbd-stable-loaded #contenedor{background:var(--mlbd-stable-bg)!important;color:var(--mlbd-stable-text)!important;}\nhtml.mlbd-stable-loaded #contenedor{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;}\n#mlbd-stable-header{background:var(--mlbd-stable-bg)!important;padding:14px 14px 16px!important;text-align:center!important;box-sizing:border-box!important;width:100%!important;display:block!important;clear:both!important;}\n#mlbd-stable-header .mlbd-header-inner{max-width:900px!important;margin:0 auto!important;}\n#mlbd-stable-header .mlbd-logo-text{display:inline-block!important;color:var(--mlbd-stable-logo)!important;font-size:48px!important;font-weight:900!important;line-height:1!important;letter-spacing:2px!important;text-decoration:none!important;text-transform:uppercase!important;text-shadow:0 2px 0 rgba(0,0,0,.45),0 0 10px rgba(255,0,20,.25)!important;}\n#mlbd-stable-header .mlbd-active-link{margin-top:5px!important;color:var(--mlbd-stable-green)!important;font-size:12px!important;font-weight:800!important;}#mlbd-stable-header .mlbd-active-link strong{color:#ffe353!important;}\n#mlbd-stable-header .mlbd-warning{margin-top:3px!important;color:var(--mlbd-stable-muted)!important;font-size:12px!important;}\n#mlbd-stable-header .mlbd-menu-row,#mlbd-stable-header .mlbd-action-row{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:7px!important;}\n#mlbd-stable-header .mlbd-menu-row{margin-top:14px!important;}#mlbd-stable-header .mlbd-action-row{margin-top:14px!important;align-items:center!important;}\n#mlbd-stable-header .mlbd-menu-pill,#mlbd-stable-header .mlbd-action-pill{display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:var(--mlbd-stable-radius)!important;color:#fff!important;text-decoration:none!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16)!important;box-sizing:border-box!important;}\n@keyframes mlbdActionRgbText{0%{color:#ff1f1f;}16%{color:#ff8a00;}32%{color:#fff200;}48%{color:#00ff4c;}64%{color:#00d9ff;}80%{color:#265cff;}100%{color:#ff1fdb;}}#mlbd-stable-header .mlbd-action-pill .mlbd-action-text{display:inline-block!important;animation:mlbdActionRgbText 2.2s linear infinite!important;text-shadow:none!important;}\n#mlbd-stable-header .mlbd-menu-pill{min-height:31px!important;padding:0 13px!important;font-size:16px!important;gap:5px!important;}#mlbd-stable-header .mlbd-action-pill{min-height:36px!important;padding:0 13px!important;font-size:16px!important;text-transform:none!important;}\n#mlbd-stable-header .mlbd-search-wrap{margin:15px auto 0!important;max-width:878px!important;}#mlbd-stable-header .mlbd-search-form{display:flex!important;width:100%!important;border:2px solid var(--mlbd-stable-cyan)!important;border-radius:var(--mlbd-stable-radius)!important;overflow:hidden!important;background:#1d2a3d!important;box-sizing:border-box!important;}\n#mlbd-stable-header .mlbd-search-form input[type=text]{flex:1 1 auto!important;height:58px!important;border:0!important;background:transparent!important;color:#fff!important;font-size:22px!important;padding:0 18px!important;outline:none!important;box-sizing:border-box!important;}#mlbd-stable-header .mlbd-search-form button{flex:0 0 60px!important;border:0!important;background:var(--mlbd-stable-cyan)!important;color:#fff!important;font-size:22px!important;cursor:pointer!important;}\n#mlbd-stable-header .mlbd-section-intro{margin-top:8px!important;text-align:center!important;}#mlbd-stable-header .mlbd-recent-title{color:var(--mlbd-stable-green)!important;font-size:26px!important;font-weight:500!important;letter-spacing:2px!important;text-transform:uppercase!important;}#mlbd-stable-header .mlbd-stats{margin-top:5px!important;color:#aab4bd!important;font-size:12px!important;}\nhtml.mlbd-stable-loaded .module{width:100%!important;margin:0!important;padding:0!important;background:var(--mlbd-stable-bg)!important;}html.mlbd-stable-loaded .module .content,html.mlbd-stable-loaded .module .content.full,html.mlbd-stable-loaded .module .content.full_width_layout{float:none!important;width:100%!important;max-width:1128px!important;margin:0 auto!important;padding:20px 8px 50px!important;background:var(--mlbd-stable-bg)!important;}html.mlbd-stable-loaded .module .sidebar{display:none!important;}\n@media(max-width:900px){#mlbd-stable-header .mlbd-logo-text{font-size:38px!important;}#mlbd-stable-header .mlbd-menu-pill{font-size:14px!important;padding:0 10px!important;}}\n@media(max-width:640px){#mlbd-stable-header{padding:11px 7px 14px!important;}#mlbd-stable-header .mlbd-logo-text{font-size:31px!important;letter-spacing:1px!important;}#mlbd-stable-header .mlbd-menu-row,#mlbd-stable-header .mlbd-action-row{gap:5px!important;margin-top:9px!important;}#mlbd-stable-header .mlbd-menu-pill{min-height:25px!important;padding:0 8px!important;font-size:11px!important;}#mlbd-stable-header .mlbd-action-pill{min-height:28px!important;padding:0 9px!important;font-size:12px!important;}#mlbd-stable-header .mlbd-search-wrap{margin-top:11px!important;}#mlbd-stable-header .mlbd-search-form input[type=text]{height:46px!important;padding:0 12px!important;font-size:16px!important;}#mlbd-stable-header .mlbd-search-form button{flex-basis:46px!important;font-size:18px!important;}}\n";
+                var cssText = "\n:root{--mlbd-stable-bg:#25292e;--mlbd-stable-text:#f4f7fb;--mlbd-stable-muted:#a5adb9;--mlbd-stable-logo:#ff061b;--mlbd-stable-red:#d71920;--mlbd-stable-cyan:#06c2d8;--mlbd-stable-green:#00d68f;--mlbd-stable-radius:6px;}\nhtml.mlbd-stable-loaded body, html.mlbd-stable-loaded #dt_contenedor, html.mlbd-stable-loaded #contenedor{background:var(--mlbd-stable-bg)!important;color:var(--mlbd-stable-text)!important;}\nhtml.mlbd-stable-loaded #contenedor{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;}\n#mlbd-stable-header{background:var(--mlbd-stable-bg)!important;padding:14px 14px 16px!important;text-align:center!important;box-sizing:border-box!important;width:100%!important;display:block!important;clear:both!important;}\n#mlbd-stable-header .mlbd-header-inner{max-width:900px!important;margin:0 auto!important;}\n#mlbd-stable-header .mlbd-logo-text{display:inline-block!important;color:var(--mlbd-stable-logo)!important;font-size:48px!important;font-weight:900!important;line-height:1!important;letter-spacing:2px!important;text-decoration:none!important;text-transform:uppercase!important;text-shadow:0 2px 0 rgba(0,0,0,.45),0 0 10px rgba(255,0,20,.25)!important;}\n#mlbd-stable-header .mlbd-active-link{margin-top:5px!important;color:var(--mlbd-stable-green)!important;font-size:12px!important;font-weight:800!important;}#mlbd-stable-header .mlbd-active-link strong{color:#ffe353!important;}\n#mlbd-stable-header .mlbd-warning{margin-top:3px!important;color:var(--mlbd-stable-muted)!important;font-size:12px!important;}\n#mlbd-stable-header .mlbd-menu-row,#mlbd-stable-header .mlbd-action-row{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:7px!important;}\n#mlbd-stable-header .mlbd-menu-row{margin-top:14px!important;}#mlbd-stable-header .mlbd-action-row{margin-top:14px!important;align-items:center!important;}\n#mlbd-stable-header .mlbd-menu-pill,#mlbd-stable-header .mlbd-action-pill{display:inline-flex!important;align-items:center!important;justify-content:center!important;border-radius:var(--mlbd-stable-radius)!important;color:#fff!important;text-decoration:none!important;font-weight:900!important;text-transform:uppercase!important;box-shadow:inset 0 -2px 0 rgba(0,0,0,.16)!important;box-sizing:border-box!important;}\n@keyframes mlbdActionRgbText{0%{color:#ff1f1f;}16%{color:#ff8a00;}32%{color:#fff200;}48%{color:#00ff4c;}64%{color:#00d9ff;}80%{color:#265cff;}100%{color:#ff1fdb;}}#mlbd-stable-header .mlbd-action-pill .mlbd-action-text{display:inline-block!important;animation:mlbdActionRgbText 2.2s linear infinite!important;text-shadow:none!important;}\n#mlbd-stable-header .mlbd-menu-pill{min-height:31px!important;padding:0 13px!important;font-size:16px!important;gap:5px!important;}#mlbd-stable-header .mlbd-action-pill{min-height:36px!important;padding:0 13px!important;font-size:16px!important;text-transform:none!important;}\n#mlbd-stable-header .mlbd-search-wrap{margin:15px auto 0!important;max-width:878px!important;}#mlbd-stable-header .mlbd-search-form{display:flex!important;width:100%!important;border:2px solid var(--mlbd-stable-cyan)!important;border-radius:var(--mlbd-stable-radius)!important;overflow:hidden!important;background:#1d2a3d!important;box-sizing:border-box!important;}\n#mlbd-stable-header .mlbd-search-form input[type=text]{flex:1 1 auto!important;height:58px!important;border:0!important;background:transparent!important;color:#fff!important;font-size:22px!important;padding:0 18px!important;outline:none!important;box-sizing:border-box!important;}#mlbd-stable-header .mlbd-search-form button{flex:0 0 60px!important;border:0!important;background:var(--mlbd-stable-cyan)!important;color:#fff!important;font-size:22px!important;cursor:pointer!important;}\n#mlbd-stable-header .mlbd-section-intro{margin-top:8px!important;text-align:center!important;}#mlbd-stable-header .mlbd-recent-title{color:var(--mlbd-stable-green)!important;font-size:26px!important;font-weight:500!important;letter-spacing:2px!important;text-transform:uppercase!important;}#mlbd-stable-header .mlbd-stats{margin-top:5px!important;color:#aab4bd!important;font-size:12px!important;}\nhtml.mlbd-stable-loaded .module{width:100%!important;margin:0!important;padding:0!important;background:var(--mlbd-stable-bg)!important;}html.mlbd-stable-loaded .module .content,html.mlbd-stable-loaded .module .content.full,html.mlbd-stable-loaded .module .content.full_width_layout{float:none!important;width:100%!important;max-width:1128px!important;margin:0 auto!important;padding:20px 8px 50px!important;background:var(--mlbd-stable-bg)!important;}html.mlbd-stable-loaded .module .sidebar{display:none!important;}\n@media(max-width:900px){#mlbd-stable-header .mlbd-logo-text{font-size:38px!important;}#mlbd-stable-header .mlbd-menu-pill{font-size:14px!important;padding:0 10px!important;}}\n@media(max-width:640px){#mlbd-stable-header{padding:11px 7px 14px!important;}#mlbd-stable-header .mlbd-logo-text{font-size:31px!important;letter-spacing:1px!important;}#mlbd-stable-header .mlbd-menu-row,#mlbd-stable-header .mlbd-action-row{gap:5px!important;margin-top:9px!important;}#mlbd-stable-header .mlbd-menu-pill{min-height:25px!important;padding:0 8px!important;font-size:11px!important;}#mlbd-stable-header .mlbd-action-pill{min-height:28px!important;padding:0 9px!important;font-size:12px!important;}#mlbd-stable-header .mlbd-search-wrap{margin-top:11px!important;}#mlbd-stable-header .mlbd-search-form input[type=text]{height:46px!important;padding:0 12px!important;font-size:16px!important;}#mlbd-stable-header .mlbd-search-form button{flex-basis:46px!important;font-size:18px!important;}}\n";
                 var headerHtml = "<section id=\"mlbd-stable-header\" class=\"mlbd-header mlbd-header-home\">\n    <div class=\"mlbd-header-inner\">\n        <a class=\"mlbd-logo-text\" href=\"https:\/\/mrbobd.site\/\">MRBROBD.COM<\/a>\n                    <div class=\"mlbd-active-link\">Official &amp; Always Active Link: <strong>MRBROBD.COM<\/strong> \u2705<\/div>\n                            <div class=\"mlbd-warning\">\u26a0\ufe0f \u09ac\u09be\u0982\u09b2\u09be \u09b8\u09be\u0987\u099f \u09b2\u09cb\u09a1 \u09a8\u09be \u09b9\u09b2\u09c7, 1.1.1.1 VPN \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c7 \u09b8\u09be\u0987\u099f \u09ad\u09bf\u099c\u09bf\u099f \u0995\u09b0\u09c1\u09a8\u0964<\/div>\n                        <div class=\"mlbd-menu-row\"><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/\">\ud83c\udfe0 HOME<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/bangla\/\">\ud83c\udde7\ud83c\udde9 BANGLA<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/bangla-dubbed\/\">\ud83c\udf99 BANGLA DUBBED<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/hindi\/\">\ud83c\uddee\ud83c\uddf3 HINDI<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/hindi-dubbed\/\">\ud83c\udfa4 HINDI DUBBED<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/south-india\/\">\ud83d\udd25 SOUTH INDIAN \ud83d\udef8<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/dual-audio\/\">\ud83c\udfa7 DUAL AUDIO<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/adult\/\">\ud83d\udd1e 18+ ADULT<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/english\/\">\ud83c\uddfa\ud83c\uddf8 ENGLISH<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/korean\/\">\ud83c\uddf0\ud83c\uddf7 KOREAN<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/action\/\">\u2694\ufe0f ACTION<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/thriller\/\">\ud83e\udde9 THRILLER<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/horror\/\">\ud83d\udc7b HORROR<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/romance\/\">\ud83d\udc9e ROMANCE<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/tvshows\/\">\ud83d\udcfa ALL WEB SERIES<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/movies\/\">\ud83c\udfac ALL MOVIES<\/a><a class=\"mlbd-menu-pill\" style=\"background:#d71920!important\" href=\"https:\/\/mrbobd.site\/genre\/anime\/\">\ud83c\udf38 ANIME ZONE<\/a><\/div>        <div class=\"mlbd-search-wrap\">\n            <form class=\"mlbd-search-form\" method=\"get\" action=\"https:\/\/mrbobd.site\/\">\n                <input type=\"text\" name=\"s\" value=\"\" placeholder=\"\u09b8\u09be\u09b0\u09cd\u099a \u0995\u09b0\u09c7 \u0996\u09c1\u0981\u099c\u09c7 \u09a8\u09bf\u09a8 \u09aa\u099b\u09a8\u09cd\u09a6\u09c7\u09b0 \u09ae\u09c1\u09ad\u09bf\" autocomplete=\"off\">\n                <button type=\"submit\" aria-label=\"Search\">\ud83d\udd0d<\/button>\n            <\/form>\n        <\/div>\n                                <div class=\"mlbd-action-row mlbd-home-action-row\"><a class=\"mlbd-action-pill mlbd-toggle-button mlbd-toggle-only-new\" style=\"background:#247402!important\" href=\"#\" data-mlbd-toggle=\"only_new\"><span class=\"mlbd-action-text\">Only New : No<\/span><\/a><a class=\"mlbd-action-pill mlbd-signup-trigger\" style=\"background:#0266ea!important\" href=\"#signup\" data-signup-trigger><span class=\"mlbd-action-text\">\u270d\ufe0f SIGN UP<\/span><\/a><\/div>\n                            <div class=\"mlbd-section-intro\">\n                    <div class=\"mlbd-recent-title\">Recently Updated<\/div>\n                    <div class=\"mlbd-stats\"><span class=\"mlbd-total-count\">\ud83c\udfac 8,149+ MOVIES\/SERIES<\/span><span class=\"mlbd-stat-sep\">\u00b7<\/span><span class=\"mlbd-quote-rotator\" data-quotes=\"[&quot;\\u0995\\u09cb\\u09a8\\u09cb \\u099d\\u09be\\u09ae\\u09c7\\u09b2\\u09be \\u09a8\\u09c7\\u0987 WATCH &amp; CHILL&quot;,&quot;\\u09a8\\u09a4\\u09c1\\u09a8 \\u0986\\u09aa\\u09a1\\u09c7\\u099f, \\u09a8\\u09a4\\u09c1\\u09a8 \\u09ac\\u09bf\\u09a8\\u09cb\\u09a6\\u09a8&quot;]\">\u0995\u09cb\u09a8\u09cb \u099d\u09be\u09ae\u09c7\u09b2\u09be \u09a8\u09c7\u0987 WATCH &amp; CHILL<\/span><\/div>\n                <\/div>\n                        <\/div>\n<\/section>";
                 var hideThemeHeader = 1;
                 var hideHardcodedHeader = 1;
