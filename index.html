@@ -829,7 +829,7 @@
                 background: #0266ea
             }
 
-            .tagcloud a:hover,ul.abc li a:hover,ul.abc li a.select, {
+            .tagcloud a:hover,ul.abc li a:hover,ul.abc li a.select {
                 background: #0266ea
             }
 
@@ -3640,7 +3640,12 @@
                 var hideThemeHeader = 1;
                 var hideHardcodedHeader = 1;
                 var onlyNewActive = 0;
-                var hideAdultActive = 0;
+                var hideAdultActive = /(?:^|;\s*)mlbd_hide_adult=1(?:;|$)/.test(document.cookie) ? 1 : 0;
+                try {
+                    if (new URLSearchParams(window.location.search).get('mlbd_hide_adult') === '1') {
+                        hideAdultActive = 1;
+                    }
+                } catch (ignoreAdultPreference) {}
                 var mlbdAjaxUrl = "https:\/\/mrbobd.site\/wp-admin\/admin-ajax.php";
                 function qsa(selector) {
                     try {
@@ -3691,6 +3696,19 @@
                         target.parentNode.insertBefore(header, target);
                     } else {
                         document.body.insertBefore(header, document.body.firstChild);
+                    }
+                    var insertedHeader = document.getElementById('mlbd-stable-header');
+                    if (insertedHeader) {
+                        var actionRow = insertedHeader.querySelector('.mlbd-action-row');
+                        if (actionRow && !actionRow.querySelector('[data-mlbd-toggle="hide_adult"]')) {
+                            var adultToggle = document.createElement('a');
+                            adultToggle.className = 'mlbd-action-pill mlbd-toggle-button';
+                            adultToggle.href = '#';
+                            adultToggle.setAttribute('data-mlbd-toggle', 'hide_adult');
+                            adultToggle.style.background = '#51407a';
+                            adultToggle.textContent = 'Hide 18+ : No';
+                            actionRow.insertBefore(adultToggle, actionRow.firstChild ? actionRow.firstChild.nextSibling : null);
+                        }
                     }
                     return !!document.getElementById('mlbd-stable-header');
                 }
@@ -3775,6 +3793,19 @@
                     }
                     if (!hideAdultActive || !cards.length) {
                         return;
+                    }
+                    // Locally mark cards whose own labels or links identify adult content.
+                    var adultPattern = /(?:18\s*\+|adult|xxx|erotic|uncensored|unrated)/i;
+                    for (var localIndex = 0; localIndex < cards.length; localIndex++) {
+                        var cardText = cards[localIndex].textContent || '';
+                        var cardLinks = cards[localIndex].querySelectorAll('a[href]');
+                        var isAdultCard = adultPattern.test(cardText);
+                        for (var linkIndex = 0; linkIndex < cardLinks.length && !isAdultCard; linkIndex++) {
+                            isAdultCard = /(?:^|\/)genre\/(?:adult|18\+)(?:\/|$)/i.test(cardLinks[linkIndex].getAttribute('href') || '');
+                        }
+                        if (isAdultCard) {
+                            cards[localIndex].classList.add('mlbd-adult-blurred');
+                        }
                     }
                     // If the visitor is already on an adult genre URL, blur all visible cards immediately.
                     try {
@@ -4148,4 +4179,225 @@
                 document.querySelectorAll('a[href*="t.me"], a[href*="wa.me"], a[href*="facebook.com"], a[href*="instagram.com"], a[href*="twitter.com"], a[href*="x.com"]').forEach(function (anchor) { anchor.remove(); });
             }());
         </script>
-    </body>
+            <style id="cinefloat-ui-fixes">
+            :root {
+                --cf-bg: #0b1020;
+                --cf-panel: rgba(18, 27, 48, .94);
+                --cf-border: rgba(148, 163, 184, .2);
+                --cf-text: #f4f7ff;
+                --cf-muted: #aab6cc;
+                --cf-cyan: #56e4ff;
+                --cf-violet: #a78bfa;
+            }
+
+            html, body, #dt_contenedor, #contenedor {
+                max-width: 100%;
+                background-color: var(--cf-bg) !important;
+                color: var(--cf-text) !important;
+            }
+
+            body { overflow-x: clip; }
+            #dt_contenedor { min-height: 100vh; }
+            #mlbd-stable-header { box-sizing: border-box; }
+            #mlbd-stable-header .mlbd-search-form:focus-within {
+                box-shadow: 0 0 0 3px rgba(86, 228, 255, .14), 0 12px 36px rgba(0, 0, 0, .3) !important;
+            }
+
+            .cinefloat-hero {
+                isolation: isolate;
+                border-color: var(--cf-border) !important;
+                background: linear-gradient(135deg, #121d34, #0c1425) !important;
+            }
+
+            .mp-movies-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+                gap: clamp(8px, 1.2vw, 16px) !important;
+            }
+
+            .mp-movie-card {
+                min-width: 0;
+                border: 1px solid rgba(148, 163, 184, .2) !important;
+                border-radius: 12px !important;
+                background: rgba(18, 27, 48, .96) !important;
+                box-shadow: 0 10px 26px rgba(0, 0, 0, .22) !important;
+                transition: border-color .22s ease, box-shadow .22s ease !important;
+            }
+
+            .mp-movie-card:hover, .mp-movie-card:focus-within {
+                border-color: rgba(86, 228, 255, .62) !important;
+                box-shadow: 0 16px 34px rgba(0, 0, 0, .35), 0 0 18px rgba(86, 228, 255, .1) !important;
+            }
+
+            .mp-movie-poster { background: #080d19 !important; }
+            .mp-movie-info { background: rgba(14, 21, 39, .98) !important; }
+            .mp-title { color: #edf4ff !important; }
+
+            /* Keep the privacy blur confined to the poster, never the title or controls. */
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .mp-movie-play { display: none !important; }
+
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .mp-movie-poster,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .mp-item-poster,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .poster,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred figure {
+                position: relative !important;
+                overflow: hidden !important;
+                isolation: isolate;
+            }
+
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .mp-movie-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .mp-item-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred figure img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:hover .mp-movie-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:hover .mp-item-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:hover .poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:hover figure img {
+                filter: blur(16px) brightness(.4) !important;
+                transform: scale(1.04) !important;
+            }
+
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .mp-movie-poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .mp-item-poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred .poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred figure::after {
+                content: "18+ hidden" !important;
+                position: absolute !important;
+                inset: 50% auto auto 50% !important;
+                z-index: 20 !important;
+                display: grid !important;
+                place-items: center !important;
+                width: max-content !important;
+                max-width: calc(100% - 20px) !important;
+                padding: 9px 14px !important;
+                border: 1px solid rgba(255, 255, 255, .25) !important;
+                border-radius: 999px !important;
+                background: rgba(5, 9, 20, .88) !important;
+                color: #fff !important;
+                font: 800 12px/1.2 system-ui, sans-serif !important;
+                letter-spacing: .06em !important;
+                text-transform: uppercase !important;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, .4) !important;
+                transform: translate(-50%, -50%) !important;
+                pointer-events: none !important;
+            }
+
+            .mlbd-lts-wrap { width: min(1330px, 100%); }
+            .mlbd-lts-box { color: var(--cf-text); }
+            .mlbd-lts-search:focus-visible,
+            .mlbd-lts-btn:focus-visible,
+            .mlbd-home-pagination a:focus-visible,
+            .mp-movie-link:focus-visible {
+                outline: 2px solid var(--cf-cyan) !important;
+                outline-offset: 3px !important;
+            }
+
+            @media (max-width: 1024px) {
+                .mp-movies-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+            }
+
+            @media (max-width: 768px) {
+                .mp-movies-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+                .mp-movie-card { border-radius: 10px !important; }
+                .cinefloat-hero { width: calc(100% - 20px) !important; }
+                .mlbd-home-pagination { padding: 0 8px !important; }
+                body { padding-bottom: 64px; }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .mp-movie-card, .mp-movie-card:nth-child(-n+8),
+                .mp-movie-card:nth-child(2n), .mp-movie-card:nth-child(3n) {
+                    animation: none !important;
+                    transition: none !important;
+                }
+            }
+        </style>
+        <style id="cinefloat-adult-blur-fix">
+            /* Keep the privacy effect limited to explicitly identified adult posters. */
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) .mp-movie-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) .mp-item-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) .poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) figure img {
+                filter: none !important;
+                transform: none !important;
+            }
+
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) .mp-movie-poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) .mp-item-poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) .poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) figure::after {
+                content: none !important;
+                display: none !important;
+            }
+
+            html.mlbd-hide-adult-active .mlbd-adult-blurred:not(.mlbd-adult-confirmed) .mp-movie-play {
+                display: flex !important;
+            }
+
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed .mp-movie-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed .mp-item-poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed .poster img,
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed figure img {
+                filter: blur(13px) brightness(.42) !important;
+                transform: scale(1.04) !important;
+            }
+
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed .mp-movie-poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed .mp-item-poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed .poster::after,
+            html.mlbd-hide-adult-active .mlbd-adult-confirmed figure::after {
+                content: "18+ hidden" !important;
+                position: absolute !important;
+                inset: 50% auto auto 50% !important;
+                z-index: 30 !important;
+                display: block !important;
+                width: max-content !important;
+                max-width: calc(100% - 20px) !important;
+                padding: 8px 12px !important;
+                border-radius: 999px !important;
+                background: rgba(5, 9, 20, .9) !important;
+                color: #fff !important;
+                font: 800 12px/1.2 system-ui, sans-serif !important;
+                text-align: center !important;
+                text-transform: uppercase !important;
+                transform: translate(-50%, -50%) !important;
+                pointer-events: none !important;
+            }
+        </style>
+        <script id="cinefloat-adult-blur-fix-script">
+            (function () {
+                var root = document.documentElement;
+                var cardSelector = '.mp-movie-card, .item.mp-poster-card, article[id^="post-"]';
+                var adultLabelPattern = /adult|xxx|erotic|uncensored|unrated|18/i;
+
+                function refreshAdultBlur() {
+                    var enabled = root.classList.contains('mlbd-hide-adult-active');
+                    var cards = document.querySelectorAll(cardSelector);
+                    cards.forEach(function (card) {
+                        card.classList.remove('mlbd-adult-confirmed');
+                        if (!enabled) return;
+
+                        var labels = card.querySelectorAll('.mp-card-tag, .mp-title, [data-label]');
+                        var isAdult = false;
+                        for (var i = 0; i < labels.length; i++) {
+                            var label = labels[i].getAttribute('data-label') || labels[i].textContent || '';
+                            if (adultLabelPattern.test(label.trim())) {
+                                isAdult = true;
+                                break;
+                            }
+                        }
+                        if (isAdult) card.classList.add('mlbd-adult-confirmed');
+                    });
+                }
+
+                refreshAdultBlur();
+                new MutationObserver(refreshAdultBlur).observe(root, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+                new MutationObserver(refreshAdultBlur).observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            }());
+        </script>
+</body>
